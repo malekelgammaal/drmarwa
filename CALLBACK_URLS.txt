@@ -1,0 +1,21 @@
+# Gammal Tech — Callback URLs
+# Domain: https://drmarwabadr.drmarwa.workers.dev
+# ============================================================
+
+## 1. رحلة تعافي — Healing Journey Program
+https://drmarwabadr.drmarwa.workers.dev/payment-success.html?course=healing-journey-program
+
+## 2. العلاج المعرفي السلوكي — CBT Course
+https://drmarwabadr.drmarwa.workers.dev/payment-success.html?course=cbt-course
+
+## 3. العلاج الجدلي السلوكي — DBT Course
+https://drmarwabadr.drmarwa.workers.dev/payment-success.html?course=dbt-course
+
+## 4. القبول والالتزام — ACT Course
+https://drmarwabadr.drmarwa.workers.dev/payment-success.html?course=act-course
+
+## 5. اضطرابات الشخصية — Personality Disorders Course
+https://drmarwabadr.drmarwa.workers.dev/payment-success.html?course=personality-disorders-course
+
+## 6. باقة الثلاث علاجات — Tri-Therapy Bundle (DBT + CBT + ACT)
+https://drmarwabadr.drmarwa.workers.dev/payment-success.html?course=tri-therapy-bundle

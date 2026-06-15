@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success | Dr. Marwa Badr</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .success-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 3rem 2.5rem;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+        .icon-ring {
+            width: 80px; height: 80px;
+            background: rgba(20,184,166,0.12);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(20,184,166,0.3); } 50% { box-shadow: 0 0 0 15px rgba(20,184,166,0); } }
+        .icon-ring i { font-size: 2.5rem; color: var(--primary); }
+
+        h1 { font-size: 1.6rem; margin: 0 0 0.5rem; }
+        .sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6; }
+
+        .txn-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+            word-break: break-all;
+        }
+        .txn-box strong { color: var(--primary); display: block; margin-bottom: 0.25rem; }
+
+        .btn-row { display: flex; gap: 1rem; flex-direction: column; }
+
+        .spinner-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 1rem; z-index: 999;
+        }
+        .spinner-overlay p { color: white; font-size: 1rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Processing overlay (shown while recording purchase) -->
+    <div class="spinner-overlay" id="processing-overlay">
+        <i class="ph ph-circle-notch ph-spin" style="font-size:3rem; color:var(--primary);"></i>
+        <p>Confirming your payment, please wait...</p>
+    </div>
+
+    <div class="success-card" id="success-card" style="display:none;">
+        <div class="icon-ring"><i class="ph ph-seal-check"></i></div>
+        <h1>Payment Successful! 🎉</h1>
+        <p class="sub">
+            Your purchase has been confirmed and access has been granted.<br>
+            You can now access your course from <strong>My Courses</strong>.
+        </p>
+
+        <div class="txn-box" id="txn-info" style="display:none;">
+            <strong>Transaction ID</strong>
+            <span id="txn-display">—</span>
+        </div>
+
+        <div class="btn-row">
+            <a href="my-courses.html" class="btn-primary" id="goto-courses-btn">
+                <i class="ph ph-books"></i> &nbsp;Go to My Courses
+            </a>
+            <a href="index.html" style="color:var(--muted); font-size:0.875rem; text-decoration:none;">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Error card (shown if recording fails) -->
+    <div class="success-card" id="error-card" style="display:none;">
+        <div class="icon-ring" style="background:rgba(239,68,68,0.1);">
+            <i class="ph ph-warning-circle" style="color:#ef4444;"></i>
+        </div>
+        <h1 style="color:#ef4444;">Something Went Wrong</h1>
+        <p class="sub">Your payment was received, but we had trouble recording your access. Please contact us with your Transaction ID.</p>
+        <div class="txn-box">
+            <strong>Transaction ID (save this!)</strong>
+            <span id="error-txn-display">—</span>
+        </div>
+        <a href="https://wa.me/96560695570" target="_blank" class="btn-primary">
+            <i class="ph ph-whatsapp-logo"></i> &nbsp;Contact Support on WhatsApp
+        </a>
+    </div>
+
+    <script src="js/payment-service.js"></script>
+    <script>
+        // Apply saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // ── Read callback parameters from URL ──────────────────
+        // Gammal Tech sends: ?txn=XXXX&course=YYYY&status=success
+        const params = new URLSearchParams(window.location.search);
+        const txn    = params.get('txn')    || params.get('transaction_id') || '';
+        const course = params.get('course') || sessionStorage.getItem('pending_course') || '';
+        const status = params.get('status') || 'success';
+
+        async function handleCallback() {
+            const overlay    = document.getElementById('processing-overlay');
+            const successCard = document.getElementById('success-card');
+            const errorCard   = document.getElementById('error-card');
+
+            if (!txn || !course) {
+                // No params — might be direct navigation
+                overlay.style.display = 'none';
+                document.getElementById('error-txn-display').textContent = 'N/A — Direct access blocked';
+                errorCard.style.display = 'block';
+                return;
+            }
+
+            // Show transaction ID
+            document.getElementById('txn-display').textContent = txn;
+            document.getElementById('error-txn-display').textContent = txn;
+
+            try {
+                // Record purchase via PaymentService
+                const courseInfo = window.PaymentService.getCourse(course);
+                if (!courseInfo) throw new Error('Unknown course: ' + course);
+
+                await window.PaymentService.recordPurchase(
+                    course,
+                    txn,
+                    courseInfo.sale_price,
+                    courseInfo.currency
+                );
+
+                // Mark as purchased in cache
+                localStorage.setItem('user_has_purchases', 'true');
+                sessionStorage.removeItem('pending_course');
+
+                // Link "Go to My Courses" to the specific course page
+                const coursePage = `course-${course}.html?access=granted`;
+                document.getElementById('goto-courses-btn').href = coursePage;
+
+                // Show success
+                if (txn) {
+                    document.getElementById('txn-info').style.display = 'block';
+                }
+                overlay.style.display = 'none';
+                successCard.style.display = 'block';
+
+            } catch (err) {
+                console.error('[payment-success] Error recording purchase:', err);
+                overlay.style.display = 'none';
+                errorCard.style.display = 'block';
+            }
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', handleCallback);
+    </script>
+</body>
+</html>

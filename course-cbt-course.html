@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognitive Behavioral Therapy (CBT) | Dr. Marwa Badr</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body{margin:0;}
+        /* Theme toggle icons */
+        [data-theme="dark"]  #theme-icon-light { display: none; }
+        [data-theme="dark"]  #theme-icon-dark  { display: inline; }
+        [data-theme="light"] #theme-icon-light { display: inline; }
+        [data-theme="light"] #theme-icon-dark  { display: none; }
+
+        .content-layout{display:flex;min-height:calc(100vh - var(--nav-height));margin-top:var(--nav-height);}
+        .sidebar{width:290px;flex-shrink:0;background:var(--alt-bg);border-right:1px solid var(--border);padding:0;height:calc(100vh - var(--nav-height));position:sticky;top:var(--nav-height);overflow-y:auto;}
+        .sidebar-header{padding:1.25rem;border-bottom:1px solid var(--border);}
+        .sidebar-header h3{font-size:0.9rem;margin:0 0 0.25rem;}
+        .sidebar-header p{font-size:0.75rem;color:var(--muted);margin:0;}
+        .prog-bar{height:4px;background:var(--border);border-radius:2px;margin-top:0.75rem;overflow:hidden;}
+        .prog-fill{height:100%;background:var(--primary);border-radius:2px;transition:width 0.4s;width:0%;}
+        .prog-text{font-size:0.72rem;color:var(--muted);margin-top:0.35rem;}
+        .module-list{list-style:none;padding:0.5rem 0;margin:0;}
+        .module-list li{padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-size:0.865rem;transition:background 0.15s,color 0.15s;border-left:3px solid transparent;}
+        .module-list li:hover{background:rgba(20,184,166,0.06);}
+        .module-list li.active{border-left-color:var(--primary);background:rgba(20,184,166,0.1);color:var(--primary);font-weight:600;}
+        .module-list li i{font-size:1rem;color:var(--muted);flex-shrink:0;}
+        .module-list li.active i{color:var(--primary);}
+        .main-content{flex:1;padding:2.5rem;max-width:860px;}
+        .course-badge{display:inline-flex;align-items:center;gap:0.3rem;background:rgba(59,130,246,0.12);color:#60a5fa;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:700;margin-bottom:1rem;}
+        .video-box{width:100%;aspect-ratio:16/9;background:#080d1a;border-radius:var(--border-radius);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:2rem;position:relative;overflow:hidden;}
+        .video-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(59,130,246,0.12) 0%,transparent 70%);}
+        .play-btn{width:60px;height:60px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#0f172a;transition:transform 0.2s,box-shadow 0.2s;z-index:1;}
+        .play-btn:hover{transform:scale(1.1);box-shadow:0 0 28px rgba(20,184,166,0.5);}
+        .video-box p{color:var(--muted);font-size:0.82rem;margin-top:0.75rem;z-index:1;}
+        .meta-row{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+        .meta-chip{display:inline-flex;align-items:center;gap:0.4rem;background:var(--alt-bg);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.8rem;font-size:0.8rem;color:var(--muted);}
+        .meta-chip i{color:var(--primary);}
+        .section-h2{font-size:1.05rem;margin:1.75rem 0 0.75rem;display:flex;align-items:center;gap:0.5rem;}
+        .section-h2 i{color:var(--primary);}
+        .body-text{color:var(--muted);line-height:1.8;font-size:0.93rem;}
+        .materials{background:var(--alt-bg);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-top:1.5rem;}
+        .materials h3{font-size:0.9rem;margin:0 0 1rem;display:flex;align-items:center;gap:0.4rem;}
+        .materials h3 i{color:var(--primary);}
+        .mat-link{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.75rem;border-radius:8px;text-decoration:none;color:var(--text);font-size:0.85rem;transition:background 0.15s;margin-bottom:0.2rem;}
+        .mat-link:hover{background:rgba(20,184,166,0.08);color:var(--primary);}
+        .mat-link i{color:var(--primary);font-size:1rem;}
+        .nav-btns{display:flex;justify-content:space-between;margin-top:2.5rem;gap:1rem;}
+        .nav-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.25rem;border-radius:8px;border:1px solid var(--border);background:var(--alt-bg);color:var(--text);cursor:pointer;font-size:0.875rem;font-family:inherit;transition:all 0.2s;}
+        .nav-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary);}
+        .nav-btn:disabled{opacity:0.4;cursor:not-allowed;}
+        .nav-btn.primary{background:var(--primary);color:#0f172a;border-color:var(--primary);font-weight:600;}
+        .nav-btn.primary:hover:not(:disabled){background:var(--primary-hover);}
+        @media(max-width:768px){.content-layout{flex-direction:column;}.sidebar{width:100%;height:auto;position:static;}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="my-courses.html" class="logo" style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;"><i class="ph ph-arrow-left"></i> My Courses</a>
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <span id="user-welcome" style="font-size:0.82rem;color:var(--muted);"></span>
+                <button id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="ph ph-sun" id="theme-icon-light"></i>
+                    <i class="ph ph-moon" id="theme-icon-dark"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="access-loader" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
+        <div style="width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        <p style="color:var(--muted);font-size:0.9rem;">Verifying access...</p>
+    </div>
+
+    <div class="content-layout" id="page-content" style="display:none;">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Cognitive Behavioral Therapy (CBT)</h3>
+                <p>6 modules · Certificate included</p>
+                <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+                <p class="prog-text" id="prog-text">0 of 6 completed</p>
+            </div>
+            <ul class="module-list" id="module-list">
+                <li class="active" onclick="loadModule('m1')"><i class="ph ph-play-circle"></i> Introduction to CBT</li>
+                <li onclick="loadModule('m2')"><i class="ph ph-play-circle"></i> Identifying Cognitive Distortions</li>
+                <li onclick="loadModule('m3')"><i class="ph ph-play-circle"></i> Challenging Negative Thoughts</li>
+                <li onclick="loadModule('m4')"><i class="ph ph-play-circle"></i> Behavioral Activation</li>
+                <li onclick="loadModule('m5')"><i class="ph ph-play-circle"></i> Problem Solving & Relapse Prevention</li>
+                <li onclick="loadModule('m6')"><i class="ph ph-certificate"></i> Final Assessment & Certification</li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <span class="course-badge"><i class="ph ph-graduation-cap"></i> CBT</span>
+            <h1 id="mod-title" style="margin:0.4rem 0 1rem;font-size:1.55rem;"></h1>
+            <div class="meta-row">
+                <span class="meta-chip"><i class="ph ph-clock"></i> <span id="mod-duration"></span></span>
+                <span class="meta-chip"><i class="ph ph-translate"></i> Arabic</span>
+                <span class="meta-chip"><i class="ph ph-certificate"></i> Certificate</span>
+            </div>
+
+            <div class="video-box" id="video-container">
+                <!-- Video loaded dynamically by loadModule() -->
+                <p style="color:var(--muted);font-size:0.85rem;z-index:1;">Loading video...</p>
+            </div>
+
+            <h2 class="section-h2"><i class="ph ph-book-open"></i> About This Module</h2>
+            <p class="body-text" id="mod-body"></p>
+
+            <div class="materials">
+                <h3><i class="ph ph-folder-open"></i> Downloadable Materials</h3>
+                <a href="#" class="mat-link"><i class="ph ph-file-pdf"></i> Module Workbook.pdf</a>
+                <a href="#" class="mat-link"><i class="ph ph-file-text"></i> Reflection Exercise.pdf</a>
+                <a href="#" class="mat-link"><i class="ph ph-file-pdf"></i> Clinical Reference Sheet.pdf</a>
+            </div>
+
+            <div class="nav-btns">
+                <button class="nav-btn" id="btn-prev" onclick="prevMod()" disabled><i class="ph ph-arrow-left"></i> Previous</button>
+                <button class="nav-btn primary" id="btn-next" onclick="nextMod()">Next Module <i class="ph ph-arrow-right"></i></button>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/payment-service.js"></script>
+    <script>
+    const MODULES = {
+        'm1': {
+            title: 'Introduction to CBT',
+            duration: '40 min',
+            videoUrl: '', // ← ضع YouTube embed URL هنا مثال: https://www.youtube.com/embed/XXXXXXXXX
+            body: 'CBT is one of the most well-researched approaches in modern psychology. This module covers the history, the cognitive model (thoughts → feelings → behavior), and the typical structure of a CBT session from intake to termination.'
+        },
+        'm2': {
+            title: 'Identifying Cognitive Distortions',
+            duration: '45 min',
+            videoUrl: '', // ← ضع YouTube embed URL هنا
+            body: 'Learn the 15 most common cognitive distortions including catastrophizing, all-or-nothing thinking, mind reading, and fortune telling. You\'ll practice identifying these in client transcripts using the Socratic questioning method.'
+        },
+        'm3': {
+            title: 'Challenging Negative Thoughts',
+            duration: '48 min',
+            videoUrl: '', // ← ضع YouTube embed URL هنا
+            body: 'Cognitive restructuring is the heart of CBT. This module walks through thought records, examining evidence for and against beliefs, generating balanced alternatives, and building behavioral experiments to test distorted thoughts.'
+        },
+        'm4': {
+            title: 'Behavioral Activation',
+            duration: '38 min',
+            videoUrl: '', // ← ضع YouTube embed URL هنا
+            body: 'Behavioral activation breaks the depression-inactivity cycle. You\'ll learn activity scheduling, mastery and pleasure rating on a 0-10 scale, graded task assignment, and how to overcome avoidance patterns in depressed clients.'
+        },
+        'm5': {
+            title: 'Problem Solving & Relapse Prevention',
+            duration: '42 min',
+            videoUrl: '', // ← ضع YouTube embed URL هنا
+            body: 'Equip clients with a structured problem-solving model and a personalized relapse prevention plan. This module covers identifying early warning signs, coping strategies, and building a support network for long-term maintenance.'
+        },
+        'm6': {
+            title: 'Final Assessment & Certification',
+            duration: '20 min',
+            videoUrl: '', // ← ضع YouTube embed URL هنا
+            body: 'Complete the final CBT assessment. This module also includes a brief comparative reflection between CBT and other evidence-based approaches. Pass with 70% or above to receive your certificate.'
+        }
+    };
+    const KEYS = Object.keys(MODULES);
+    let current = 0;
+
+    function renderVideo(videoUrl, title) {
+        const container = document.getElementById('video-container');
+        if (!container) return;
+        if (videoUrl) {
+            container.innerHTML = `<iframe src="${videoUrl}" title="${title}" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen style="width:100%;height:100%;border-radius:var(--border-radius);"></iframe>`;
+        } else {
+            container.innerHTML = `
+                <div style="text-align:center;z-index:1;">
+                    <i class="ph ph-video-camera-slash" style="font-size:2.5rem;color:var(--muted);"></i>
+                    <p style="color:var(--muted);margin:0.5rem 0 0;font-size:0.85rem;">Video coming soon</p>
+                </div>`;
+        }
+    }
+
+    function loadModule(keyOrIndex) {
+        const idx = typeof keyOrIndex === 'number' ? keyOrIndex : KEYS.indexOf(keyOrIndex);
+        if (idx < 0 || idx >= KEYS.length) return;
+        current = idx;
+        const m = MODULES[KEYS[idx]];
+
+        document.getElementById('mod-title').textContent = m.title;
+        document.getElementById('mod-duration').textContent = m.duration;
+        document.getElementById('mod-body').textContent = m.body;
+        renderVideo(m.videoUrl, m.title);
+
+        // Sidebar
+        document.querySelectorAll('.module-list li').forEach((li, i) => li.classList.toggle('active', i === idx));
+
+        // Prev/Next
+        document.getElementById('btn-prev').disabled = idx === 0;
+        const nextBtn = document.getElementById('btn-next');
+        if (idx === KEYS.length - 1) {
+            nextBtn.innerHTML = '<i class="ph ph-trophy"></i> Course Complete!';
+            nextBtn.disabled = true;
+        } else {
+            nextBtn.innerHTML = 'Next Module <i class="ph ph-arrow-right"></i>';
+            nextBtn.disabled = false;
+        }
+
+        // Progress
+        const pct = Math.round(((idx + 1) / KEYS.length) * 100);
+        document.getElementById('prog-fill').style.width = pct + '%';
+        document.getElementById('prog-text').textContent = (idx + 1) + ' of ' + KEYS.length + ' completed';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function nextMod() { if (current < KEYS.length - 1) loadModule(current + 1); }
+    function prevMod() { if (current > 0) loadModule(current - 1); }
+
+        // Early preview bypass
+    if (new URLSearchParams(window.location.search).get('preview') === 'drmarwabadr1984') {
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('access-loader');
+            const page = document.getElementById('page-content');
+            if (loader) loader.style.display = 'none';
+            if (page) page.style.display = 'flex';
+            loadModule(0);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const saved = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', saved);
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+                // Skip if preview mode already showed content
+        const pg = document.getElementById('page-content');
+        if (pg && pg.style.display === 'flex') return;
+        
+        const hasAccess = await window.PaymentService.guardCoursePage('cbt-course');
+        if (!hasAccess) return;
+        document.getElementById('access-loader').style.display = 'none';
+        document.getElementById('page-content').style.display = 'flex';
+        const user = JSON.parse(localStorage.getItem('site_current_user') || 'null');
+        const name = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
+        document.getElementById('user-welcome').textContent = 'Welcome, ' + name;
+        loadModule(0);
+    });
+    </script>
+</body>
+</html>

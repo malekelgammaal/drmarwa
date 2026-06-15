@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tri-Therapy Bundle | Dr. Marwa Badr</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body{margin:0;}
+        /* Theme toggle icons */
+        [data-theme="dark"]  #theme-icon-light { display: none; }
+        [data-theme="dark"]  #theme-icon-dark  { display: inline; }
+        [data-theme="light"] #theme-icon-light { display: inline; }
+        [data-theme="light"] #theme-icon-dark  { display: none; }
+        .page-wrap{display:flex;min-height:100vh;padding-top:var(--nav-height);}
+        .sidebar{width:300px;flex-shrink:0;background:var(--alt-bg);border-right:1px solid var(--border);height:calc(100vh - var(--nav-height));position:sticky;top:var(--nav-height);overflow-y:auto;}
+        .sidebar-header{padding:1.25rem;border-bottom:1px solid var(--border);}
+        .sidebar-header h2{font-size:0.95rem;margin:0 0 0.25rem;}
+        .sidebar-header p{font-size:0.75rem;color:var(--muted);margin:0;}
+        .prog-bar{height:4px;background:var(--border);border-radius:2px;margin-top:0.75rem;overflow:hidden;}
+        .prog-fill{height:100%;background:var(--primary);border-radius:2px;transition:width 0.4s;width:7%;}
+        .prog-text{font-size:0.72rem;color:var(--muted);margin-top:0.35rem;}
+        .section-group{border-bottom:1px solid var(--border);}
+        .section-label{padding:0.65rem 1.25rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:0.4rem;}
+        .section-label i{color:var(--primary);}
+        .mod-btn{padding:0.65rem 1.25rem 0.65rem 2rem;display:flex;align-items:center;gap:0.6rem;cursor:pointer;font-size:0.855rem;transition:background 0.15s;border:none;border-left:3px solid transparent;background:none;width:100%;text-align:left;color:var(--text);}
+        .mod-btn:hover{background:rgba(20,184,166,0.06);}
+        .mod-btn.active{background:rgba(20,184,166,0.1);color:var(--primary);font-weight:600;border-left-color:var(--primary);}
+        .mod-btn i{font-size:0.95rem;color:var(--muted);flex-shrink:0;}
+        .mod-btn.active i{color:var(--primary);}
+        .main{flex:1;padding:2.5rem;max-width:860px;}
+        .badges{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+        .badge{display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.7rem;border-radius:20px;font-size:0.72rem;font-weight:600;}
+        .b-bundle{background:rgba(249,115,22,0.12);color:#fb923c;}
+        .b-dbt{background:rgba(139,92,246,0.12);color:#a78bfa;}
+        .b-cbt{background:rgba(59,130,246,0.12);color:#60a5fa;}
+        .b-act{background:rgba(20,184,166,0.12);color:var(--primary);}
+        .video-box{width:100%;aspect-ratio:16/9;background:#080d1a;border-radius:var(--border-radius);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:1.75rem;position:relative;overflow:hidden;}
+        .video-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(20,184,166,0.07) 0%,transparent 70%);}
+        .play-btn{width:60px;height:60px;border-radius:50%;background:var(--primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#0f172a;transition:transform 0.2s,box-shadow 0.2s;z-index:1;}
+        .play-btn:hover{transform:scale(1.1);box-shadow:0 0 28px rgba(20,184,166,0.5);}
+        .video-box p{color:var(--muted);font-size:0.82rem;margin-top:0.75rem;z-index:1;}
+        .meta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+        .chip{display:inline-flex;align-items:center;gap:0.4rem;background:var(--alt-bg);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.8rem;font-size:0.8rem;color:var(--muted);}
+        .chip i{color:var(--primary);}
+        .sec-h{font-size:1.05rem;margin:1.75rem 0 0.75rem;display:flex;align-items:center;gap:0.5rem;}
+        .sec-h i{color:var(--primary);}
+        .body-p{color:var(--muted);line-height:1.8;font-size:0.93rem;}
+        .mats{background:var(--alt-bg);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-top:1.5rem;}
+        .mats h3{font-size:0.9rem;margin:0 0 1rem;display:flex;align-items:center;gap:0.4rem;}
+        .mats h3 i{color:var(--primary);}
+        .mat-a{display:flex;align-items:center;gap:0.6rem;padding:0.55rem 0.75rem;border-radius:8px;text-decoration:none;color:var(--text);font-size:0.85rem;transition:background 0.15s;margin-bottom:0.2rem;}
+        .mat-a:hover{background:rgba(20,184,166,0.08);color:var(--primary);}
+        .mat-a i{color:var(--primary);}
+        .nav-btns{display:flex;justify-content:space-between;margin-top:2.5rem;gap:1rem;}
+        .nav-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.7rem 1.25rem;border-radius:8px;border:1px solid var(--border);background:var(--alt-bg);color:var(--text);cursor:pointer;font-size:0.875rem;font-family:inherit;transition:all 0.2s;}
+        .nav-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary);}
+        .nav-btn:disabled{opacity:0.4;cursor:not-allowed;}
+        .nav-btn.primary{background:var(--primary);color:#0f172a;border-color:var(--primary);font-weight:600;}
+        .nav-btn.primary:hover:not(:disabled){opacity:0.9;}
+        #loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;}
+        .spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @media(max-width:768px){.page-wrap{flex-direction:column;}.sidebar{width:100%;height:auto;position:static;}.main{padding:1.25rem;}}
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="my-courses.html" class="logo" style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;"><i class="ph ph-arrow-left"></i> My Courses</a>
+        <div style="display:flex;align-items:center;gap:1rem;">
+            <span id="user-name" style="font-size:0.82rem;color:var(--muted);"></span>
+            <button id="theme-toggle" aria-label="Toggle Theme"><i class="ph ph-sun" id="theme-icon-light"></i><i class="ph ph-moon" id="theme-icon-dark"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- Loader -->
+<div id="loader">
+    <div class="spinner"></div>
+    <p style="color:var(--muted);font-size:0.9rem;">Verifying access...</p>
+</div>
+
+<!-- Page (hidden until access confirmed) -->
+<div class="page-wrap" id="page" style="display:none;">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;"><i class="ph ph-stack" style="color:var(--primary);font-size:1.1rem;"></i><h2>Tri-Therapy Bundle</h2></div>
+            <p>3 Therapy Approaches · 15 Modules</p>
+            <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+            <p class="prog-text" id="prog-text">1 of 15 modules</p>
+        </div>
+
+        <div class="section-group">
+            <div class="section-label"><i class="ph ph-brain"></i> Part 1: DBT</div>
+            <button class="mod-btn active" id="btn-dbt-1" onclick="go('dbt-1')"><i class="ph ph-play-circle"></i> Introduction to DBT</button>
+            <button class="mod-btn" id="btn-dbt-2" onclick="go('dbt-2')"><i class="ph ph-play-circle"></i> Core Mindfulness Skills</button>
+            <button class="mod-btn" id="btn-dbt-3" onclick="go('dbt-3')"><i class="ph ph-play-circle"></i> Distress Tolerance</button>
+            <button class="mod-btn" id="btn-dbt-4" onclick="go('dbt-4')"><i class="ph ph-play-circle"></i> Emotion Regulation</button>
+            <button class="mod-btn" id="btn-dbt-5" onclick="go('dbt-5')"><i class="ph ph-certificate"></i> DBT Assessment</button>
+        </div>
+
+        <div class="section-group">
+            <div class="section-label"><i class="ph ph-lightbulb"></i> Part 2: CBT</div>
+            <button class="mod-btn" id="btn-cbt-1" onclick="go('cbt-1')"><i class="ph ph-play-circle"></i> Introduction to CBT</button>
+            <button class="mod-btn" id="btn-cbt-2" onclick="go('cbt-2')"><i class="ph ph-play-circle"></i> Cognitive Distortions</button>
+            <button class="mod-btn" id="btn-cbt-3" onclick="go('cbt-3')"><i class="ph ph-play-circle"></i> Challenging Thoughts</button>
+            <button class="mod-btn" id="btn-cbt-4" onclick="go('cbt-4')"><i class="ph ph-play-circle"></i> Behavioral Activation</button>
+            <button class="mod-btn" id="btn-cbt-5" onclick="go('cbt-5')"><i class="ph ph-certificate"></i> CBT Assessment</button>
+        </div>
+
+        <div class="section-group">
+            <div class="section-label"><i class="ph ph-leaf"></i> Part 3: ACT</div>
+            <button class="mod-btn" id="btn-act-1" onclick="go('act-1')"><i class="ph ph-play-circle"></i> Introduction to ACT</button>
+            <button class="mod-btn" id="btn-act-2" onclick="go('act-2')"><i class="ph ph-play-circle"></i> Psychological Flexibility</button>
+            <button class="mod-btn" id="btn-act-3" onclick="go('act-3')"><i class="ph ph-play-circle"></i> Values Clarification</button>
+            <button class="mod-btn" id="btn-act-4" onclick="go('act-4')"><i class="ph ph-play-circle"></i> Committed Action</button>
+            <button class="mod-btn" id="btn-act-5" onclick="go('act-5')"><i class="ph ph-trophy"></i> Final Certification</button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="badges">
+            <span class="badge b-bundle"><i class="ph ph-stack"></i> Bundle</span>
+            <span class="badge b-dbt"><i class="ph ph-brain"></i> DBT</span>
+            <span class="badge b-cbt"><i class="ph ph-lightbulb"></i> CBT</span>
+            <span class="badge b-act"><i class="ph ph-leaf"></i> ACT</span>
+        </div>
+        <h1 id="mod-title" style="margin:0.4rem 0 1rem;font-size:1.55rem;">Introduction to Dialectical Behavior Therapy</h1>
+        <div class="meta">
+            <span class="chip"><i class="ph ph-clock"></i> <span id="mod-dur">45 min</span></span>
+            <span class="chip"><i class="ph ph-translate"></i> Arabic</span>
+            <span class="chip"><i class="ph ph-certificate"></i> Certificate</span>
+        </div>
+                    <div class="video-box" id="video-container">
+                <!-- Video loaded dynamically by loadModule() -->
+                <p style="color:var(--muted);font-size:0.85rem;z-index:1;">Loading video...</p>
+            </div>
+        <h2 class="sec-h"><i class="ph ph-book-open"></i> About This Module</h2>
+        <p class="body-p" id="mod-body">Welcome to the first part of the Tri-Therapy Bundle. We begin with Dialectical Behavior Therapy — a comprehensive evidence-based approach that balances acceptance and change. You will master the core DBT philosophy and its clinical applications.</p>
+        <div class="mats">
+            <h3><i class="ph ph-folder-open"></i> Downloadable Materials</h3>
+            <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> DBT Module 1 Workbook.pdf</a>
+            <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> CBT Cognitive Distortions Checklist.pdf</a>
+            <a href="#" class="mat-a"><i class="ph ph-file-text"></i> ACT Values Clarification Exercise.pdf</a>
+            <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> Bundle Full Study Guide.pdf</a>
+        </div>
+        <div class="nav-btns">
+            <button class="nav-btn" id="btn-prev" onclick="prev()"><i class="ph ph-arrow-left"></i> Previous</button>
+            <button class="nav-btn primary" id="btn-next" onclick="next()">Next Module <i class="ph ph-arrow-right"></i></button>
+        </div>
+    </main>
+</div>
+
+<!-- ALL scripts at the very bottom — all DOM elements exist here -->
+<script src="js/payment-service.js"></script>
+<script>
+const MODS = {
+    'dbt-1':{t:'Introduction to Dialectical Behavior Therapy',d:'45 min',b:'Welcome to the Tri-Therapy Bundle. We begin with DBT — a comprehensive approach balancing acceptance and change, originally developed for BPD and now widely used across clinical presentations.'},
+    'dbt-2':{t:'Core Mindfulness Skills in DBT',d:'38 min',b:'Mindfulness is the backbone of DBT. Master the "What" and "How" skills — Observe, Describe, Participate — and the non-judgmental stance essential for clinical practice.'},
+    'dbt-3':{t:'Distress Tolerance Techniques',d:'42 min',b:'Distress tolerance helps clients survive crisis without making things worse. We cover TIPP, ACCEPTS, IMPROVE and pros/cons analysis with real clinical scenarios.'},
+    'dbt-4':{t:'Emotion Regulation in DBT',d:'50 min',b:'Identify, label, and reduce vulnerability to intense emotions. This module covers the ABC PLEASE model, checking the facts, and opposite action in clinical practice.'},
+    'dbt-5':{t:'DBT Assessment & Certification',d:'20 min',b:'Complete the DBT section assessment. A score of 70%+ earns your DBT Certificate of Completion.'},
+    'cbt-1':{t:'Introduction to Cognitive Behavioral Therapy',d:'40 min',b:'CBT is one of the most evidence-based therapies available. This module covers the cognitive model, session structure, and the history of CBT from Beck to today.'},
+    'cbt-2':{t:'Identifying Cognitive Distortions',d:'45 min',b:'Learn the 15 most common cognitive distortions. Practice identifying them in client transcripts using Socratic questioning and thought records.'},
+    'cbt-3':{t:'Challenging Negative Thoughts',d:'48 min',b:'Cognitive restructuring is the heart of CBT. Walk through thought records, evidence examination, and generating balanced alternative thoughts step by step.'},
+    'cbt-4':{t:'Behavioral Activation Strategies',d:'38 min',b:'Break the depression-inactivity cycle. Learn activity scheduling, mastery and pleasure ratings, and graded task assignment with practical examples.'},
+    'cbt-5':{t:'CBT Assessment & Certification',d:'20 min',b:'Complete the CBT section assessment. Includes a comparative analysis between CBT, DBT, and ACT approaches.'},
+    'act-1':{t:'Introduction to Acceptance & Commitment Therapy',d:'42 min',b:'ACT is a third-wave behavioral therapy grounded in RFT. Explore the hexaflex model and its six core processes: acceptance, defusion, present moment, self-as-context, values, and committed action.'},
+    'act-2':{t:'Psychological Flexibility in ACT',d:'40 min',b:'Psychological flexibility is the core goal of ACT. Learn how to cultivate it in clients through acceptance and defusion exercises, creative hopelessness, and the control paradox.'},
+    'act-3':{t:'Values Clarification',d:'35 min',b:'Values are the direction, not the destination. Master the bulls-eye technique, the tombstone exercise, and how to differentiate genuine values from social rules.'},
+    'act-4':{t:'Committed Action & Behavior Change',d:'40 min',b:'Build SMART goals aligned to client values. Learn to identify obstacles, practice willingness, and develop larger patterns of effective behavior.'},
+    'act-5':{t:'Final Bundle Certification',d:'25 min',b:'Comprehensive final assessment covering DBT, CBT, and ACT. Pass with 70%+ to earn your Tri-Therapy Bundle Certificate from Dr. Marwa Badr platform.'},
+};
+const KEYS = Object.keys(MODS);
+let cur = 0;
+
+function go(key) {
+    const idx = KEYS.indexOf(key);
+    if (idx < 0) return;
+    cur = idx;
+    const m = MODS[key];
+    document.getElementById('mod-title').textContent = m.t;
+    document.getElementById('mod-dur').textContent   = m.d;
+    document.getElementById('mod-body').textContent  = m.b;
+    document.getElementById('mod-vid').textContent   = m.t + ' — Click to play';
+    KEYS.forEach(k => {
+        const btn = document.getElementById('btn-' + k);
+        if (btn) btn.classList.toggle('active', k === key);
+    });
+    const pPct = Math.round(((idx + 1) / KEYS.length) * 100);
+    document.getElementById('prog').style.width = pPct + '%';
+    document.getElementById('prog-text').textContent = (idx+1) + ' of ' + KEYS.length + ' modules';
+    document.getElementById('btn-prev').disabled = idx === 0;
+    const nb = document.getElementById('btn-next');
+    nb.disabled = idx === KEYS.length - 1;
+    nb.innerHTML = idx === KEYS.length - 1 ? '<i class="ph ph-trophy"></i> Complete!' : 'Next Module <i class="ph ph-arrow-right"></i>';
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+function next() { if (cur < KEYS.length-1) go(KEYS[cur+1]); }
+function prev() { if (cur > 0) go(KEYS[cur-1]); }
+
+// ── Theme ──
+const theme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', theme);
+document.getElementById('theme-toggle').addEventListener('click', () => {
+    const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', n);
+    localStorage.setItem('theme', n);
+});
+
+// ── User name ──
+const u = JSON.parse(localStorage.getItem('site_current_user') || 'null');
+if (u) document.getElementById('user-name').textContent = 'Welcome, ' + (u.user_metadata?.name || u.email?.split('@')[0] || 'Student');
+
+// ── Access check — ALL elements exist at this point ──
+function showPage() {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('page').style.display   = 'flex';
+    go('dbt-1');
+}
+
+// Check preview param — runs after DOM is fully loaded
+const isPreview = new URLSearchParams(window.location.search).get('preview') === 'drmarwabadr1984';
+if (isPreview) {
+    showPage();
+    // Add badge
+    const badge = document.createElement('div');
+    badge.textContent = '👁 Admin Preview';
+    badge.style.cssText = 'position:fixed;bottom:1rem;right:1rem;background:rgba(249,115,22,0.2);border:1px solid rgba(249,115,22,0.5);color:#fb923c;padding:0.35rem 0.85rem;border-radius:20px;font-size:0.75rem;font-weight:600;z-index:9999;';
+    document.body.appendChild(badge);
+} else {
+    // Normal: verify purchase
+    window.PaymentService.guardCoursePage('tri-therapy-bundle').then(ok => {
+        if (ok) showPage();
+    });
+}
+</script>
+</body>
+</html>

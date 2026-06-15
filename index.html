@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Marwa Badr Ahmed | أخصائية الصحة النفسية والعلاج النفسي</title>
+    <meta name="description"
+        content="Helping individuals understand themselves, build emotional resilience, and create healthier relationships through evidence-based psychological practices. د. مروة بدر أحمد - أخصائية صحة نفسية ومعالج سلوكي.">
+    <meta name="keywords" content="psychological counseling, mental health specialist, therapy, CBT, DBT, ACT, دكتورة نفسية, علاج نفسي, صحة نفسية, دكتورة مروة بدر, علاج سلوكي معرفي, علاج الصدمات, استشارات نفسية">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Dr. Marwa Badr Ahmed | Mental Health Specialist">
+    <meta property="og:description" content="Helping individuals understand themselves and build emotional resilience through evidence-based psychological practices.">
+    <meta property="og:image" content="images/profile-pic-main.png">
+
+    <!-- Google Analytics Consent Mode -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      // Default consent to denied
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied'
+      });
+    </script>
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-07XVN01PR3"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'G-07XVN01PR3');
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons for elegant minimalist icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo" style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                <img src="images/profile-pic-nav.png" alt="Dr. Marwa Logo" class="logo-img">
+                Dr. Marwa
+            </a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#expertise">Expertise</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#booking" class="btn-primary-small">Book Session</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="nav-group-middle" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="auth-buttons" id="auth-buttons">
+                        <button class="btn-outline auth-btn-nav" id="login-btn">Log In</button>
+                    </div>
+                    <div class="user-profile" id="user-profile"
+                        style="display: none; align-items: center; gap: 0.5rem; font-weight: 500;">
+                        <i class="ph ph-user-circle" style="font-size: 1.5rem; color: var(--primary);"></i>
+                        <span id="user-name-display"></span>
+                        <a href="my-courses.html" id="my-courses-nav-btn"
+                            style="display:none; background:rgba(20,184,166,0.12); color:var(--primary); border:1px solid var(--primary); padding:0.25rem 0.65rem; border-radius:20px; font-size:0.78rem; font-weight:600; text-decoration:none; white-space:nowrap;">
+                            <i class="ph ph-books"></i> My Courses
+                        </a>
+                        <button id="logout-btn"
+                            style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; text-decoration: underline;">Logout</button>
+                    </div>
+                </div>
+                <div class="nav-group-right" style="display: flex; align-items: center; gap: 0.5rem;">
+
+                    <button id="theme-toggle" aria-label="Toggle Theme">
+                        <i class="ph ph-sun" id="theme-icon-light"></i>
+                        <i class="ph ph-moon" id="theme-icon-dark"></i>
+                    </button>
+                    <div class="hamburger" id="mobile-menu-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <div style="padding: 0.5rem 0 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;">
+                <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0 1.25rem;margin:0 0 0.5rem;">Navigation</p>
+                <a href="#about" class="mobile-link"><i class="ph ph-user"></i> About</a>
+                <a href="#expertise" class="mobile-link"><i class="ph ph-brain"></i> Expertise</a>
+                <a href="#courses" class="mobile-link"><i class="ph ph-graduation-cap"></i> Courses</a>
+                <a href="blog.html" class="mobile-link"><i class="ph ph-article"></i> Blog</a>
+                <a href="#booking" class="mobile-link"><i class="ph ph-calendar"></i> Book Session</a>
+                <a href="#contact" class="mobile-link"><i class="ph ph-envelope"></i> Contact</a>
+            </div>
+            <div style="padding: 0.5rem 0 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;">
+                <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0 1.25rem;margin:0 0 0.5rem;">Account</p>
+                <a href="my-courses.html" class="mobile-link" id="mobile-my-courses" style="display:none;"><i class="ph ph-books"></i> My Courses</a>
+                <a href="#" class="mobile-link" id="mobile-login-btn" onclick="document.getElementById('auth-modal').classList.add('active'); document.getElementById('mobile-menu').classList.remove('open'); document.getElementById('mobile-menu-btn').classList.remove('active');"><i class="ph ph-sign-in"></i> Log In / Sign Up</a>
+            </div>
+            <div style="padding: 0.5rem 0;">
+                <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0 1.25rem;margin:0 0 0.5rem;">Legal</p>
+                <a href="terms.html" class="mobile-link"><i class="ph ph-file-text"></i> Terms & Conditions</a>
+                <a href="refund-policy.html" class="mobile-link"><i class="ph ph-arrow-counter-clockwise"></i> Refund Policy</a>
+                <a href="privacy-policy.html" class="mobile-link"><i class="ph ph-shield"></i> Privacy Policy</a>
+            </div>
+        </div>
+    </nav>
+
+    <main style="position: relative; overflow-x: hidden;">
+        <style>
+            @keyframes floatAnim {
+                0% { transform: translateY(0) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(5deg); }
+                100% { transform: translateY(0) rotate(0deg); }
+            }
+        </style>
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero section-padding">
+            <div class="container hero-content animate-on-scroll fade-up">
+                <div class="hero-text">
+                    <span class="badge">Mental Health Specialist</span>
+                    <h1 id="hero-title">Dr. Marwa Badr Ahmed</h1>
+                    <h2 class="subtitle" id="hero-subtitle">Family, Marital & Educational Counselor | Psychological Trainer</h2>
+                    <p class="intro" id="hero-content">
+                        Helping individuals understand themselves, build emotional resilience, and create healthier
+                        relationships through evidence-based psychological practices.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#booking" class="btn-primary">Book Free Consultation</a>
+                        <a href="#courses" class="btn-secondary">Explore Courses</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="blob-shape"></div>
+                    <div class="profile-image-container animate-profile">
+                        <img src="images/profile-pic-main.png" alt="Dr. Marwa Badr Ahmed" id="profile-img" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; z-index: 2; position: relative;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about section-padding alt-bg">
+            <div class="container animate-on-scroll fade-up">
+                <div class="section-header">
+                    <h2 id="about-title">About Me</h2>
+                    <div class="divider"></div>
+                </div>
+                <div class="about-grid">
+                    <div class="about-text" id="about-content">
+                        <p>I am a Mental Health Specialist with several years of experience in psychological counseling,
+                            family and marital guidance, and self-development training. My work is rooted in a deep
+                            belief that awareness is the first step toward healing and transformation.</p>
+                        <p>I specialize in <strong>Cognitive Behavioral Therapy (CBT)</strong>, <strong>Dialectical
+                                Behavior Therapy (DBT)</strong>, and <strong>Acceptance & Commitment Therapy
+                                (ACT)</strong>, using structured, evidence-based approaches to help individuals regulate
+                            emotions, overcome anxiety, and rebuild their sense of identity.</p>
+                        <p>Through both one-on-one sessions and group programs, I aim to create meaningful, lasting
+                            impact in people’s lives by helping them develop clarity, emotional strength, and healthier
+                            behavioral patterns.</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-card">
+                            <i class="ph ph-users"></i>
+                            <h4>Family Therapy</h4>
+                            <p>Building stronger connections</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="ph ph-brain"></i>
+                            <h4>CBT & DBT & ACT</h4>
+                            <p>Evidence-based approaches</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="ph ph-chalkboard-teacher"></i>
+                            <h4>Training</h4>
+                            <p>Empowering self-development</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expertise (Skills, Services, Experience) -->
+        <section id="expertise" class="expertise section-padding">
+            <div class="container animate-on-scroll fade-up">
+                <div class="section-header center">
+                    <h2 id="expertise-title">My Expertise</h2>
+                    <div class="divider mx-auto"></div>
+                </div>
+
+                <div class="expertise-tabs">
+                    <button class="tab-btn active" data-tab="skills">Skills</button>
+                    <button class="tab-btn" data-tab="services">Services</button>
+                    <button class="tab-btn" data-tab="experience">Experience</button>
+                </div>
+
+                <div id="expertise-content">
+                    <!-- Skills Tab -->
+                    <div class="tab-content active" id="tab-skills">
+                        <div class="grid-3">
+                            <div class="skill-card">
+                                <div class="icon-wrapper"><i class="ph ph-puzzle-piece"></i></div>
+                                <h3>Psychological Techniques</h3>
+                                <ul>
+                                    <li>CBT, DBT, ACT</li>
+                                    <li>Trauma Counseling</li>
+                                    <li>Emotional Regulation</li>
+                                </ul>
+                            </div>
+                            <div class="skill-card">
+                                <div class="icon-wrapper"><i class="ph ph-users-three"></i></div>
+                                <h3>Counseling Areas</h3>
+                                <ul>
+                                    <li>Family Counseling</li>
+                                    <li>Marital Therapy</li>
+                                    <li>Adolescent Counseling</li>
+                                    <li>Relationship Issues</li>
+                                </ul>
+                            </div>
+                            <div class="skill-card">
+                                <div class="icon-wrapper"><i class="ph ph-clipboard-text"></i></div>
+                                <h3>Professional Skills</h3>
+                                <ul>
+                                    <li>Psychological Assessment</li>
+                                    <li>Case Formulation</li>
+                                    <li>Crisis Intervention</li>
+                                </ul>
+                            </div>
+                            <div class="skill-card">
+                                <div class="icon-wrapper"><i class="ph ph-presentation-chart"></i></div>
+                                <h3>Training & Development</h3>
+                                <ul>
+                                    <li>Workshop Design</li>
+                                    <li>Public Speaking</li>
+                                    <li>Program Development & Coaching</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Tab -->
+                    <div class="tab-content" id="tab-services">
+                        <div class="grid-2">
+                            <div class="service-card">
+                                <i class="ph ph-user"></i>
+                                <h3>Clinical Supervision</h3>
+                                <p>One-on-one sessions focused on enhancing your clinical skills and case formulation.</p>
+                            </div>
+                            <div class="service-card">
+                                <i class="ph ph-house-line"></i>
+                                <h3>Advanced Therapy Training</h3>
+                                <p>Mastering evidence-based therapies for complex clinical and family dynamics.</p>
+                            </div>
+                            <div class="service-card">
+                                <i class="ph ph-books"></i>
+                                <h3>Professional Workshops</h3>
+                                <p>Structured group programs designed to certify psychologists in specific interventions.</p>
+                            </div>
+                            <div class="service-card">
+                                <i class="ph ph-heartbeat"></i>
+                                <h3>Therapist Self-Care & Resilience</h3>
+                                <p>Developing clarity and emotional strength to navigate the challenges of the profession.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Tab -->
+                    <div class="tab-content" id="tab-experience">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="date">2026 – Present</span>
+                                    <h3>Psychological Trainer</h3>
+                                    <h4>Nafsiati Center</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="date">2025 – Present</span>
+                                    <h3>Psychological Counselor</h3>
+                                    <h4>Social Prime Center</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="date">2024 – Present</span>
+                                    <h3>Freelance Online Counselor</h3>
+                                    <h4>Independent Practice</h4>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <span class="date">2021 – 2022</span>
+                                    <h3>Social Counselor</h3>
+                                    <h4>EG School</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        </section>
+
+        <!-- Courses Section -->
+        <section id="courses" class="courses section-padding alt-bg">
+            <div class="container animate-on-scroll fade-up">
+                <div class="section-header">
+                    <h2 id="courses-title">Online Courses</h2>
+                    <div class="divider"></div>
+                    <p class="section-subtitle" id="courses-subtitle">Unlock your potential with specialized digital courses.</p>
+                </div>
+
+                <div class="courses-grid" id="home-courses-container">
+                    <div class="loading-state text-center" style="grid-column: 1 / -1; padding: 4rem;">
+                        <i class="ph ph-spinner ph-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                        <p class="medium" style="margin-top: 1rem; color: var(--muted);">Loading Courses...</p>
+                    </div>
+                </div>
+
+                <script>
+                // ── Static fallback — renders immediately, replaced by API if available ──
+                (function() {
+                    const STATIC_COURSES = [
+                        { id:1, title:'Tri-Therapy Bundle<br><small class="arabic-text medium">(باقة العلاج الثلاثي)</small>', price:349.99, original_price:425.00, discount_badge:'Save 18%', image_url:'images/course-tri-therapy.png', is_bundle:true, duration:'15 Days', excerpt:'Complete mastery of evidence-based therapies. Includes full access to DBT, CBT, and ACT clinical training.', slug:'tri-therapy-bundle' },
+                        { id:2, title:'CBT Course<br><small class="arabic-text medium">(العلاج المعرفي السلوكي)</small>', price:149.99, original_price:200.00, discount_badge:'Save 25%', image_url:'images/course-cbt.png', is_bundle:false, duration:'5 Days', excerpt:'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns.', slug:'cbt-course' },
+                        { id:3, title:'DBT Course<br><small class="arabic-text medium">(العلاج الجدلي السلوكي)</small>', price:174.99, original_price:225.00, discount_badge:'Save 22%', image_url:'images/course-dbt.png', is_bundle:false, duration:'5 Days', excerpt:'Master Dialectical Behavior Therapy skills for mindfulness and emotional regulation.', slug:'dbt-course' },
+                        { id:4, title:'Personality Disorders Course<br><small class="arabic-text medium">(اضطرابات الشخصية)</small>', price:174.99, original_price:225.00, discount_badge:'Save 22%', image_url:'images/course-personality-disorders.png', is_bundle:false, duration:'5 Days', excerpt:'An in-depth understanding of personality disorders and effective coping mechanisms.', slug:'personality-disorders-course' },
+                        { id:5, title:'ACT Course<br><small class="arabic-text medium">(العلاج بالقبول والالتزام)</small>', price:149.99, original_price:200.00, discount_badge:'Save 25%', image_url:'images/course-act.png', is_bundle:false, duration:'5 Days', excerpt:'Acceptance & Commitment Therapy principles for living a value-driven life.', slug:'act-course' },
+                        { id:6, title:'Healing Journey Program<br><small class="arabic-text medium">(رحلة تعافي)</small>', price:99.99, original_price:150.00, discount_badge:'Save 33%', image_url:'images/course-healing-journey.png', is_bundle:false, duration:'2 Days', excerpt:'A comprehensive program to help you process trauma and build emotional resilience.', slug:'healing-journey-program' }
+                    ];
+                    window.STATIC_COURSES = STATIC_COURSES;
+
+                    function buildCard(course) {
+                        const card = document.createElement('div');
+                        card.className = 'course-card' + (course.is_bundle ? ' bundle-card' : '');
+                        card.setAttribute('data-course-id', course.id);
+                        card.setAttribute('data-price', course.price);
+                        card.setAttribute('data-course-slug', course.slug || '');
+                        if (course.is_bundle) {
+                            card.style.cssText = 'border:2px solid var(--primary);transform:scale(1.02);position:relative;';
+                        }
+                        card.innerHTML = `
+                            <div class="course-thumbnail" ${course.is_bundle ? 'style="overflow:hidden;border-radius:12px 12px 0 0;"' : ''}>
+                                <img src="${course.image_url}" alt="${course.title.replace(/<[^>]*>/g,'')}" style="width:100%;height:100%;object-fit:cover;">
+                            </div>
+                            <div class="course-info">
+                                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
+                                    <h3>${course.title}</h3>
+                                    <div style="display:flex;flex-direction:column;align-items:flex-end;">
+                                        ${course.original_price ? `<span class="strikethrough-price" style="text-decoration:line-through;color:var(--muted);font-size:0.9rem;">$${course.original_price}</span>` : ''}
+                                        <h3 style="color:var(--primary);white-space:nowrap;margin-top:0;">$${course.price}</h3>
+                                        ${course.discount_badge ? `<span style="background:#ef4444;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:bold;margin-top:4px;white-space:nowrap;">${course.discount_badge}</span>` : ''}
+                                    </div>
+                                </div>
+                                <p>${course.excerpt}<br><strong>Duration:</strong> ${course.duration}</p>
+                                <button class="${course.is_bundle ? 'btn-primary' : 'btn-outline'} subscribe-btn" ${course.is_bundle ? 'style="width:100%;margin-top:1rem;"' : ''}>
+                                    ${course.is_bundle ? 'Start Your Transformation' : 'Subscribe to Access'}
+                                </button>
+                            </div>`;
+                        return card;
+                    }
+
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const container = document.getElementById('home-courses-container');
+                        if (!container) return;
+                        // Render static cards immediately
+                        container.innerHTML = '';
+                        STATIC_COURSES.forEach(c => container.appendChild(buildCard(c)));
+                    });
+                })();
+                </script>
+            </div>
+        </section>
+
+
+
+        <!-- Pricing Comparison Section -->
+        <section id="pricing" class="pricing section-padding alt-bg">
+            <div class="container animate-on-scroll fade-up">
+                <div class="section-header center">
+                    <h2>Pricing Options</h2>
+                    <div class="divider mx-auto"></div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--border);">
+                        <thead>
+                            <tr style="background: rgba(20, 184, 166, 0.1);">
+                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border);">Features</th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border);">Individual Courses<br><small style="font-weight: normal; color: var(--muted);">(from $99.99)</small></th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); background: var(--primary); color: white;">Tri-Therapy Bundle<br><small style="font-weight: normal; color: rgba(255,255,255,0.8);">($349.99)</small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Specific Therapy Focus</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Comprehensive Framework</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--muted);">-</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Lifetime Access</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Value / Savings</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--muted);">Standard</td>
+                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: #ef4444; font-weight: bold;">Save 18%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="testimonials section-padding">
+            <div class="container animate-on-scroll fade-up">
+                <div class="section-header center">
+                    <h2>Success Stories</h2>
+                    <div class="divider mx-auto"></div>
+                </div>
+                <div class="grid-3" id="home-testimonials-container">
+                    <div class="loading-state text-center" style="grid-column: 1 / -1; padding: 4rem;">
+                        <i class="ph ph-spinner ph-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                        <p class="medium" style="margin-top: 1rem; color: var(--muted);">Loading Testimonials...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Section -->
+        <section id="booking" class="booking section-padding">
+            <div class="container animate-on-scroll fade-up">
+                <div class="booking-wrapper glass-panel">
+                    <div class="booking-text">
+                        <h2>Book a Consultation</h2>
+                        <p>Take the next step in your professional development. Schedule a free consultation to discuss clinical supervision or bespoke training programs.</p>
+                        <a href="https://cal.com/dr-marwa-badr/client-appointment" target="_blank"
+                            rel="noopener noreferrer" class="btn-primary external-booking-btn">Book on Cal.com</a>
+                    </div>
+                    <div class="booking-image" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; padding: 1rem;">
+                        <img src="images/book-now-v4.png" alt="Book a Session" class="booking-poster">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog/Articles Section -->
+        <section id="blog" class="blog section-padding">
+            <div class="container animate-on-scroll fade-up">
+                <div class="section-header center">
+                    <h2>Latest Articles</h2>
+                    <div class="divider mx-auto"></div>
+                    <p class="section-subtitle arabic-text medium">مقالات للصحة النفسية وتطوير الذات</p>
+                </div>
+                <div class="grid-3" id="blog-posts-container">
+                    <div class="loading-state text-center" style="grid-column: 1 / -1; padding: 4rem;">
+                        <i class="ph ph-spinner ph-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                        <p class="medium" style="margin-top: 1rem; color: var(--muted);">Loading Posts...</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="blog.html" class="btn-primary arabic-text medium">تصفح المدونة كاملة</a>
+                </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact section-padding alt-bg">
+            <div class="container animate-on-scroll fade-up">
+                <div class="section-header center">
+                    <h2 id="contact-title">Get In Touch</h2>
+                    <div class="divider mx-auto"></div>
+                    <p class="section-subtitle" id="contact-subtitle">Have an inquiry or want to send a message? Reach out below.</p>
+                </div>
+                <div class="contact-wrapper glass-card" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+                    <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+                        <!-- Web3Forms Access Key: Replace this with your actual key from web3forms.com -->
+                        <input type="hidden" name="access_key" value=9d8affa7-79dd-41e4-a9d6-0587948e964f>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <input type="text" name="name" placeholder="Your Name" required
+                                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--bg); color: var(--text);">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <input type="email" name="email" placeholder="Your Email" required
+                                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--bg); color: var(--text);">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <textarea name="message" rows="5" placeholder="Your Message or Inquiry" required
+                                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--bg); color: var(--text); resize: vertical;"></textarea>
+                        </div>
+                        <!-- Honeypot Spam Protection -->
+                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                        <button type="submit" class="btn-primary" style="width: 100%">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+<footer class="footer">
+        <div class="container">
+            <div class="footer-inline-grid">
+                <div>
+                    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;">
+                        <img src="images/profile-pic-nav.png" alt="Dr. Marwa" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                        <span style="font-weight:700;font-size:1.05rem;">Dr. Marwa Badr</span>
+                    </div>
+                    <p style="color:var(--muted);font-size:0.875rem;line-height:1.7;margin:0 0 1.25rem;max-width:260px;">Mental Health Specialist and Clinical Trainer. Empowering mental health professionals across the Middle East.</p>
+                    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+                        <a href="https://www.facebook.com/share/1QuzdWAdoe/" target="_blank" rel="noopener noreferrer" class="footer-social-btn"><i class="ph ph-facebook-logo"></i></a>
+                        <a href="https://www.instagram.com/dr_marwa_badr?igsh=YzB6cnplZnkzeTgx" target="_blank" rel="noopener noreferrer" class="footer-social-btn"><i class="ph ph-instagram-logo"></i></a>
+                        <a href="https://www.tiktok.com/@dr_marwa_badr" target="_blank" rel="noopener noreferrer" class="footer-social-btn"><i class="ph ph-tiktok-logo"></i></a>
+                        <a href="https://www.youtube.com/channel/UCI6KQEvAGweVn11Ozufwd0g" target="_blank" rel="noopener noreferrer" class="footer-social-btn"><i class="ph ph-youtube-logo"></i></a>
+                        <a href="https://www.linkedin.com/in/dr-marwa-badr" target="_blank" rel="noopener noreferrer" class="footer-social-btn"><i class="ph ph-linkedin-logo"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin:0 0 1rem;">Platform</h4>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.6rem;">
+                        <li><a href="#about" class="footer-link">About</a></li>
+                        <li><a href="#expertise" class="footer-link">Expertise</a></li>
+                        <li><a href="#courses" class="footer-link">Courses</a></li>
+                        <li><a href="blog.html" class="footer-link">Blog</a></li>
+                        <li><a href="#booking" class="footer-link">Book Session</a></li>
+                        <li><a href="my-courses.html" class="footer-link">My Courses</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin:0 0 1rem;">Contact</h4>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.75rem;">
+                        <li style="display:flex;align-items:center;gap:0.5rem;"><i class="ph ph-whatsapp-logo" style="color:var(--primary);"></i><a href="https://wa.me/96560695570" target="_blank" class="footer-link">WhatsApp</a></li>
+                        <li style="display:flex;align-items:center;gap:0.5rem;"><i class="ph ph-envelope" style="color:var(--primary);"></i><a href="#contact" class="footer-link">Send Message</a></li>
+                        <li style="display:flex;align-items:center;gap:0.5rem;"><i class="ph ph-calendar-check" style="color:var(--primary);"></i><a href="#booking" class="footer-link">Book a Session</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin:0 0 1rem;">Legal</h4>
+                    <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.6rem;">
+                        <li><a href="terms.html" class="footer-link">Terms &amp; Conditions</a></li>
+                        <li><a href="refund-policy.html" class="footer-link">Refund Policy</a></li>
+                        <li><a href="privacy-policy.html" class="footer-link">Privacy Policy</a></li>
+                    </ul>
+                    <div style="margin-top:1.5rem;padding:0.75rem;background:rgba(20,184,166,0.06);border:1px solid rgba(20,184,166,0.2);border-radius:8px;">
+                        <p style="font-size:0.72rem;color:var(--muted);margin:0;line-height:1.5;"><i class="ph ph-shield-check" style="color:var(--primary);"></i> Payments secured - SSL Encrypted</p>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.75rem 1.5rem;padding:1.5rem 0;text-align:center;">
+                <p style="margin:0;font-size:0.8rem;color:var(--muted);">&copy; 2026 Dr. Marwa Badr Ahmed. All rights reserved.</p>
+                <div style="display:flex;gap:1.5rem;">
+                    <a href="terms.html" class="footer-link" style="font-size:0.78rem;">Terms</a>
+                    <a href="refund-policy.html" class="footer-link" style="font-size:0.78rem;">Refund</a>
+                    <a href="privacy-policy.html" class="footer-link" style="font-size:0.78rem;">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <button class="close-modal"><i class="ph ph-x"></i></button>
+
+            <!-- ── View: Login ── -->
+            <div id="auth-view-login">
+                <div class="auth-tabs" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                    <button class="tab-btn active" id="tab-login"
+                        style="flex:1;padding:0.5rem;background:none;border:none;color:var(--primary);font-weight:bold;border-bottom:2px solid var(--primary);cursor:pointer;">Log In</button>
+                    <button class="tab-btn" id="tab-signup"
+                        style="flex:1;padding:0.5rem;background:none;border:none;color:var(--muted);font-weight:bold;border-bottom:2px solid transparent;cursor:pointer;">Sign Up</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-panel">
+                    <div id="login-message-area"></div>
+                    <form class="subscription-form" id="login-form" onsubmit="event.preventDefault(); window.loginUser();">
+                        <input type="email" id="login-email" placeholder="Email address" required>
+                        <div style="position:relative;">
+                            <input type="password" id="login-password" placeholder="Password" required style="padding-right:3rem;">
+                            <button type="button" onclick="toggleModalPw('login-password',this)" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;"><i class="ph ph-eye"></i></button>
+                        </div>
+                        <button type="button" id="forgot-pw-link"
+                            style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.82rem;text-align:right;display:block;width:100%;margin-top:-0.25rem;margin-bottom:0.75rem;padding:0;font-family:inherit;"
+                            onclick="switchAuthView('forgot')">
+                            Forgot your password?
+                        </button>
+                        <button type="submit" class="btn-primary" style="width:100%">Log In</button>
+                    </form>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signup-panel" style="display:none;">
+                    <div id="signup-message-area"></div>
+                    <div id="email-verify-notice" style="display:none; background:rgba(20,184,166,0.1);border:1px solid var(--primary);border-radius:8px;padding:1rem;margin-bottom:1rem;text-align:center;">
+                        <i class="ph ph-envelope-open" style="font-size:2rem;color:var(--primary);display:block;margin-bottom:0.5rem;"></i>
+                        <strong style="color:var(--primary);">Check Your Email!</strong>
+                        <p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--muted);">We sent a confirmation link to your email. Please click it to activate your account, then log in.</p>
+                    </div>
+                    <form class="subscription-form" id="signup-form"
+                        onsubmit="event.preventDefault(); window.registerUser();">
+                        <input type="text" id="signup-name" placeholder="Full Name" required>
+                        <input type="email" id="signup-email" placeholder="Email address" required>
+                        <div style="position:relative;">
+                            <input type="password" id="signup-password" placeholder="Password (min. 8 characters)" required minlength="8" style="padding-right:3rem;">
+                            <button type="button" onclick="toggleModalPw('signup-password',this)" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;"><i class="ph ph-eye"></i></button>
+                        </div>
+                        <p style="font-size:0.75rem;color:var(--muted);margin:-0.5rem 0 0.75rem;">
+                            <i class="ph ph-shield-check" style="color:var(--primary);"></i>
+                            You'll receive a verification email after sign-up.
+                        </p>
+                        <button type="submit" class="btn-primary" style="width:100%">Create Account</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ── View: Forgot Password ── -->
+            <div id="auth-view-forgot" style="display:none;">
+                <button onclick="switchAuthView('login')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:0.3rem;margin-bottom:1.25rem;padding:0;font-family:inherit;">
+                    <i class="ph ph-arrow-left"></i> Back to Login
+                </button>
+                <div style="text-align:center;margin-bottom:1.5rem;">
+                    <div style="width:52px;height:52px;background:rgba(20,184,166,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+                        <i class="ph ph-envelope" style="font-size:1.5rem;color:var(--primary);"></i>
+                    </div>
+                    <h3 style="margin:0 0 0.25rem;">Forgot Password?</h3>
+                    <p style="color:var(--muted);font-size:0.85rem;margin:0;">Enter your email and we'll send you a reset link.</p>
+                </div>
+                <div id="forgot-message-area"></div>
+                <form class="subscription-form" id="forgot-form" onsubmit="event.preventDefault(); window.sendForgotPassword();">
+                    <input type="email" id="forgot-email" placeholder="Your email address" required>
+                    <button type="submit" class="btn-primary" style="width:100%" id="forgot-submit-btn">
+                        <i class="ph ph-paper-plane-right"></i> Send Reset Link
+                    </button>
+                </form>
+            </div>
+
+            <!-- ── View: OTP Verification ── -->
+            <div id="auth-view-otp" style="display:none;">
+                <div style="text-align:center;margin-bottom:1.5rem;">
+                    <div style="width:56px;height:56px;background:rgba(20,184,166,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                        <i class="ph ph-envelope-open" style="font-size:1.6rem;color:var(--primary);"></i>
+                    </div>
+                    <h3 style="margin:0 0 0.4rem;">Enter Verification Code</h3>
+                    <p style="color:var(--muted);font-size:0.85rem;margin:0;line-height:1.6;">
+                        We sent a 6-digit code to<br>
+                        <strong id="otp-email-display" style="color:var(--text);"></strong>
+                    </p>
+                </div>
+
+                <div id="otp-message-area"></div>
+
+                <form class="subscription-form" id="otp-form" onsubmit="event.preventDefault(); window.verifyOtp();">
+                    <input
+                        type="text"
+                        id="otp-input"
+                        placeholder=""
+                        maxlength="6"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        autocomplete="one-time-code"
+                        style="text-align:center;font-size:2rem;font-weight:700;letter-spacing:0.4em;padding:0.9rem;width:100%;border-radius:10px;margin-bottom:0.5rem;"
+                        required>
+                    <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin:0 0 1rem;">
+                        <i class="ph ph-clock"></i> Code expires in 1 hour
+                    </p>
+                    <button type="submit" class="btn-primary" style="width:100%;" id="otp-submit-btn">
+                        <i class="ph ph-check-circle"></i> Verify &amp; Create Account
+                    </button>
+                </form>
+
+                <button onclick="switchAuthView('login')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.82rem;margin-top:1rem;display:block;width:100%;text-align:center;font-family:inherit;">
+                    ← Back to Login &nbsp;|&nbsp; <span style="color:var(--primary);">Didn't receive it? Check spam</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Course Modal -->
+    <div class="modal" id="course-modal">
+        <div class="modal-content">
+            <button class="close-modal"><i class="ph ph-x"></i></button>
+            <h3 id="modal-title">Subscribe to Access</h3>
+            <p id="modal-desc">Secure your spot in this course to get full access to video materials, worksheets, and
+                community discussions.</p>
+            <a href="checkout.html" id="proceed-checkout-btn" class="btn-primary"
+                style="width: 100%; display: block; text-align: center; margin-top: 1rem;">Proceed to Checkout
+                (Visa)</a>
+
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="modal" id="quiz-modal">
+        <div class="modal-content" style="max-width: 600px; text-align: right;" dir="rtl">
+            <button class="close-modal" onclick="document.getElementById('quiz-modal').classList.remove('active')"><i class="ph ph-x"></i></button>
+            <h3 class="arabic-text large" style="margin-bottom: 1.5rem; color: var(--primary);">أي برنامج علاجي هو الأنسب لك؟</h3>
+            
+            <div id="quiz-question-container" class="arabic-text medium">
+                <p style="margin-bottom: 1.5rem; font-weight: 500; font-size: 1.1rem;">ما هو التحدي الأساسي الذي يؤثر على جودة حياتك حالياً؟</p>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn-outline quiz-answer-btn arabic-text medium" data-result="1" style="text-align: right; padding: 1rem; width: 100%; border-radius: 8px;">
+                        <strong>التعافي من الصدمات:</strong> أعاني من ذكريات مؤلمة وتراكمات من الماضي تمنعني من التقدم.
+                    </button>
+                    <button class="btn-outline quiz-answer-btn arabic-text medium" data-result="2" style="text-align: right; padding: 1rem; width: 100%; border-radius: 8px;">
+                        <strong>التفكير المفرط:</strong> تسيطر عليّ الأفكار السلبية، القلق الدائم، والمخاوف.
+                    </button>
+                    <button class="btn-outline quiz-answer-btn arabic-text medium" data-result="3" style="text-align: right; padding: 1rem; width: 100%; border-radius: 8px;">
+                        <strong>التقلبات المزاجية:</strong> أواجه صعوبة كبيرة في السيطرة على انفعالاتي ومشاكل متكررة في علاقاتي.
+                    </button>
+                    <button class="btn-outline quiz-answer-btn arabic-text medium" data-result="5" style="text-align: right; padding: 1rem; width: 100%; border-radius: 8px;">
+                        <strong>فقدان المعنى:</strong> أشعر بالضياع، وأجد صعوبة في تقبل مشاعري أو تحديد قيمي في الحياة.
+                    </button>
+                    <button class="btn-outline quiz-answer-btn arabic-text medium" data-result="4" style="text-align: right; padding: 1rem; width: 100%; border-radius: 8px;">
+                        <strong>أنماط الشخصية:</strong> لدي أنماط سلوكية قهرية ومتكررة تسبب لي صدامات دائمة مع من حولي.
+                    </button>
+                    <button class="btn-outline quiz-answer-btn arabic-text medium" data-result="6" style="text-align: right; padding: 1rem; width: 100%; border-radius: 8px; border-color: var(--primary); background: rgba(20, 184, 166, 0.05);">
+                        <strong>تحديات متعددة:</strong> أعاني من القلق وتقلب المزاج معاً وأبحث عن خطة علاجية شاملة ومكثفة.
+                    </button>
+                </div>
+            </div>
+            
+            <div id="quiz-result-container" class="arabic-text medium" style="display: none; text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--muted); font-size: 1.1rem;">بناءً على التقييم العلمي لحالتك، البرنامج الأنسب لك هو:</p>
+                <h2 id="quiz-recommendation" class="arabic-text large" style="color: var(--primary); margin-bottom: 1rem; font-size: 1.8rem;">رحلة تعافي</h2>
+                <p id="quiz-explanation" style="margin-bottom: 1.5rem; color: var(--text); line-height: 1.6; font-size: 0.95rem;"></p>
+                <a href="#courses" id="quiz-close-btn" class="btn-primary arabic-text medium" onclick="document.getElementById('quiz-modal').classList.remove('active')" style="width: 100%; display: block; text-align: center; padding: 1rem;">عرض تفاصيل البرنامج</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Supabase SDK removed as we now use Node.js backend -->
+    
+    <!-- Floating Icons Logic Removed as per request -->
+    
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/96560695570" target="_blank" rel="noopener noreferrer" class="whatsapp-btn" style="position: fixed; bottom: 20px; left: 20px; background-color: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; transition: transform 0.3s ease;">
+        <i class="ph ph-whatsapp-logo"></i>
+    </a>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-consent-banner" style="display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 700px; padding: 1.5rem 2rem; z-index: 9999; background-color: var(--card-bg); box-shadow: 0 15px 50px rgba(0,0,0,0.5); border: 2px solid var(--primary); border-radius: 16px; flex-direction: column; gap: 1rem; align-items: center; justify-content: space-between; text-align: center;">
+        <div style="flex: 1;">
+            <p style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text);">We use cookies to improve your experience and analyze website traffic. By clicking "Accept", you consent to our use of cookies.</p>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; width: 100%;">
+            <button id="accept-cookies" class="btn-primary" style="flex: 1; min-width: 120px;">Accept</button>
+            <button id="decline-cookies" class="btn-outline" style="flex: 1; min-width: 120px; border-color: var(--muted); color: var(--muted);">Decline</button>
+        </div>
+    </div>
+
+    <!-- Custom Scripts -->
+    <script src="js/analytics.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
