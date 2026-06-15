@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | Dr. Marwa Badr</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
+        }
+
+        .checkout-wrapper {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        .checkout-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .checkout-header .lock-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(20,184,166,0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        .checkout-header .lock-icon i { font-size: 1.8rem; color: var(--primary); }
+        .checkout-header h2 { font-size: 1.4rem; margin: 0 0 0.5rem; }
+        .checkout-header p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+        .course-summary {
+            background: var(--alt-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius-sm);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .course-summary .label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .course-summary .course-name { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; line-height: 1.4; }
+        .course-summary .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .course-summary .sale-price { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+        .course-summary .original-price { font-size: 0.9rem; color: var(--muted); text-decoration: line-through; }
+        .course-summary .badge {
+            background: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+        .features-list .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.875rem;
+            color: var(--muted);
+        }
+        .features-list .feature i { color: var(--primary); font-size: 1rem; flex-shrink: 0; }
+
+        #pay-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            letter-spacing: 0.01em;
+        }
+        #pay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .secure-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+        .secure-footer i { color: var(--primary); }
+
+        /* Loading overlay */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        .spinner-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 300px;
+        }
+        .spinner-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
+        .spinner-box p { color: var(--muted); margin: 0; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="spinner-box">
+            <i class="ph ph-circle-notch ph-spin"></i>
+            <h3 style="margin: 0 0 0.5rem;">Processing Payment</h3>
+            <p>Please do not close this window...</p>
+        </div>
+    </div>
+
+    <div class="checkout-wrapper">
+        <a href="index.html#courses" class="back-link">
+            <i class="ph ph-arrow-left"></i> Back to Courses
+        </a>
+
+        <div class="checkout-box">
+            <div class="checkout-header">
+                <div class="lock-icon"><i class="ph ph-shield-check"></i></div>
+                <h2>Secure Checkout</h2>
+                <p>Complete your purchase to get instant access</p>
+            </div>
+
+            <!-- Course Summary (filled by JS) -->
+            <div class="course-summary">
+                <div class="label">You are purchasing</div>
+                <div class="course-name" id="course-name-display">Loading...</div>
+                <div class="price-row">
+                    <div>
+                        <span class="sale-price" id="sale-price-display">—</span>
+                        <span class="original-price" id="original-price-display" style="margin-left: 0.5rem;"></span>
+                    </div>
+                    <span class="badge" id="discount-badge-display" style="display:none;"></span>
+                </div>
+            </div>
+
+            <!-- What's included -->
+            <div class="features-list">
+                <div class="feature"><i class="ph ph-infinity"></i> Lifetime access — always available on your account</div>
+                <div class="feature"><i class="ph ph-video"></i> Video lectures + downloadable materials</div>
+                <div class="feature"><i class="ph ph-certificate"></i> Certificate of completion</div>
+                <div class="feature"><i class="ph ph-currency-dollar"></i> 7-day money-back guarantee</div>
+            </div>
+
+            <!-- Pay Button -->
+            <button class="btn-primary" id="pay-btn" onclick="handlePayment()">
+                <i class="ph ph-lock-key"></i> &nbsp;Pay Securely Now
+            </button>
+
+            <div class="secure-footer">
+                <i class="ph ph-shield-check"></i>
+                <span>Secured by Gammal Tech · 256-bit SSL Encryption</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/payment-service.js"></script>
+    <script>
+        // ============================================================
+        //  Checkout Page Logic
+        // ============================================================
+
+        // Apply saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Read course from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('course') || '';
+
+        // Populate course summary from PaymentService
+        (function populateSummary() {
+            if (!window.PaymentService || !courseId) return;
+            const course = window.PaymentService.getCourse(courseId);
+            if (!course) {
+                document.getElementById('course-name-display').textContent = 'Unknown Course';
+                return;
+            }
+
+            document.getElementById('course-name-display').textContent = course.name_ar + ' — ' + course.name_en;
+            document.getElementById('sale-price-display').textContent = `$${course.sale_price.toFixed(2)}`;
+
+            if (course.full_price) {
+                document.getElementById('original-price-display').textContent = `$${course.full_price.toFixed(2)}`;
+                const savings = Math.round((1 - course.sale_price / course.full_price) * 100);
+                const badge = document.getElementById('discount-badge-display');
+                badge.textContent = `Save ${savings}%`;
+                badge.style.display = 'inline-block';
+            }
+
+            document.getElementById('pay-btn').innerHTML =
+                `<i class="ph ph-lock-key"></i> &nbsp;Pay $${course.sale_price.toFixed(2)} Now`;
+        })();
+
+        // Verify the user is logged in before allowing payment
+        window.addEventListener('DOMContentLoaded', () => {
+            const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+            if (!session?.access_token) {
+                // Store intended course for post-login redirect
+                sessionStorage.setItem('intended_course', courseId);
+                alert('Please log in to proceed to checkout.');
+                window.location.href = 'index.html';
+            }
+
+            if (!courseId || !window.PaymentService.getCourse(courseId)) {
+                alert('Invalid course. Please go back and select a course.');
+                window.location.href = 'index.html#courses';
+            }
+        });
+
+        async function handlePayment() {
+            const btn = document.getElementById('pay-btn');
+            const overlay = document.getElementById('loading-overlay');
+
+            btn.disabled = true;
+            overlay.style.display = 'flex';
+
+            try {
+                await window.PaymentService.processPayment({ course: courseId });
+                // processPayment handles redirect on success
+            } catch (error) {
+                overlay.style.display = 'none';
+                btn.disabled = false;
+
+                if (error.message !== 'Payment cancelled') {
+                    const msg = error.message || 'Payment failed. Please try again.';
+                    // Show inline error instead of ugly alert
+                    const errDiv = document.createElement('div');
+                    errDiv.style.cssText = 'background:#ef444420;border:1px solid #ef4444;color:#ef4444;padding:0.75rem 1rem;border-radius:8px;font-size:0.875rem;margin-top:1rem;display:flex;align-items:center;gap:0.5rem;';
+                    errDiv.innerHTML = `<i class="ph ph-warning-circle"></i> ${msg}`;
+                    btn.parentNode.insertBefore(errDiv, btn.nextSibling);
+                    setTimeout(() => errDiv.remove(), 5000);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

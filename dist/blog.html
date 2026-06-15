@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المدونة | د. مروة بدر أحمد</title>
+    <meta name="description" content="مقالات للصحة النفسية وتطوير الذات، بقلم الدكتورة مروة بدر أحمد.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="المدونة | د. مروة بدر أحمد">
+    <meta property="og:description" content="مقالات متخصصة في الصحة النفسية وتطوير الذات.">
+
+    <!-- Google Analytics Consent Mode -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      // Default consent to denied
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied'
+      });
+    </script>
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-07XVN01PR3"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'G-07XVN01PR3');
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="font-family: var(--font-arabic);">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;">
+                <img src="images/profile-pic-nav.png" alt="Dr. Marwa Logo" class="logo-img">
+                Dr. Marwa
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#expertise">Expertise</a></li>
+                <li><a href="index.html#courses">Courses</a></li>
+                <li><a href="index.html#booking" class="btn-primary-small">Book Session</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="nav-group-middle" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="auth-buttons" id="auth-buttons">
+                        <button class="btn-outline auth-btn-nav" id="login-btn" onclick="window.location.href='index.html'">Log In</button>
+                    </div>
+                </div>
+                <div class="nav-group-right" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button id="theme-toggle" aria-label="Toggle Theme">
+                        <i class="ph ph-sun" id="theme-icon-light"></i>
+                        <i class="ph ph-moon" id="theme-icon-dark"></i>
+                    </button>
+                    <div class="hamburger" id="mobile-menu-btn">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html#about" class="mobile-link">About</a>
+            <a href="index.html#expertise" class="mobile-link">Expertise</a>
+            <a href="index.html#courses" class="mobile-link">Courses</a>
+            <a href="index.html#booking" class="mobile-link btn-primary-mobile">Book Session</a>
+        </div>
+    </nav>
+
+    <main style="padding-top: calc(var(--nav-height) + 3rem); min-height: 80vh;">
+        <div class="container">
+            <div class="section-header center">
+                <h1 class="arabic-text large" style="font-size: 2.5rem; margin-bottom: 1rem;">المدونة</h1>
+                <div class="divider mx-auto"></div>
+                <p class="section-subtitle arabic-text medium">تأملات، مقالات علمية، ونصائح للصحة النفسية.</p>
+            </div>
+
+            <div class="grid-2" id="blog-page-posts-container">
+                <!-- Loading State -->
+                <div class="loading-state text-center" style="grid-column: 1 / -1; padding: 4rem;">
+                    <i class="ph ph-spinner ph-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                    <p class="arabic-text medium" style="margin-top: 1rem; color: var(--muted);">جاري جلب المقالات من قاعدة البيانات...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="margin-top: 4rem;">
+        <div class="container text-center">
+            <p>&copy; 2026 Dr. Marwa Badr Ahmed. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-consent-banner" style="display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 700px; padding: 1.5rem 2rem; z-index: 9999; background-color: var(--card-bg); box-shadow: 0 15px 50px rgba(0,0,0,0.5); border: 2px solid var(--primary); border-radius: 16px; flex-direction: column; gap: 1rem; align-items: center; justify-content: space-between; text-align: center;">
+        <div style="flex: 1;">
+            <p style="margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text);">We use cookies to improve your experience and analyze website traffic. By clicking "Accept", you consent to our use of cookies.</p>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; width: 100%;">
+            <button id="accept-cookies" class="btn-primary" style="flex: 1; min-width: 120px;">Accept</button>
+            <button id="decline-cookies" class="btn-outline" style="flex: 1; min-width: 120px; border-color: var(--muted); color: var(--muted);">Decline</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم النظام (CMS) | Dr. Marwa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { margin: 0; display: flex; height: 100vh; overflow: hidden; font-family: var(--font-arabic); background: var(--bg); color: var(--text); }
+        .sidebar { width: 260px; background: var(--card-bg); border-left: 1px solid var(--border); display: flex; flex-direction: column; padding: 2rem 1rem; z-index: 10; }
+        .sidebar-logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin-bottom: 3rem; text-align: center; }
+        .nav-item { padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.75rem; color: var(--muted); transition: 0.2s; font-size: 1.1rem; }
+        .nav-item:hover, .nav-item.active { background: rgba(20, 184, 166, 0.1); color: var(--primary); }
+        .main-content { flex: 1; padding: 3rem; overflow-y: auto; background: var(--bg); }
+        .tab-content { display: none; max-width: 1000px; margin: 0 auto; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .admin-card { background: var(--card-bg); padding: 2.5rem; border-radius: var(--border-radius); border: 1px solid var(--border); margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--primary); font-weight: bold; font-size: 1.1rem; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-family: inherit; font-size: 1rem; transition: 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid var(--border); background: var(--bg); border-radius: 8px; margin-bottom: 0.75rem; transition: 0.2s; }
+        .list-item:hover { transform: translateX(-5px); border-color: var(--primary); }
+        .list-item:last-child { margin-bottom: 0; }
+        .btn-danger { background: #ef4444; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: bold; }
+        .btn-danger:hover { background: #dc2626; transform: scale(1.05); }
+        .btn-edit { background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: bold; margin-left: 0.5rem; }
+        .btn-edit:hover { filter: brightness(1.1); transform: scale(1.05); }
+        
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); }
+        
+        /* Stats Dashboard */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: var(--card-bg); padding: 2rem; border-radius: var(--border-radius); border: 1px solid var(--border); display: flex; align-items: center; gap: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .stat-icon { font-size: 3rem; color: var(--primary); background: rgba(20, 184, 166, 0.1); padding: 1rem; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
+        .stat-info h3 { margin: 0 0 0.5rem 0; font-size: 2.5rem; color: var(--text); }
+        .stat-info p { margin: 0; color: var(--muted); font-size: 1.1rem; font-weight: bold; }
+        
+        /* Cancel Edit Button */
+        .cancel-edit-btn { display: none; background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 1rem; border-radius: 8px; cursor: pointer; margin-top: 1rem; width: 100%; font-size: 1.1rem; transition: 0.2s; }
+        .cancel-edit-btn:hover { background: rgba(255, 255, 255, 0.05); color: white; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">Dr. Marwa CMS</div>
+        <div class="nav-item active" data-target="tab-overview">
+            <i class="ph ph-squares-four"></i> <span>نظرة عامة</span>
+        </div>
+        <div class="nav-item" data-target="tab-posts">
+            <i class="ph ph-article"></i> <span>المقالات</span>
+        </div>
+        <div class="nav-item" data-target="tab-courses">
+            <i class="ph ph-video-camera"></i> <span>الدورات</span>
+        </div>
+        <div class="nav-item" data-target="tab-testimonials">
+            <i class="ph ph-star"></i> <span>الآراء</span>
+        </div>
+        <div class="nav-item" data-target="tab-sections">
+            <i class="ph ph-layout"></i> <span>الصفحات</span>
+        </div>
+        <div style="flex: 1;"></div>
+        <a href="index.html" class="nav-item" style="color: var(--text); text-decoration: none;"><i class="ph ph-arrow-right"></i> العودة للموقع</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Tab: Overview -->
+        <div id="tab-overview" class="tab-content active">
+            <div class="header-flex">
+                <h1 class="arabic-text large" style="color: var(--primary);"><i class="ph ph-squares-four" style="margin-left: 0.5rem;"></i>نظرة عامة (Dashboard)</h1>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ph ph-video-camera"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-courses">0</h3>
+                        <p class="arabic-text">إجمالي الدورات</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ph ph-article"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-posts">0</h3>
+                        <p class="arabic-text">إجمالي المقالات</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ph ph-star"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-testimonials">0</h3>
+                        <p class="arabic-text">إجمالي الآراء</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="admin-card text-center">
+                <h2 class="arabic-text large mb-4">مرحباً بك في لوحة التحكم الاحترافية 🚀</h2>
+                <p class="arabic-text medium" style="color: var(--muted); max-width: 600px; margin: 0 auto; line-height: 1.8;">
+                    من هنا يمكنك إدارة موقعك بالكامل. يمكنك إضافة دورات جديدة، كتابة مقالات في المدونة، وتحديث آراء العملاء.
+                    كل شيء يتم تحديثه في الموقع الحي بشكل فوري وبدون أي أكواد!
+                </p>
+            </div>
+        </div>
+
+        <!-- Tab: Posts -->
+        <div id="tab-posts" class="tab-content">
+            <div class="header-flex">
+                <h1 class="arabic-text large" style="color: var(--primary);"><i class="ph ph-article" style="margin-left: 0.5rem;"></i>إدارة المقالات (Blog)</h1>
+            </div>
+            
+            <div class="admin-card">
+                <h2 id="title-posts" class="arabic-text large mb-4">✨ إضافة مقال جديد</h2>
+                <form id="form-posts">
+                    <div class="form-group">
+                        <label>عنوان المقال</label>
+                        <input type="text" id="post-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>المقتطف (نبذة قصيرة تظهر في القائمة)</label>
+                        <textarea id="post-excerpt" rows="2" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>المحتوى الكامل</label>
+                        <textarea id="post-content" rows="6"></textarea>
+                    </div>
+                    <button type="submit" id="btn-submit-posts" class="btn-primary arabic-text medium" style="width: 100%; font-size: 1.2rem; padding: 1rem;">نشر المقال</button>
+                    <button type="button" id="btn-cancel-posts" class="cancel-edit-btn arabic-text">إلغاء التعديل والعودة للإضافة</button>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <h2 class="arabic-text large mb-4">📂 المقالات الحالية</h2>
+                <div id="list-posts"><p class="text-center" style="color: var(--muted);">جاري التحميل...</p></div>
+            </div>
+        </div>
+
+        <!-- Tab: Courses -->
+        <div id="tab-courses" class="tab-content">
+            <div class="header-flex">
+                <h1 class="arabic-text large" style="color: var(--primary);"><i class="ph ph-video-camera" style="margin-left: 0.5rem;"></i>إدارة الدورات (Courses)</h1>
+            </div>
+            
+            <div class="admin-card">
+                <h2 id="title-courses" class="arabic-text large mb-4">✨ إضافة دورة جديدة</h2>
+                <form id="form-courses">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>عنوان الدورة (يمكنك إضافة HTML لـ subtitle)</label>
+                            <input type="text" id="course-title" placeholder="مثال: CBT Course <br><small>(العلاج المعرفي)</small>" required>
+                        </div>
+                        <div class="form-group">
+                            <label>السعر (دولار)</label>
+                            <input type="number" step="0.01" id="course-price" required>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>السعر الأصلي (قبل الخصم) - اختياري</label>
+                            <input type="number" step="0.01" id="course-original-price">
+                        </div>
+                        <div class="form-group">
+                            <label>نص الخصم (مثال: Save 50%) - اختياري</label>
+                            <input type="text" id="course-discount">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>المدة (مثال: 5 Days)</label>
+                            <input type="text" id="course-duration">
+                        </div>
+                        <div class="form-group">
+                            <label>هل هذه باقة مجمعة (Bundle)؟</label>
+                            <select id="course-is-bundle">
+                                <option value="false">لا (دورة عادية)</option>
+                                <option value="true">نعم (باقة مميزة - ستحصل على تصميم خاص)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>وصف قصير</label>
+                        <textarea id="course-excerpt" rows="2" required></textarea>
+                    </div>
+                    <button type="submit" id="btn-submit-courses" class="btn-primary arabic-text medium" style="width: 100%; font-size: 1.2rem; padding: 1rem;">إضافة الدورة</button>
+                    <button type="button" id="btn-cancel-courses" class="cancel-edit-btn arabic-text">إلغاء التعديل والعودة للإضافة</button>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <h2 class="arabic-text large mb-4">📂 الدورات الحالية</h2>
+                <div id="list-courses"><p class="text-center" style="color: var(--muted);">جاري التحميل...</p></div>
+            </div>
+        </div>
+
+        <!-- Tab: Testimonials -->
+        <div id="tab-testimonials" class="tab-content">
+            <div class="header-flex">
+                <h1 class="arabic-text large" style="color: var(--primary);"><i class="ph ph-star" style="margin-left: 0.5rem;"></i>إدارة الآراء (Testimonials)</h1>
+            </div>
+            
+            <div class="admin-card">
+                <h2 id="title-testimonials" class="arabic-text large mb-4">✨ إضافة رأي عميل جديد</h2>
+                <form id="form-testimonials">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>اسم العميل</label>
+                            <input type="text" id="test-author" placeholder="مثال: Sarah M." required>
+                        </div>
+                        <div class="form-group">
+                            <label>التقييم (من 1 إلى 5 نجوم)</label>
+                            <input type="number" min="1" max="5" id="test-rating" value="5" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>نص الرأي</label>
+                        <textarea id="test-quote" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" id="btn-submit-testimonials" class="btn-primary arabic-text medium" style="width: 100%; font-size: 1.2rem; padding: 1rem;">إضافة الرأي</button>
+                    <button type="button" id="btn-cancel-testimonials" class="cancel-edit-btn arabic-text">إلغاء التعديل والعودة للإضافة</button>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <h2 class="arabic-text large mb-4">📂 الآراء الحالية</h2>
+                <div id="list-testimonials"><p class="text-center" style="color: var(--muted);">جاري التحميل...</p></div>
+            </div>
+        </div>
+
+        <!-- Tab: Sections -->
+        <div id="tab-sections" class="tab-content">
+            <div class="header-flex">
+                <h1 class="arabic-text large" style="color: var(--primary);"><i class="ph ph-layout" style="margin-left: 0.5rem;"></i>إدارة الصفحات (Sections)</h1>
+            </div>
+            
+            <div class="admin-card">
+                <h2 id="title-sections" class="arabic-text large mb-4">✨ تعديل قسم (اختر من القائمة أدناه)</h2>
+                <form id="form-sections" style="display: none;">
+                    <div class="form-group">
+                        <label>القسم (Identifier)</label>
+                        <input type="text" id="section-key" readonly style="background: var(--bg); color: var(--muted); cursor: not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان الرئيسي</label>
+                        <input type="text" id="section-title">
+                    </div>
+                    <div class="form-group">
+                        <label>العنوان الفرعي</label>
+                        <input type="text" id="section-subtitle">
+                    </div>
+                    <div class="form-group">
+                        <label>المحتوى (HTML أو نص)</label>
+                        <textarea id="section-content" rows="6"></textarea>
+                    </div>
+                    <button type="submit" id="btn-submit-sections" class="btn-primary arabic-text medium" style="width: 100%; font-size: 1.2rem; padding: 1rem;">تحديث القسم</button>
+                    <button type="button" id="btn-cancel-sections" class="cancel-edit-btn arabic-text">إلغاء التعديل</button>
+                </form>
+            </div>
+
+            <div class="admin-card">
+                <h2 class="arabic-text large mb-4">📂 الأقسام الحالية</h2>
+                <div id="list-sections"><p class="text-center" style="color: var(--muted);">جاري التحميل...</p></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Tabs Logic
+        const navItems = document.querySelectorAll('.nav-item[data-target]');
+        const tabContents = document.querySelectorAll('.tab-content');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(n => n.classList.remove('active'));
+                tabContents.forEach(t => t.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById(item.getAttribute('data-target')).classList.add('active');
+            });
+        });
+
+        const API_BASE_URL = 'https://drmarwa.onrender.com';
+
+        // Global State for Data and Editing
+        let globalData = {
+            posts: [],
+            courses: [],
+            testimonials: [],
+            sections: []
+        };
+        
+        let editingState = {
+            posts: null, // ID of the post being edited
+            courses: null,
+            testimonials: null,
+            sections: null
+        };
+
+        function updateDashboardStats() {
+            document.getElementById('stat-posts').innerText = globalData.posts.length;
+            document.getElementById('stat-courses').innerText = globalData.courses.length;
+            document.getElementById('stat-testimonials').innerText = globalData.testimonials.length;
+        }
+
+        // --- Fetch Functions ---
+        async function loadList(endpoint, containerId, formatter) {
+            const container = document.getElementById(containerId);
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/${endpoint}`);
+                const data = await res.json();
+                
+                // Save to global state
+                globalData[endpoint] = data;
+                updateDashboardStats();
+
+                container.innerHTML = '';
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p class="arabic-text medium text-center" style="color: var(--muted); padding: 2rem;">لا توجد بيانات حالياً.</p>';
+                    return;
+                }
+                
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'list-item';
+                    div.innerHTML = `
+                        <div style="flex:1; padding-left: 2rem;">${formatter(item)}</div>
+                        <div style="display: flex;">
+                            <button class="btn-primary arabic-text medium" style="margin-left: 0.25rem; background: #64748b; padding: 0.75rem 1rem;" title="لأعلى" onclick="moveItem('${endpoint}', '${item.id}', -1)"><i class="ph ph-arrow-up"></i></button>
+                            <button class="btn-primary arabic-text medium" style="margin-left: 0.5rem; background: #64748b; padding: 0.75rem 1rem;" title="لأسفل" onclick="moveItem('${endpoint}', '${item.id}', 1)"><i class="ph ph-arrow-down"></i></button>
+                            <button class="btn-edit arabic-text medium" onclick="editItem('${endpoint}', '${item.id}')"><i class="ph ph-pencil"></i> تعديل</button>
+                            <button class="btn-danger arabic-text medium" onclick="deleteItem('${endpoint}', '${item.id}')"><i class="ph ph-trash"></i> حذف</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) { container.innerHTML = '<p class="text-center" style="color: #ef4444;">خطأ في الجلب. تأكد من تشغيل السيرفر.</p>'; }
+        }
+
+        function loadAll() {
+            loadList('posts', 'list-posts', item => `<strong style="color:var(--primary); font-size:1.2rem;">${item.title}</strong><br><small style="color:var(--muted); line-height: 1.5;">${item.excerpt}</small>`);
+            loadList('courses', 'list-courses', item => `<strong style="color:var(--primary); font-size:1.2rem;">${item.title}</strong> <span style="background:var(--card-bg); padding:4px 8px; border-radius:4px; font-weight:bold;">$${item.price}</span><br><small style="color:var(--muted);">${item.excerpt}</small>`);
+            loadList('testimonials', 'list-testimonials', item => `<strong style="color:var(--primary); font-size:1.2rem;">${item.author}</strong> - <span style="color:#f59e0b;">${'★'.repeat(item.rating)}</span><br><small style="color:var(--muted); font-style:italic;">"${item.quote}"</small>`);
+            loadListSections();
+        }
+
+        async function loadListSections() {
+            const container = document.getElementById('list-sections');
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/sections`);
+                const data = await res.json();
+                
+                globalData.sections = data;
+
+                container.innerHTML = '';
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p class="text-center" style="color: var(--muted);">لا توجد أقسام.</p>';
+                    return;
+                }
+                
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'list-item';
+                    div.innerHTML = `
+                        <div style="flex:1; padding-left: 2rem;">
+                            <strong style="color:var(--primary); font-size:1.2rem;">${item.title || item.section_key}</strong><br>
+                            <small style="color:var(--muted); line-height: 1.5;">القسم: ${item.section_key}</small>
+                        </div>
+                        <div style="display: flex;">
+                            <button class="btn-edit arabic-text medium" onclick="editSection('${item.section_key}')"><i class="ph ph-pencil"></i> تعديل</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) { container.innerHTML = '<p class="text-center" style="color: #ef4444;">خطأ في الجلب.</p>'; }
+        }
+
+        loadAll();
+
+        // --- Delete Function ---
+        window.deleteItem = async function(endpoint, id) {
+            if(!confirm('هل أنت متأكد من الحذف نهائياً؟')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/${endpoint}/${id}`, { method: 'DELETE' });
+                if(!res.ok) throw new Error();
+                loadAll();
+            } catch(e) { alert('خطأ في الحذف'); }
+        };
+
+        // --- Reorder Function ---
+        window.moveItem = async function(endpoint, id, direction) {
+            const list = globalData[endpoint];
+            const index = list.findIndex(x => x.id == id);
+            if (index === -1) return;
+            
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= list.length) return; // Cannot move further
+            
+            // Swap in local array
+            const temp = list[index];
+            list[index] = list[newIndex];
+            list[newIndex] = temp;
+            
+            // Prepare payload
+            const payload = list.map((item, i) => ({ id: item.id, order_index: i }));
+            
+            try {
+                // Disable UI briefly if needed, but it's fast enough
+                const res = await fetch(`${API_BASE_URL}/api/${endpoint}/reorder`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items: payload })
+                });
+                if(!res.ok) throw new Error();
+                
+                // Reload from server to reflect exact DB state
+                loadAll();
+            } catch(e) {
+                alert('خطأ في الاتصال، يرجى تحديث الصفحة.');
+            }
+        };
+
+        // --- Edit Function ---
+        window.editItem = function(endpoint, id) {
+            const item = globalData[endpoint].find(x => x.id == id);
+            if (!item) return;
+
+            editingState[endpoint] = id;
+            
+            // Update UI to Edit Mode
+            const titleEl = document.getElementById(`title-${endpoint}`);
+            const btnSubmit = document.getElementById(`btn-submit-${endpoint}`);
+            const btnCancel = document.getElementById(`btn-cancel-${endpoint}`);
+            
+            titleEl.innerHTML = '✏️ تعديل البيانات';
+            btnSubmit.innerHTML = 'تحديث البيانات';
+            btnCancel.style.display = 'block';
+
+            // Populate form
+            if (endpoint === 'posts') {
+                document.getElementById('post-title').value = item.title;
+                document.getElementById('post-excerpt').value = item.excerpt;
+                document.getElementById('post-content').value = item.content || '';
+            } else if (endpoint === 'courses') {
+                document.getElementById('course-title').value = item.title;
+                document.getElementById('course-price').value = item.price;
+                document.getElementById('course-original-price').value = item.original_price || '';
+                document.getElementById('course-discount').value = item.discount_badge || '';
+                document.getElementById('course-duration').value = item.duration || '';
+                document.getElementById('course-is-bundle').value = item.is_bundle ? 'true' : 'false';
+                document.getElementById('course-excerpt').value = item.excerpt;
+            } else if (endpoint === 'testimonials') {
+                document.getElementById('test-author').value = item.author;
+                document.getElementById('test-rating').value = item.rating;
+                document.getElementById('test-quote').value = item.quote;
+            }
+            
+            // Scroll to top of tab
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // --- Cancel Edit Functions ---
+        function cancelEdit(endpoint) {
+            editingState[endpoint] = null;
+            document.getElementById(`form-${endpoint}`).reset();
+            
+            // Restore UI to Add Mode
+            const titles = { posts: '✨ إضافة مقال جديد', courses: '✨ إضافة دورة جديدة', testimonials: '✨ إضافة رأي عميل جديد' };
+            const btnTexts = { posts: 'نشر المقال', courses: 'إضافة الدورة', testimonials: 'إضافة الرأي' };
+            
+            document.getElementById(`title-${endpoint}`).innerHTML = titles[endpoint];
+            document.getElementById(`btn-submit-${endpoint}`).innerHTML = btnTexts[endpoint];
+            document.getElementById(`btn-cancel-${endpoint}`).style.display = 'none';
+        }
+
+        document.getElementById('btn-cancel-posts').addEventListener('click', () => cancelEdit('posts'));
+        document.getElementById('btn-cancel-courses').addEventListener('click', () => cancelEdit('courses'));
+        document.getElementById('btn-cancel-testimonials').addEventListener('click', () => cancelEdit('testimonials'));
+
+        // --- Submit Handlers ---
+        async function submitForm(formId, endpoint, bodyData) {
+            const form = document.getElementById(formId);
+            const btn = form.querySelector('button[type="submit"]');
+            const origTxt = btn.innerHTML;
+            
+            const isEditing = editingState[endpoint] !== null;
+            const url = isEditing 
+                ? `${API_BASE_URL}/api/${endpoint}/${editingState[endpoint]}` 
+                : `${API_BASE_URL}/api/${endpoint}`;
+            const method = isEditing ? 'PUT' : 'POST';
+
+            btn.disabled = true; btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> جاري الحفظ...';
+            try {
+                const res = await fetch(url, {
+                    method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyData)
+                });
+                if(!res.ok) throw new Error();
+                
+                cancelEdit(endpoint); // Resets form and UI
+                loadAll();
+                alert(isEditing ? 'تم التحديث بنجاح! 🔄' : 'تم الحفظ بنجاح! ✅');
+            } catch(e) { alert('حدث خطأ أثناء الحفظ. تأكد من تشغيل السيرفر.'); }
+            btn.disabled = false; btn.innerHTML = origTxt;
+        }
+
+        document.getElementById('form-posts').addEventListener('submit', e => {
+            e.preventDefault();
+            submitForm('form-posts', 'posts', {
+                title: document.getElementById('post-title').value,
+                excerpt: document.getElementById('post-excerpt').value,
+                content: document.getElementById('post-content').value
+            });
+        });
+
+        document.getElementById('form-courses').addEventListener('submit', e => {
+            e.preventDefault();
+            submitForm('form-courses', 'courses', {
+                title: document.getElementById('course-title').value,
+                price: parseFloat(document.getElementById('course-price').value),
+                original_price: parseFloat(document.getElementById('course-original-price').value) || null,
+                discount_badge: document.getElementById('course-discount').value,
+                duration: document.getElementById('course-duration').value,
+                is_bundle: document.getElementById('course-is-bundle').value === 'true',
+                excerpt: document.getElementById('course-excerpt').value,
+                image_url: 'images/placeholder.jpg'
+            });
+        });
+
+        document.getElementById('form-testimonials').addEventListener('submit', e => {
+            e.preventDefault();
+            submitForm('form-testimonials', 'testimonials', {
+                author: document.getElementById('test-author').value,
+                rating: parseInt(document.getElementById('test-rating').value),
+                quote: document.getElementById('test-quote').value
+            });
+        });
+
+        // --- Sections Edit Logic ---
+        window.editSection = function(key) {
+            const item = globalData.sections.find(x => x.section_key === key);
+            if (!item) return;
+
+            editingState.sections = key;
+            
+            document.getElementById('form-sections').style.display = 'block';
+            document.getElementById('title-sections').innerHTML = '✏️ تعديل قسم: ' + key;
+            
+            document.getElementById('section-key').value = item.section_key;
+            document.getElementById('section-title').value = item.title || '';
+            document.getElementById('section-subtitle').value = item.subtitle || '';
+            document.getElementById('section-content').value = item.content || '';
+            
+            document.querySelector('.main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        
+        document.getElementById('btn-cancel-sections').addEventListener('click', () => {
+            editingState.sections = null;
+            document.getElementById('form-sections').reset();
+            document.getElementById('form-sections').style.display = 'none';
+            document.getElementById('title-sections').innerHTML = '✨ تعديل قسم (اختر من القائمة أدناه)';
+        });
+
+        document.getElementById('form-sections').addEventListener('submit', async e => {
+            e.preventDefault();
+            const key = document.getElementById('section-key').value;
+            const btn = document.getElementById('btn-submit-sections');
+            const origTxt = btn.innerHTML;
+            
+            btn.disabled = true; btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> جاري الحفظ...';
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/sections/${key}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: document.getElementById('section-title').value,
+                        subtitle: document.getElementById('section-subtitle').value,
+                        content: document.getElementById('section-content').value,
+                        is_visible: true
+                    })
+                });
+                if(!res.ok) throw new Error();
+                
+                document.getElementById('btn-cancel-sections').click();
+                loadListSections();
+                alert('تم تحديث القسم بنجاح! ✅');
+            } catch(e) { alert('حدث خطأ أثناء الحفظ.'); }
+            btn.disabled = false; btn.innerHTML = origTxt;
+        });
+    </script>
+</body>
+</html>

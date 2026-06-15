@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses | Dr. Marwa Badr</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ── Page Layout ── */
+        .page-wrapper { min-height: 100vh; padding-top: var(--nav-height); }
+
+        /* ── Top Bar ── */
+        .top-bar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .top-bar-left { display: flex; align-items: center; gap: 1rem; }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .back-btn:hover { color: var(--primary); border-color: var(--primary); }
+        .user-greeting { font-size: 0.9rem; color: var(--muted); }
+        .user-greeting strong { color: var(--text); }
+
+        /* ── Hero ── */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(20,184,166,0.08) 0%, transparent 60%);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 2rem 2rem;
+        }
+        .hero-inner { max-width: 1100px; margin: 0 auto; }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(20,184,166,0.12);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            margin-bottom: 1rem;
+        }
+        .hero-section h1 { font-size: 2.2rem; font-weight: 700; margin: 0 0 0.5rem; }
+        .hero-section p { color: var(--muted); font-size: 1rem; margin: 0; }
+
+        /* ── Stats Bar ── */
+        .stats-bar {
+            max-width: 1100px;
+            margin: 2rem auto 0;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .stat-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .stat-pill i { color: var(--primary); font-size: 1rem; }
+        .stat-pill strong { color: var(--text); }
+        .stat-pill span { color: var(--muted); }
+
+        /* ── Main Content ── */
+        .main-content { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+        /* ── Section Header ── */
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Course Grid ── */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ── Course Card ── */
+        .course-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.4s ease forwards;
+            opacity: 0;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .card-accent {
+            height: 4px;
+            width: 100%;
+        }
+        .card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+        .card-icon-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+        .purchase-date {
+            font-size: 0.75rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .course-name-ar {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem;
+            font-family: 'Inter', sans-serif;
+            direction: rtl;
+        }
+        .course-name-en {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin: 0 0 0.75rem;
+        }
+        .course-desc {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+        .card-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+        .meta-tag {
+            font-size: 0.72rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .open-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        /* ── Loading State ── */
+        .loading-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem;
+            color: var(--muted);
+        }
+        .loading-state i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; display: block; }
+
+        /* ── Empty State ── */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(20,184,166,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        .empty-icon i { font-size: 2rem; color: var(--primary); }
+        .empty-state h2 { margin: 0 0 0.5rem; font-size: 1.4rem; }
+        .empty-state p { color: var(--muted); margin-bottom: 2rem; }
+
+        @media (max-width: 600px) {
+            .hero-section { padding: 2rem 1rem 1.5rem; }
+            .hero-section h1 { font-size: 1.6rem; }
+            .main-content { padding: 1.5rem 1rem; }
+            .top-bar { padding: 0.75rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo" style="display:flex;align-items:center;gap:0.5rem;">
+                <img src="images/profile-pic-nav.png" alt="Dr. Marwa" class="logo-img">
+                Dr. Marwa
+            </a>
+            <div class="nav-actions">
+                <span id="nav-user-name" style="font-size:0.875rem;color:var(--muted);"></span>
+                <button id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="ph ph-sun" id="theme-icon-light"></i>
+                    <i class="ph ph-moon" id="theme-icon-dark"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <a href="index.html#courses" class="back-btn">
+                    <i class="ph ph-arrow-left"></i> Browse Courses
+                </a>
+            </div>
+            <button id="logout-btn" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.875rem;display:flex;align-items:center;gap:0.4rem;font-family:inherit;" onclick="handleLogout()">
+                <i class="ph ph-sign-out"></i> Log Out
+            </button>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-inner">
+                <div class="hero-badge"><i class="ph ph-book-open"></i> My Learning Library</div>
+                <h1 id="hero-heading">My Courses</h1>
+                <p>All your purchased courses — accessible anytime, forever.</p>
+
+                <!-- Stats Bar -->
+                <div class="stats-bar" id="stats-bar" style="display:none;">
+                    <div class="stat-pill">
+                        <i class="ph ph-graduation-cap"></i>
+                        <strong id="stat-count">0</strong>
+                        <span>Courses Owned</span>
+                    </div>
+                    <div class="stat-pill">
+                        <i class="ph ph-infinity"></i>
+                        <strong>Lifetime</strong>
+                        <span>Access</span>
+                    </div>
+                    <div class="stat-pill">
+                        <i class="ph ph-currency-dollar"></i>
+                        <strong id="stat-invested">0</strong>
+                        <span>Total Invested</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="section-label">
+                <i class="ph ph-books"></i> Your Courses
+            </div>
+            <div class="courses-grid" id="courses-grid">
+                <div class="loading-state">
+                    <i class="ph ph-circle-notch ph-spin"></i>
+                    <p>Loading your courses...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ============================================================
+    //  My Courses Page — Dr. Marwa Badr Platform
+    // ============================================================
+
+    const API_BASE = 'https://drmarwa.onrender.com';
+
+    // ── Course Catalog (matches payment-service.js) ──
+    const CATALOG = {
+        'healing-journey-program': {
+            name_ar: 'رحلة تعافي',
+            name_en: 'Healing Journey Program',
+            icon: 'ph-heart-half',
+            color: '#14b8a6',
+            gradient: 'linear-gradient(135deg,rgba(20,184,166,0.18),rgba(20,184,166,0.05))',
+            desc: 'معالجة الصدمات وبناء المرونة العاطفية',
+            duration: '2 Days'
+        },
+        'dbt-course': {
+            name_ar: 'العلاج الجدلي السلوكي',
+            name_en: 'Dialectical Behavior Therapy (DBT)',
+            icon: 'ph-waves',
+            color: '#3b82f6',
+            gradient: 'linear-gradient(135deg,rgba(59,130,246,0.18),rgba(59,130,246,0.05))',
+            desc: 'تنظيم المشاعر والمهارات الجدلية السلوكية',
+            duration: '5 Days'
+        },
+        'cbt-course': {
+            name_ar: 'العلاج المعرفي السلوكي',
+            name_en: 'Cognitive Behavioral Therapy (CBT)',
+            icon: 'ph-brain',
+            color: '#8b5cf6',
+            gradient: 'linear-gradient(135deg,rgba(139,92,246,0.18),rgba(139,92,246,0.05))',
+            desc: 'إعادة هيكلة الأفكار السلبية والمعتقدات المحدودة',
+            duration: '4 Days'
+        },
+        'act-course': {
+            name_ar: 'القبول والالتزام',
+            name_en: 'Acceptance & Commitment Therapy (ACT)',
+            icon: 'ph-compass',
+            color: '#f59e0b',
+            gradient: 'linear-gradient(135deg,rgba(245,158,11,0.18),rgba(245,158,11,0.05))',
+            desc: 'تطوير المرونة النفسية والتقبل الفعّال',
+            duration: '4 Days'
+        },
+        'personality-disorders-course': {
+            name_ar: 'اضطرابات الشخصية',
+            name_en: 'Personality Disorders Course',
+            icon: 'ph-person-simple-circle',
+            color: '#ec4899',
+            gradient: 'linear-gradient(135deg,rgba(236,72,153,0.18),rgba(236,72,153,0.05))',
+            desc: 'فهم وإدارة أنماط الشخصية المعقدة',
+            duration: '5 Days'
+        },
+        'tri-therapy-bundle': {
+            name_ar: 'باقة الثلاث علاجات',
+            name_en: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
+            icon: 'ph-star-four',
+            color: '#f97316',
+            gradient: 'linear-gradient(135deg,rgba(249,115,22,0.22),rgba(249,115,22,0.05))',
+            desc: 'التدريب الشامل على أقوى أساليب العلاج النفسي الحديث',
+            duration: '13 Days'
+        }
+    };
+
+    // ── Theme ──
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    });
+
+    // ── Auth Guard ──
+    function getSession() {
+        return JSON.parse(localStorage.getItem('site_current_session') || 'null');
+    }
+    function getUser() {
+        return JSON.parse(localStorage.getItem('site_current_user') || 'null');
+    }
+    function handleLogout() {
+        localStorage.removeItem('site_current_session');
+        localStorage.removeItem('site_current_user');
+        window.location.href = 'index.html';
+    }
+
+    // ── Format Date ──
+    function formatDate(iso) {
+        if (!iso) return '';
+        return new Date(iso).toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        });
+    }
+
+    // ── Render Course Card ──
+    function renderCard(purchase, index) {
+        const info = CATALOG[purchase.course_id] || {
+            name_ar: purchase.course_id,
+            name_en: purchase.course_id,
+            icon: 'ph-book',
+            color: '#14b8a6',
+            gradient: 'linear-gradient(135deg,rgba(20,184,166,0.1),rgba(20,184,166,0.02))',
+            desc: '',
+            duration: '—'
+        };
+
+        const card = document.createElement('div');
+        card.className = 'course-card';
+        card.style.animationDelay = `${index * 0.08}s`;
+
+        const amountStr = purchase.amount_paid
+            ? `$${parseFloat(purchase.amount_paid).toFixed(2)}`
+            : '';
+
+        card.innerHTML = `
+            <div class="card-accent" style="background:${info.color};"></div>
+            <div class="card-body" style="background:${info.gradient};">
+                <div class="card-icon-row">
+                    <div class="card-icon" style="background:${info.color}22;color:${info.color};">
+                        <i class="ph ${info.icon}"></i>
+                    </div>
+                    <div class="purchase-date">
+                        <i class="ph ph-calendar-check"></i>
+                        ${formatDate(purchase.purchased_at)}
+                    </div>
+                </div>
+                <p class="course-name-ar">${info.name_ar}</p>
+                <p class="course-name-en">${info.name_en}</p>
+                <p class="course-desc">${info.desc}</p>
+                <div class="card-meta">
+                    <span class="meta-tag" style="background:${info.color}18;color:${info.color};">
+                        <i class="ph ph-infinity"></i> Lifetime Access
+                    </span>
+                    ${info.duration ? `<span class="meta-tag" style="background:var(--alt-bg);color:var(--muted);"><i class="ph ph-clock"></i> ${info.duration}</span>` : ''}
+                    ${amountStr ? `<span class="meta-tag" style="background:var(--alt-bg);color:var(--muted);"><i class="ph ph-receipt"></i> ${amountStr}</span>` : ''}
+                </div>
+                <a href="course-${purchase.course_id}.html" class="open-btn" style="background:${info.color};color:#fff;">
+                    <i class="ph ph-play-circle"></i> Open Course
+                    <i class="ph ph-arrow-right" style="margin-left:auto;"></i>
+                </a>
+            </div>
+        `;
+        return card;
+    }
+
+    // ── Render Empty State ──
+    function renderEmpty() {
+        return `
+            <div class="empty-state">
+                <div class="empty-icon"><i class="ph ph-books"></i></div>
+                <h2>No Courses Yet</h2>
+                <p>You haven't purchased any courses yet.<br>Explore our programs and start your journey.</p>
+                <a href="index.html#courses" class="btn-primary">Browse Courses</a>
+            </div>
+        `;
+    }
+
+    // ── Main: Load Courses ──
+    async function loadMyCourses() {
+        const session = getSession();
+        const user = getUser();
+
+        // Not logged in → redirect
+        if (!session?.access_token || !user) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Show user name
+        const displayName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
+        document.getElementById('nav-user-name').textContent = displayName;
+        document.getElementById('hero-heading').textContent = `${displayName}'s Courses`;
+
+        const grid = document.getElementById('courses-grid');
+
+        try {
+            const res = await fetch(`${API_BASE}/api/my-courses`, {
+                headers: { 'Authorization': `Bearer ${session.access_token}` }
+            });
+
+            if (res.status === 401) {
+                // Session expired
+                handleLogout();
+                return;
+            }
+
+            const purchases = await res.json();
+
+            // No purchases → show empty state (don't redirect, let them browse)
+            if (!purchases || purchases.length === 0) {
+                grid.innerHTML = renderEmpty();
+                return;
+            }
+
+            // Render stats
+            const totalInvested = purchases.reduce((sum, p) => sum + parseFloat(p.amount_paid || 0), 0);
+            document.getElementById('stat-count').textContent = purchases.length;
+            document.getElementById('stat-invested').textContent = `$${totalInvested.toFixed(2)}`;
+            document.getElementById('stats-bar').style.display = 'flex';
+
+            // Render cards
+            grid.innerHTML = '';
+            purchases.forEach((purchase, i) => {
+                grid.appendChild(renderCard(purchase, i));
+            });
+
+        } catch (err) {
+            console.error('Failed to load courses:', err);
+            grid.innerHTML = `
+                <div class="loading-state">
+                    <i class="ph ph-warning-circle" style="color:#ef4444;"></i>
+                    <p style="color:#ef4444;">Failed to load courses. Please try again.</p>
+                    <button class="btn-outline" onclick="loadMyCourses()" style="margin-top:1rem;">Retry</button>
+                </div>
+            `;
+        }
+    }
+
+    // ── Boot ──
+    loadMyCourses();
+    </script>
+</body>
+</html>
