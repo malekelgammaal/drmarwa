@@ -425,7 +425,7 @@ app.post('/api/auth/forgot-password', async (req, res) => {
     if (!email) return res.status(400).json({ error: 'Email is required' });
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://drmarwabadr.drmarwa.workers.dev/reset-password.html'
+        redirectTo: 'https://drmarwa.pages.dev/reset-password.html'
     });
 
     if (error && !error.message.includes('not found')) {

@@ -1,5 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
+    // Supabase Email Verification Hash Handling
+    // ==========================================
+    if (window.location.hash && window.location.hash.includes('access_token')) {
+        try {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = hashParams.get('access_token');
+            const refreshToken = hashParams.get('refresh_token');
+            const type = hashParams.get('type');
+            
+            if (accessToken && (type === 'signup' || type === 'magiclink' || type === 'recovery')) {
+                // Remove hash from URL
+                window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                
+                // Decode JWT to get user info
+                const payload = JSON.parse(atob(accessToken.split('.')[1]));
+                const user = { 
+                    id: payload.sub, 
+                    email: payload.email, 
+                    user_metadata: payload.user_metadata || {} 
+                };
+                
+                // Save session permanently
+                if (typeof setSession === 'function') {
+                    setSession({ access_token: accessToken, refresh_token: refreshToken }, user);
+                }
+                if (typeof closeAllModals === 'function') {
+                    closeAllModals();
+                }
+                
+                const successModal = document.getElementById('account-success-modal');
+                if (successModal) {
+                    successModal.style.display = 'flex';
+                }
+            }
+        } catch (e) {
+            console.error("Error parsing auth hash:", e);
+        }
+    }
+
+    // ==========================================
     // Navbar Scroll Shadow
     // ==========================================
     const navbar = document.querySelector('.navbar');
@@ -474,9 +514,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast(`Welcome, ${displayName}! Your account has been created. 🎉`, 'success');
             } else {
                 // Supabase returned no session — account exists but email confirmation still ON
-                showModalMsg('signup-message-area',
-                    'Account created! Please check your email to confirm, then log in.',
-                    'success');
+                closeAllModals();
+                const checkEmailModal = document.getElementById('check-email-modal');
+                if (checkEmailModal) {
+                    checkEmailModal.style.display = 'flex';
+                }
             }
             document.getElementById('signup-form').reset();
         } catch (error) {
