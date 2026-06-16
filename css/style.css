@@ -550,6 +550,78 @@ h1, h2, h3, h4, h5, h6 {
     color: #fff;
 }
 
+/* Modern Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 10;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-indicator:hover {
+    opacity: 1;
+    transform: translateX(-50%) translateY(3px);
+}
+
+.scroll-indicator .mouse {
+    width: 26px;
+    height: 42px;
+    border: 2px solid var(--text-muted);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+}
+
+.scroll-indicator .wheel {
+    width: 4px;
+    height: 8px;
+    background-color: var(--primary);
+    border-radius: 2px;
+    animation: scrollWheel 2s cubic-bezier(0.15, 0.41, 0.69, 0.94) infinite;
+}
+
+.scroll-indicator .arrow-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -4px;
+}
+
+.scroll-indicator .arrow-chevron {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--primary);
+    border-bottom: 2px solid var(--primary);
+    transform: rotate(45deg);
+    margin: -3px 0;
+    animation: scrollArrow 2s infinite;
+}
+
+.scroll-indicator .arrow-chevron:nth-child(2) {
+    animation-delay: -0.2s;
+}
+
+@keyframes scrollWheel {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(16px); }
+}
+
+@keyframes scrollArrow {
+    0% { opacity: 0; transform: rotate(45deg) translate(-5px, -5px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(45deg) translate(5px, 5px); }
+}
+
 /* =========================================
    Hero Section
 ========================================= */
@@ -1047,7 +1119,8 @@ h1, h2, h3, h4, h5, h6 {
 .course-card:hover::before { opacity: 1; }
 
 .course-thumbnail {
-    height: 180px;
+    aspect-ratio: 16 / 9;
+    height: auto;
     background: linear-gradient(135deg, var(--border) 0%, var(--alt-bg) 100%);
     display: flex;
     align-items: center;
@@ -1073,9 +1146,10 @@ h1, h2, h3, h4, h5, h6 {
 .course-thumbnail img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     position: absolute;
     top: 0;
+    left: 0;
     left: 0;
     transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
 }
@@ -1453,17 +1527,34 @@ section[id], [id] {
 
 .animate-on-scroll {
     opacity: 0;
-    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Extremely smooth exponential-out easing curve for a premium feel */
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Modern Fade Up + Blur + Slight Scale (Apple-style reveal) */
 .animate-on-scroll.fade-up {
-    transform: translateY(24px);
+    transform: translateY(30px) scale(0.98);
+    filter: blur(8px);
+}
+
+/* Slide in from right */
+.animate-on-scroll.fade-right {
+    transform: translateX(40px);
+    filter: blur(5px);
+}
+
+/* Slide in from left */
+.animate-on-scroll.fade-left {
+    transform: translateX(-40px);
+    filter: blur(5px);
 }
 
 .animate-on-scroll.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) translateX(0) scale(1);
+    filter: blur(0);
 }
 
 /* Stagger children inside animated containers */
@@ -1578,14 +1669,16 @@ section[id], [id] {
 
     /* Hero */
     .hero {
-        padding-top: calc(var(--nav-height) + 1.5rem);
-        min-height: auto;
-        padding-bottom: 3rem;
+        padding-top: calc(var(--nav-height) + 2rem);
+        min-height: 100vh;
+        padding-bottom: 4rem;
+        display: flex;
+        align-items: center;
     }
 
     .hero-content {
         flex-direction: column;
-        gap: 2rem;
+        gap: 2.5rem;
         text-align: center;
     }
 
@@ -1647,8 +1740,8 @@ section[id], [id] {
     .service-card p { font-size: 0.88rem; }
 
     /* Courses */
-    .courses-grid { grid-template-columns: 1fr; gap: 1.25rem; }
-    .course-thumbnail { height: 170px; }
+    .courses-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .course-thumbnail { aspect-ratio: 16 / 9; height: auto; }
     .course-info { padding: 1.1rem; }
     .course-info h3 { font-size: 1rem; }
     .course-info p { font-size: 0.88rem; margin-bottom: 1rem; }
@@ -1656,12 +1749,12 @@ section[id], [id] {
     /* Booking */
     .booking-wrapper {
         grid-template-columns: 1fr;
-        padding: 1.5rem 1.25rem;
-        gap: 1.5rem;
+        padding: 2rem 1.5rem;
+        gap: 2rem;
         text-align: center;
     }
-    .booking-text h2 { font-size: 1.5rem; }
-    .booking-text p { font-size: 0.9rem; margin-bottom: 1.25rem; }
+    .booking-text h2 { font-size: 1.6rem; }
+    .booking-text p { font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
     .booking-poster { max-height: 300px; }
     .external-booking-btn { width: 100%; justify-content: center; }
 
