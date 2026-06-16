@@ -318,15 +318,13 @@
             currentSession = JSON.parse(sessionStorage.getItem('site_current_session'));
         } catch(e) {}
         
-        if (!currentSession || !currentSession.user || currentSession.user.email !== ADMIN_EMAIL) {
-            // Kick out unauthorized users
-            window.location.href = 'index.html';
-        }
+        // Auth Guard removed per user request
 
         function getAuthHeaders() {
+            const token = currentSession ? currentSession.access_token : '';
             return {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${currentSession.access_token}`
+                'Authorization': `Bearer ${token}`
             };
         }        // Global State for Data and Editing
         let globalData = {
