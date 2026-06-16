@@ -1119,7 +1119,8 @@ h1, h2, h3, h4, h5, h6 {
 .course-card:hover::before { opacity: 1; }
 
 .course-thumbnail {
-    height: 180px;
+    aspect-ratio: 16 / 9;
+    height: auto;
     background: linear-gradient(135deg, var(--border) 0%, var(--alt-bg) 100%);
     display: flex;
     align-items: center;
@@ -1145,9 +1146,10 @@ h1, h2, h3, h4, h5, h6 {
 .course-thumbnail img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     position: absolute;
     top: 0;
+    left: 0;
     left: 0;
     transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
 }
@@ -1667,14 +1669,16 @@ section[id], [id] {
 
     /* Hero */
     .hero {
-        padding-top: calc(var(--nav-height) + 1.5rem);
-        min-height: auto;
-        padding-bottom: 3rem;
+        padding-top: calc(var(--nav-height) + 2rem);
+        min-height: 100vh;
+        padding-bottom: 4rem;
+        display: flex;
+        align-items: center;
     }
 
     .hero-content {
         flex-direction: column;
-        gap: 2rem;
+        gap: 2.5rem;
         text-align: center;
     }
 
@@ -1736,8 +1740,8 @@ section[id], [id] {
     .service-card p { font-size: 0.88rem; }
 
     /* Courses */
-    .courses-grid { grid-template-columns: 1fr; gap: 1.25rem; }
-    .course-thumbnail { height: 170px; }
+    .courses-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .course-thumbnail { aspect-ratio: 16 / 9; height: auto; }
     .course-info { padding: 1.1rem; }
     .course-info h3 { font-size: 1rem; }
     .course-info p { font-size: 0.88rem; margin-bottom: 1rem; }
@@ -1745,12 +1749,12 @@ section[id], [id] {
     /* Booking */
     .booking-wrapper {
         grid-template-columns: 1fr;
-        padding: 1.5rem 1.25rem;
-        gap: 1.5rem;
+        padding: 2rem 1.5rem;
+        gap: 2rem;
         text-align: center;
     }
-    .booking-text h2 { font-size: 1.5rem; }
-    .booking-text p { font-size: 0.9rem; margin-bottom: 1.25rem; }
+    .booking-text h2 { font-size: 1.6rem; }
+    .booking-text p { font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
     .booking-poster { max-height: 300px; }
     .external-booking-btn { width: 100%; justify-content: center; }
 
