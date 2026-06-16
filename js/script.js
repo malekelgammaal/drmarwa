@@ -22,16 +22,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 
                 // Save session permanently
-                if (typeof setSession === 'function') {
-                    setSession({ access_token: accessToken, refresh_token: refreshToken }, user);
-                }
-                if (typeof closeAllModals === 'function') {
-                    closeAllModals();
-                }
+                const savedUser = user;
+                localStorage.setItem('site_current_user', JSON.stringify(savedUser));
+                if (session) localStorage.setItem('site_current_session', JSON.stringify({access_token: accessToken, refresh_token: refreshToken}));
                 
+                // Remove any active verification overlay
+                const verifyOverlay = document.getElementById('check-email-modal');
+                if (verifyOverlay) verifyOverlay.style.display = 'none';
+                
+                // Show the premium success modal
                 const successModal = document.getElementById('account-success-modal');
                 if (successModal) {
-                    successModal.style.display = 'flex';
+                    successModal.classList.add('active');
+                    const displayName = user.user_metadata?.name || user.email?.split('@')[0] || 'there';
+                    const nameEl = document.getElementById('account-success-name');
+                    if (nameEl) nameEl.textContent = `Welcome, ${displayName}! Your account has been verified and you're now logged in.`;
                 }
             }
         } catch (e) {
@@ -297,6 +302,106 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // ── Premium Tab Switcher (new auth modal) ──
+    window.switchAuthTab = function(tab) {
+        const loginTab = document.getElementById('tab-login');
+        const signupTab = document.getElementById('tab-signup');
+        const loginPanel = document.getElementById('login-panel');
+        const signupPanel = document.getElementById('signup-panel');
+        const title = document.getElementById('auth-modal-title');
+        const subtitle = document.getElementById('auth-modal-subtitle');
+
+        if (tab === 'login') {
+            loginTab?.classList.add('active');
+            signupTab?.classList.remove('active');
+            if (loginPanel) loginPanel.style.display = 'block';
+            if (signupPanel) signupPanel.style.display = 'none';
+            if (title) title.textContent = 'Welcome Back';
+            if (subtitle) subtitle.textContent = 'Sign in to access your courses and profile';
+        } else {
+            signupTab?.classList.add('active');
+            loginTab?.classList.remove('active');
+            if (signupPanel) signupPanel.style.display = 'block';
+            if (loginPanel) loginPanel.style.display = 'none';
+            if (title) title.textContent = 'Create Account';
+            if (subtitle) subtitle.textContent = 'Join thousands of mental health professionals';
+        }
+    };
+
+    // ── Premium Verification Countdown Timer ──
+    let _countdownInterval = null;
+
+    function startVerificationCountdown(seconds = 3600) {
+        if (_countdownInterval) clearInterval(_countdownInterval);
+        let remaining = seconds;
+
+        const update = () => {
+            const el = document.getElementById('verify-countdown');
+            if (!el) { clearInterval(_countdownInterval); return; }
+            const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+            const s = (remaining % 60).toString().padStart(2, '0');
+            el.textContent = `${m}:${s}`;
+            if (remaining <= 0) {
+                clearInterval(_countdownInterval);
+                el.textContent = 'Expired';
+                el.style.color = '#ef4444';
+                const resendBtn = document.getElementById('verify-resend-btn');
+                if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = 'Resend (link expired)'; }
+            }
+            remaining--;
+        };
+        update();
+        _countdownInterval = setInterval(update, 1000);
+    }
+
+    window.startVerificationCountdown = startVerificationCountdown;
+
+    // ── Resend Verification Email ──
+    window.resendVerification = async function() {
+        const email = window._pendingVerifyEmail;
+        const btn = document.getElementById('verify-resend-btn');
+        if (!email || !btn) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            if (res.ok) {
+                startVerificationCountdown(3600);
+                btn.textContent = 'Email sent! Check your inbox.';
+                setTimeout(() => { btn.disabled = false; btn.textContent = 'Resend verification email'; }, 30000);
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'Failed. Try again.';
+            }
+        } catch {
+            btn.disabled = false;
+            btn.textContent = 'Failed. Try again.';
+        }
+    };
+
+    // ── Show verification overlay with countdown ──
+    function showVerificationOverlay(email) {
+        window._pendingVerifyEmail = email;
+        const overlay = document.getElementById('check-email-modal');
+        const emailText = document.getElementById('verify-email-text');
+        if (overlay) overlay.style.display = 'flex';
+        if (emailText) emailText.textContent = email;
+        // Close auth modal
+        const authModal = document.getElementById('auth-modal');
+        if (authModal) authModal.classList.remove('active');
+        // Prevent scrolling
+        document.body.style.overflow = 'hidden';
+        startVerificationCountdown(3600);
+    }
+
+    window.showVerificationOverlay = showVerificationOverlay;
+
     window.toggleModalPw = function(inputId, btn) {
         const input = document.getElementById(inputId);
         const icon = btn.querySelector('i');
@@ -442,7 +547,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Check initial auth state on load
-    updateUIForAuth(getSessionUser());
+    const currentUser = getSessionUser();
+    updateUIForAuth(currentUser);
+
+    // Auto-open Auth Modal if redirected from checkout
+    if (!currentUser && sessionStorage.getItem('intended_course')) {
+        setTimeout(() => {
+            const authModalObj = document.getElementById('auth-modal');
+            if (authModalObj) authModalObj.classList.add('active');
+            switchAuthTab('signup');
+            showToast('Please create an account or log in to continue to checkout.', 'info');
+        }, 500);
+    }
+
+    // Check if user was redirected from a locked course
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('locked')) {
+        setTimeout(() => {
+            showToast('You must purchase this course to access its contents.', 'error');
+            // Clean up URL without reloading
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+        }, 500);
+    }
 
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
@@ -451,32 +577,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (tabLogin && tabSignup) {
-        tabLogin.addEventListener('click', () => {
-            tabLogin.style.borderBottomColor = 'var(--primary)';
-            tabLogin.style.color = 'var(--primary)';
-            tabSignup.style.borderBottomColor = 'transparent';
-            tabSignup.style.color = 'var(--muted)';
-            if (loginPanel) loginPanel.style.display = 'block';
-            if (signupPanel) signupPanel.style.display = 'none';
-        });
-        tabSignup.addEventListener('click', () => {
-            tabSignup.style.borderBottomColor = 'var(--primary)';
-            tabSignup.style.color = 'var(--primary)';
-            tabLogin.style.borderBottomColor = 'transparent';
-            tabLogin.style.color = 'var(--muted)';
-            if (signupPanel) signupPanel.style.display = 'block';
-            if (loginPanel) loginPanel.style.display = 'none';
-        });
-    }
+    // Premium tab switching is now handled via switchAuthTab function.
 
     window.registerUser = async function() {
         const name     = document.getElementById('signup-name').value.trim();
         const email    = document.getElementById('signup-email').value.trim().toLowerCase();
         const password = document.getElementById('signup-password').value;
-        const submitBtn = document.querySelector('#signup-form button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Creating Account...';
+        const submitBtn = document.getElementById('signup-submit-btn') || document.querySelector('#signup-form button[type="submit"]');
+        const originalHTML = submitBtn.innerHTML;
+
+        submitBtn.innerHTML = '<i class="ph ph-circle-notch" style="animation:spin 0.8s linear infinite;"></i> Creating Account...';
         submitBtn.disabled = true;
         document.getElementById('signup-message-area').innerHTML = '';
 
@@ -487,9 +597,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, password, name })
             });
             const data = await response.json();
+
+            // ── Duplicate Account Detection ──
+            const errMsg = (data.error || '').toLowerCase();
+            const isExisting = !response.ok && (
+                errMsg.includes('already registered') ||
+                errMsg.includes('already exists') ||
+                errMsg.includes('user already') ||
+                errMsg.includes('email already') ||
+                errMsg.includes('duplicate')
+            );
+
+            if (isExisting) {
+                // Show premium 'Account Already Exists' modal then auto-login
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+                const existsModal = document.getElementById('account-exists-modal');
+                if (existsModal) existsModal.classList.add('active');
+
+                // Auto-fill login and trigger after 2 seconds
+                setTimeout(async () => {
+                    if (existsModal) existsModal.classList.remove('active');
+                    document.getElementById('login-email').value = email;
+                    document.getElementById('login-password').value = password;
+                    switchAuthTab('login');
+                    await window.loginUser();
+                }, 2200);
+                return;
+            }
+
             if (!response.ok) throw new Error(data.error || 'Failed to create account');
 
-            // ── Notify Admin via Web3Forms (Frontend) ──
+            // ── Notify Admin via Web3Forms ──
             try {
                 const now = new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kuwait' });
                 fetch('https://api.web3forms.com/submit', {
@@ -504,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             } catch (e) { console.warn('Notification failed', e); }
 
-            // Log in immediately — no email verification required
+            // Log in immediately if session exists
             const user   = data.session?.user || data.user;
             const session = data.session;
             if (session && user) {
@@ -513,19 +652,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 const displayName = user.user_metadata?.name || name || email.split('@')[0];
                 showToast(`Welcome, ${displayName}! Your account has been created. 🎉`, 'success');
             } else {
-                // Supabase returned no session — account exists but email confirmation still ON
-                closeAllModals();
-                const checkEmailModal = document.getElementById('check-email-modal');
-                if (checkEmailModal) {
-                    checkEmailModal.style.display = 'flex';
-                }
+                // Email confirmation required — show premium verification overlay
+                document.getElementById('signup-form').reset();
+                showVerificationOverlay(email);
             }
             document.getElementById('signup-form').reset();
         } catch (error) {
             showModalMsg('signup-message-area', error.message, 'error');
         } finally {
-            submitBtn.textContent = originalText;
+            submitBtn.innerHTML = originalHTML;
             submitBtn.disabled = false;
+        }
+    };
+
+    // ── OAuth Login (Google / Facebook) ──
+    window.socialLogin = async function(provider) {
+        try {
+            // Show loading toast since redirect might take a second
+            showToast('Connecting to ' + provider + '...', 'info');
+            
+            const redirectUrl = encodeURIComponent(window.location.origin + window.location.pathname);
+            const res = await fetch(`${API_BASE_URL}/api/auth/oauth?provider=${provider}&redirect_to=${redirectUrl}`);
+            const data = await res.json();
+            
+            if (!res.ok) throw new Error(data.error || 'Failed to initialize OAuth');
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                throw new Error('No redirect URL provided');
+            }
+        } catch (error) {
+            console.error('Social login error:', error);
+            showToast(error.message || 'Failed to connect with ' + provider, 'error');
         }
     };
 
@@ -569,9 +727,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loginUser = async function() {
         const email    = document.getElementById('login-email').value.trim().toLowerCase();
         const password = document.getElementById('login-password').value;
-        const submitBtn = document.querySelector('#login-form button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Logging In...';
+        const submitBtn = document.getElementById('login-submit-btn') || document.querySelector('#login-form button[type="submit"]');
+        const originalHTML = submitBtn.innerHTML;
+
+        submitBtn.innerHTML = '<i class="ph ph-circle-notch" style="animation:spin 0.8s linear infinite;"></i> Logging In...';
         submitBtn.disabled = true;
         document.getElementById('login-message-area').innerHTML = '';
 
@@ -605,7 +764,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             showModalMsg('login-message-area', error.message, 'error');
         } finally {
-            submitBtn.textContent = originalText;
+            submitBtn.innerHTML = originalHTML;
             submitBtn.disabled = false;
         }
     };

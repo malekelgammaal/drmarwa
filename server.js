@@ -72,6 +72,22 @@ app.post('/api/auth/login', async (req, res) => {
     res.status(200).json({ message: 'Login successful', session: data.session });
 });
 
+// 3. OAuth Endpoint (Google / Facebook)
+app.get('/api/auth/oauth', async (req, res) => {
+    const { provider, redirect_to } = req.query;
+    if (!provider) return res.status(400).json({ error: 'Provider is required' });
+    
+    const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+            redirectTo: redirect_to || 'https://drmarwa.pages.dev/'
+        }
+    });
+
+    if (error) return res.status(400).json({ error: error.message });
+    res.json({ url: data.url });
+});
+
 // ==========================================
 // DATABASE ENDPOINTS
 // ==========================================

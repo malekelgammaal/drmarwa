@@ -202,7 +202,7 @@ class PaymentServiceInterface {
         const hasAccess = await this.checkAccess(courseId);
         if (!hasAccess) {
             console.warn(`[PaymentService] Access denied for course: ${courseId}`);
-            window.location.href = `/#courses?locked=${courseId}`;
+            window.location.href = `index.html?locked=${courseId}#courses`;
             return false;
         }
         console.log(`[PaymentService] ✅ Access granted for course: ${courseId}`);

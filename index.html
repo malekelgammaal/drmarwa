@@ -580,78 +580,103 @@
         </div>
     </footer>
 
-    <!-- Auth Modal -->
+    <!-- Auth Modal — Premium Redesign -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
-            <button class="close-modal"><i class="ph ph-x"></i></button>
+            <button class="close-modal" aria-label="Close"><i class="ph ph-x"></i></button>
 
-            <!-- ── View: Login ── -->
+            <!-- Premium Header -->
+            <div class="auth-modal-header">
+                <img src="images/profile-pic-nav.png" alt="Dr. Marwa" class="auth-modal-logo">
+                <h3 id="auth-modal-title">Welcome Back</h3>
+                <p id="auth-modal-subtitle">Sign in to access your courses and profile</p>
+            </div>
+
+            <!-- ── View: Login / Signup ── -->
             <div id="auth-view-login">
-                <div class="auth-tabs" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                    <button class="tab-btn active" id="tab-login"
-                        style="flex:1;padding:0.5rem;background:none;border:none;color:var(--primary);font-weight:bold;border-bottom:2px solid var(--primary);cursor:pointer;">Log In</button>
-                    <button class="tab-btn" id="tab-signup"
-                        style="flex:1;padding:0.5rem;background:none;border:none;color:var(--muted);font-weight:bold;border-bottom:2px solid transparent;cursor:pointer;">Sign Up</button>
+
+                <!-- Premium Tabs -->
+                <div class="auth-tabs-premium">
+                    <button class="auth-tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Log In</button>
+                    <button class="auth-tab-btn" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
                 </div>
 
-                <!-- Login Form -->
+                <!-- Login Panel -->
                 <div id="login-panel">
                     <div id="login-message-area"></div>
                     <form class="subscription-form" id="login-form" onsubmit="event.preventDefault(); window.loginUser();">
-                        <input type="email" id="login-email" placeholder="Email address" required>
+                        <input type="email" id="login-email" placeholder="Email address" autocomplete="email" required>
                         <div style="position:relative;">
-                            <input type="password" id="login-password" placeholder="Password" required style="padding-right:3rem;">
-                            <button type="button" onclick="toggleModalPw('login-password',this)" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;"><i class="ph ph-eye"></i></button>
+                            <input type="password" id="login-password" placeholder="Password" required style="padding-right:3rem;" autocomplete="current-password">
+                            <button type="button" onclick="toggleModalPw('login-password',this)" style="position:absolute;right:0.85rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:0;" aria-label="Toggle password visibility"><i class="ph ph-eye"></i></button>
                         </div>
                         <button type="button" id="forgot-pw-link"
-                            style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.82rem;text-align:right;display:block;width:100%;margin-top:-0.25rem;margin-bottom:0.75rem;padding:0;font-family:inherit;"
+                            style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.82rem;text-align:right;display:block;width:100%;margin-top:-0.25rem;margin-bottom:1rem;padding:0;font-family:inherit;font-weight:500;"
                             onclick="switchAuthView('forgot')">
-                            Forgot your password?
+                            Forgot password?
                         </button>
-                        <button type="submit" class="btn-primary" style="width:100%">Log In</button>
+                        <button type="submit" class="btn-primary" style="width:100%" id="login-submit-btn">
+                            <i class="ph ph-sign-in"></i> Log In
+                        </button>
                     </form>
+                    
+                    <div class="auth-divider"><span>or continue with</span></div>
+                    
+                    <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <button class="btn-social google" onclick="window.socialLogin('google')">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="social-icon">
+                            Google
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Signup Form -->
+                <!-- Signup Panel -->
                 <div id="signup-panel" style="display:none;">
                     <div id="signup-message-area"></div>
-                    <div id="email-verify-notice" style="display:none; background:rgba(20,184,166,0.1);border:1px solid var(--primary);border-radius:8px;padding:1rem;margin-bottom:1rem;text-align:center;">
-                        <i class="ph ph-envelope-open" style="font-size:2rem;color:var(--primary);display:block;margin-bottom:0.5rem;"></i>
-                        <strong style="color:var(--primary);">Check Your Email!</strong>
-                        <p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--muted);">We sent a confirmation link to your email. Please click it to activate your account, then log in.</p>
-                    </div>
                     <form class="subscription-form" id="signup-form"
                         onsubmit="event.preventDefault(); window.registerUser();">
-                        <input type="text" id="signup-name" placeholder="Full Name" required>
-                        <input type="email" id="signup-email" placeholder="Email address" required>
+                        <input type="text" id="signup-name" placeholder="Full Name" autocomplete="name" required>
+                        <input type="email" id="signup-email" placeholder="Email address" autocomplete="email" required>
                         <div style="position:relative;">
-                            <input type="password" id="signup-password" placeholder="Password (min. 8 characters)" required minlength="8" style="padding-right:3rem;">
-                            <button type="button" onclick="toggleModalPw('signup-password',this)" style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;"><i class="ph ph-eye"></i></button>
+                            <input type="password" id="signup-password" placeholder="Password (min. 8 characters)" required minlength="8" style="padding-right:3rem;" autocomplete="new-password">
+                            <button type="button" onclick="toggleModalPw('signup-password',this)" style="position:absolute;right:0.85rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:0;" aria-label="Toggle password visibility"><i class="ph ph-eye"></i></button>
                         </div>
-                        <p style="font-size:0.75rem;color:var(--muted);margin:-0.5rem 0 0.75rem;">
+                        <p style="font-size:0.75rem;color:var(--muted);margin:-0.5rem 0 0.75rem;display:flex;align-items:center;gap:0.35rem;">
                             <i class="ph ph-shield-check" style="color:var(--primary);"></i>
-                            You'll receive a verification email after sign-up.
+                            A verification email will be sent after sign-up.
                         </p>
-                        <button type="submit" class="btn-primary" style="width:100%">Create Account</button>
+                        <button type="submit" class="btn-primary" style="width:100%" id="signup-submit-btn">
+                            <i class="ph ph-user-plus"></i> Create Account
+                        </button>
                     </form>
+                    
+                    <div class="auth-divider"><span>or continue with</span></div>
+                    
+                    <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <button class="btn-social google" onclick="window.socialLogin('google')">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="social-icon">
+                            Google
+                        </button>
+                    </div>
                 </div>
+
             </div>
 
             <!-- ── View: Forgot Password ── -->
             <div id="auth-view-forgot" style="display:none;">
-                <button onclick="switchAuthView('login')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:0.3rem;margin-bottom:1.25rem;padding:0;font-family:inherit;">
+                <button onclick="switchAuthView('login')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:0.35rem;margin-bottom:1.25rem;padding:0;font-family:inherit;transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--muted)'">
                     <i class="ph ph-arrow-left"></i> Back to Login
                 </button>
                 <div style="text-align:center;margin-bottom:1.5rem;">
-                    <div style="width:52px;height:52px;background:rgba(20,184,166,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+                    <div style="width:56px;height:56px;background:rgba(45,212,191,0.1);border:2px solid rgba(45,212,191,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 0.85rem;">
                         <i class="ph ph-envelope" style="font-size:1.5rem;color:var(--primary);"></i>
                     </div>
-                    <h3 style="margin:0 0 0.25rem;">Forgot Password?</h3>
-                    <p style="color:var(--muted);font-size:0.85rem;margin:0;">Enter your email and we'll send you a reset link.</p>
+                    <h3 style="margin:0 0 0.3rem;font-size:1.2rem;">Forgot Password?</h3>
+                    <p style="color:var(--muted);font-size:0.875rem;margin:0;">Enter your email and we'll send a reset link.</p>
                 </div>
                 <div id="forgot-message-area"></div>
                 <form class="subscription-form" id="forgot-form" onsubmit="event.preventDefault(); window.sendForgotPassword();">
-                    <input type="email" id="forgot-email" placeholder="Your email address" required>
+                    <input type="email" id="forgot-email" placeholder="Your email address" autocomplete="email" required>
                     <button type="submit" class="btn-primary" style="width:100%" id="forgot-submit-btn">
                         <i class="ph ph-paper-plane-right"></i> Send Reset Link
                     </button>
@@ -661,42 +686,93 @@
             <!-- ── View: OTP Verification ── -->
             <div id="auth-view-otp" style="display:none;">
                 <div style="text-align:center;margin-bottom:1.5rem;">
-                    <div style="width:56px;height:56px;background:rgba(20,184,166,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                    <div style="width:60px;height:60px;background:rgba(45,212,191,0.1);border:2px solid rgba(45,212,191,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                         <i class="ph ph-envelope-open" style="font-size:1.6rem;color:var(--primary);"></i>
                     </div>
-                    <h3 style="margin:0 0 0.4rem;">Enter Verification Code</h3>
-                    <p style="color:var(--muted);font-size:0.85rem;margin:0;line-height:1.6;">
+                    <h3 style="margin:0 0 0.4rem;font-size:1.2rem;">Enter Verification Code</h3>
+                    <p style="color:var(--muted);font-size:0.875rem;margin:0;line-height:1.6;">
                         We sent a 6-digit code to<br>
                         <strong id="otp-email-display" style="color:var(--text);"></strong>
                     </p>
                 </div>
-
                 <div id="otp-message-area"></div>
-
                 <form class="subscription-form" id="otp-form" onsubmit="event.preventDefault(); window.verifyOtp();">
                     <input
                         type="text"
                         id="otp-input"
-                        placeholder=""
+                        placeholder="000000"
                         maxlength="6"
                         inputmode="numeric"
                         pattern="[0-9]*"
                         autocomplete="one-time-code"
-                        style="text-align:center;font-size:2rem;font-weight:700;letter-spacing:0.4em;padding:0.9rem;width:100%;border-radius:10px;margin-bottom:0.5rem;"
+                        style="text-align:center;font-size:2rem;font-weight:700;letter-spacing:0.5em;padding:0.9rem;width:100%;border-radius:10px;margin-bottom:0.5rem;"
                         required>
-                    <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin:0 0 1rem;">
+                    <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin:0 0 1rem;display:flex;align-items:center;justify-content:center;gap:0.35rem;">
                         <i class="ph ph-clock"></i> Code expires in 1 hour
                     </p>
                     <button type="submit" class="btn-primary" style="width:100%;" id="otp-submit-btn">
                         <i class="ph ph-check-circle"></i> Verify &amp; Create Account
                     </button>
                 </form>
-
                 <button onclick="switchAuthView('login')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.82rem;margin-top:1rem;display:block;width:100%;text-align:center;font-family:inherit;">
                     ← Back to Login &nbsp;|&nbsp; <span style="color:var(--primary);">Didn't receive it? Check spam</span>
                 </button>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Email Verification Overlay — Unclosable Premium -->
+    <div class="verify-modal-overlay" id="check-email-modal" style="display:none;">
+        <div class="verify-modal-box">
+            <div class="verify-icon-wrap">
+                <i class="ph ph-envelope-simple-open"></i>
+            </div>
+            <h2>Check Your Email</h2>
+            <p>We've sent a verification link to</p>
+            <div class="verify-email-chip" id="verify-email-chip">
+                <i class="ph ph-at"></i>
+                <span id="verify-email-text">your email</span>
+            </div>
+            <p style="margin-bottom:1.25rem;">Click the link in the email to activate your account.<br>You <strong style="color:var(--text);">cannot access the platform</strong> until verification is complete.</p>
+            <div class="verify-timer" id="verify-timer-wrap">
+                Link expires in <span id="verify-countdown">60:00</span>
+            </div>
+            <button class="verify-resend-btn" id="verify-resend-btn" onclick="window.resendVerification()">
+                Resend verification email
+            </button>
+            <p style="font-size:0.75rem;color:var(--muted);margin-top:1.5rem;margin-bottom:0;">
+                <i class="ph ph-info"></i> Already verified? <button onclick="window.location.reload()" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:0.75rem;font-family:inherit;font-weight:600;padding:0;">Refresh this page</button>
+            </p>
+        </div>
+    </div>
+
+    <!-- Account Already Exists Modal — Premium -->
+    <div class="modal" id="account-exists-modal">
+        <div class="modal-content" style="text-align:center; max-width:400px;">
+            <div class="exists-modal-icon">
+                <i class="ph ph-user-circle-gear"></i>
+            </div>
+            <h3 style="margin-bottom:0.5rem;">Account Already Exists</h3>
+            <p>An account with this email already exists.<br>We're signing you in now.</p>
+            <div id="exists-modal-loader" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;color:var(--primary);font-size:0.9rem;margin-top:0.5rem;">
+                <i class="ph ph-spinner" style="animation:spin 0.8s linear infinite;font-size:1.2rem;"></i>
+                Logging you in...
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Created Success Modal — Premium -->
+    <div class="modal" id="account-success-modal">
+        <div class="modal-content" style="text-align:center; max-width:420px;">
+            <div class="success-check-anim">
+                <i class="ph ph-check-fat"></i>
+            </div>
+            <h3 style="margin-bottom:0.5rem;font-size:1.5rem;">Account Verified! 🎉</h3>
+            <p id="account-success-name" style="margin-bottom:1.5rem;">Welcome! Your account has been successfully verified. You're now logged in.</p>
+            <button class="btn-primary" onclick="document.getElementById('account-success-modal').classList.remove('active')" style="width:100%;padding:0.9rem 2rem;">
+                <i class="ph ph-rocket-launch"></i> Start Learning
+            </button>
         </div>
     </div>
 
@@ -753,40 +829,6 @@
         </div>
     </div>
 
-    <!-- Email Verification Modal -->
-    <div class="modal" id="check-email-modal" style="display:none; z-index:99999;">
-        <div class="modal-content" style="text-align:center; padding:3rem; max-width:500px; border:2px solid var(--primary); background:var(--card-bg);">
-            <div style="font-size:4rem; color:var(--primary); margin-bottom:1rem;">
-                <i class="ph ph-envelope-simple-open"></i>
-            </div>
-            <h3 style="color:var(--text); margin-bottom:1rem; font-size:1.8rem;">Check Your Email</h3>
-            <p style="color:var(--muted); font-size:1.1rem; line-height:1.6;">
-                We've sent a verification link to your email address.<br>
-                Please check your inbox and click the link to activate your account.
-            </p>
-            <p style="color:var(--primary); font-size:0.9rem; margin-top:1.5rem; font-weight:600;">
-                Waiting for verification... <i class="ph ph-spinner ph-spin"></i>
-            </p>
-        </div>
-    </div>
-
-    <!-- Account Created Success Modal -->
-    <div class="modal" id="account-success-modal" style="display:none; z-index:99999;">
-        <div class="modal-content" style="text-align:center; padding:3rem; max-width:500px; border:2px solid #10b981; background:var(--card-bg);">
-            <button class="close-modal" onclick="document.getElementById('account-success-modal').style.display='none'"><i class="ph ph-x"></i></button>
-            <div style="font-size:4rem; color:#10b981; margin-bottom:1rem;">
-                <i class="ph ph-check-circle"></i>
-            </div>
-            <h3 style="color:var(--text); margin-bottom:1rem; font-size:1.8rem;">Account Created!</h3>
-            <p style="color:var(--muted); font-size:1.1rem; line-height:1.6;">
-                Your account has been successfully verified.<br>
-                You are now logged in and ready to explore the platform.
-            </p>
-            <button class="btn-primary" onclick="document.getElementById('account-success-modal').style.display='none'" style="margin-top:1.5rem; padding:0.8rem 2rem; width:100%;">
-                Start Learning
-            </button>
-        </div>
-    </div>
 
     <!-- Supabase SDK removed as we now use Node.js backend -->
     
