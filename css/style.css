@@ -1677,7 +1677,7 @@ section[id], [id] {
     }
 
     .hero-content {
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: 2.5rem;
         text-align: center;
     }
