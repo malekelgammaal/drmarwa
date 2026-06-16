@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const refreshToken = hashParams.get('refresh_token');
             const type = hashParams.get('type');
             
-            if (accessToken && (type === 'signup' || type === 'magiclink' || type === 'recovery')) {
+            if (accessToken) {
                 // Remove hash from URL
                 window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
                 
@@ -22,9 +22,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
                 
                 // Save session permanently
-                const savedUser = user;
-                localStorage.setItem('site_current_user', JSON.stringify(savedUser));
-                if (session) localStorage.setItem('site_current_session', JSON.stringify({access_token: accessToken, refresh_token: refreshToken}));
+                localStorage.setItem('site_current_user', JSON.stringify(user));
+                localStorage.setItem('site_current_session', JSON.stringify({access_token: accessToken, refresh_token: refreshToken}));
+                
+                // Notify Admin if new user
+                if (window.notifyAdminNewUser) window.notifyAdminNewUser(user);
+                
+                // Check if came from checkout
+                const intendedCourse = sessionStorage.getItem('intended_course');
+                if (intendedCourse) {
+                    sessionStorage.removeItem('intended_course');
+                    window.location.href = `checkout.html?course=${intendedCourse}`;
+                    return;
+                }
                 
                 // Remove any active verification overlay
                 const verifyOverlay = document.getElementById('check-email-modal');
@@ -43,6 +53,54 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Error parsing auth hash:", e);
         }
     }
+
+    // ==========================================
+    // Checkout Guard & Admin Notification
+    // ==========================================
+    
+    // 1. Guard Checkout Links
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href^="checkout.html"]');
+        if (link) {
+            const currentUser = JSON.parse(localStorage.getItem('site_current_user') || 'null');
+            if (!currentUser) {
+                e.preventDefault();
+                const urlObj = new URL(link.href, window.location.origin);
+                const courseId = urlObj.searchParams.get('course') || '';
+                sessionStorage.setItem('intended_course', courseId);
+                const authModalObj = document.getElementById('auth-modal');
+                if (authModalObj) authModalObj.classList.add('active');
+                switchAuthTab('signup');
+                showToast('Please create an account or log in to continue.', 'info');
+            }
+        }
+    });
+
+    // 2. Centralized Admin Notification (Web3Forms)
+    window.notifyAdminNewUser = function(user) {
+        if (!user || !user.email) return;
+        const flagKey = 'has_notified_signup_' + user.email;
+        if (localStorage.getItem(flagKey)) return; // Already notified
+
+        try {
+            const now = new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kuwait' });
+            const name = user.user_metadata?.name || user.email.split('@')[0];
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    access_key: '9d8affa7-79dd-41e4-a9d6-0587948e964f',
+                    subject: '🆕 New User Registered — Dr. Marwa Platform',
+                    from_name: 'Platform Notifications',
+                    to: 'marwabadr638@gmail.com', // Optional: Web3Forms relies on the access_key to route to the correct email
+                    message: `New user registered on the platform:\n\nName: ${name}\nEmail: ${user.email}\nTime: ${now} (Kuwait)`
+                })
+            });
+            localStorage.setItem(flagKey, 'true');
+        } catch (e) {
+            console.warn('Notification failed', e);
+        }
+    };
 
     // ==========================================
     // Navbar Scroll Shadow
@@ -628,20 +686,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) throw new Error(data.error || 'Failed to create account');
 
-            // ── Notify Admin via Web3Forms ──
-            try {
-                const now = new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kuwait' });
-                fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        access_key: '9d8affa7-79dd-41e4-a9d6-0587948e964f',
-                        subject: '🆕 New User Registered — Dr. Marwa Platform',
-                        from_name: 'Platform Notifications',
-                        message: `New user registered:\n\nName: ${name || 'N/A'}\nEmail: ${email}\nTime: ${now} (Kuwait)`
-                    })
-                });
-            } catch (e) { console.warn('Notification failed', e); }
+            // Notify Admin
+            const userForNotification = data.session?.user || data.user;
+            if (userForNotification && window.notifyAdminNewUser) {
+                window.notifyAdminNewUser(userForNotification);
+            }
 
             // Log in immediately if session exists
             const user   = data.session?.user || data.user;

@@ -52,6 +52,11 @@ app.post('/api/auth/signup', async (req, res) => {
 
     if (error) return res.status(400).json({ error: error.message });
 
+    // Supabase returns an empty identities array if the user already exists.
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+        return res.status(400).json({ error: 'This account already exists. Please log in instead.' });
+    }
+
     res.status(201).json({ message: 'Account created successfully!', user: data.user, session: data.session });
 });
 
