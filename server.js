@@ -395,9 +395,6 @@ app.post('/api/record-purchase', async (req, res) => {
                 currency: secureCurrency,
                 purchased_at: new Date().toISOString(),
                 is_active: true
-            }]);,
-                purchased_at: new Date().toISOString(),
-                is_active: true
             }]);
 
         if (error) {
