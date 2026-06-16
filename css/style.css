@@ -22,34 +22,64 @@
 
 :root {
     /* Fonts */
-    --font-primary: 'YearOfHandicrafts', 'Inter', sans-serif;
-    --font-arabic: 'YearOfHandicrafts', 'Inter', sans-serif;
+    --font-primary: 'YearOfHandicrafts', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-arabic: 'YearOfHandicrafts', 'Inter', -apple-system, sans-serif;
 
-    /* Light Theme Palette */
-    --clr-bg-light: #f8fafc;
-    --clr-alt-light: #ffffff;
-    --clr-text-light: #0f172a;
-    --clr-muted-light: #475569;
-    --clr-primary-light: #0d9488;
-    --clr-primary-hover-light: #0f766e;
-    --clr-secondary-light: #0369a1;
-    --clr-border-light: #e2e8f0;
-    --clr-card-bg-light: rgba(255, 255, 255, 0.92);
-    --clr-overlay-light: rgba(248, 250, 252, 0.92);
+    /* Base Palette - High Contrast Grayscale */
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --gray-950: #030712;
 
-    /* Dark Theme Palette */
-    --clr-bg-dark: #080d1a;
-    --clr-alt-dark: #0e1623;
-    --clr-text-dark: #f1f5f9;
-    --clr-muted-dark: #94a3b8;
-    --clr-primary-dark: #2dd4bf;
-    --clr-primary-hover-dark: #5eead4;
-    --clr-secondary-dark: #38bdf8;
-    --clr-border-dark: #1a2540;
-    --clr-card-bg-dark: rgba(14, 22, 35, 0.9);
-    --clr-overlay-dark: rgba(5, 8, 18, 0.92);
+    /* Linear/Stripe Inspired Primary Palette (Teal/Emerald) */
+    --primary-50: #f0fdfa;
+    --primary-100: #ccfbf1;
+    --primary-200: #99f6e4;
+    --primary-300: #5eead4;
+    --primary-400: #2dd4bf;
+    --primary-500: #14b8a6;
+    --primary-600: #0d9488;
+    --primary-700: #0f766e;
+    --primary-800: #115e59;
+    --primary-900: #134e4a;
+    --primary-950: #042f2e;
 
-    /* Default (Dark Mode) */
+    /* Accent Palette for Aurora/Glows (Purple/Blue) */
+    --accent-glow-1: #8b5cf6; /* Purple */
+    --accent-glow-2: #3b82f6; /* Blue */
+
+    /* Premium Light Theme */
+    --clr-bg-light: #ffffff; /* Ultra clean white */
+    --clr-alt-light: #f9fafb; /* Soft gray for sections */
+    --clr-text-light: #111827; /* Near black */
+    --clr-muted-light: #6b7280;
+    --clr-primary-light: var(--primary-600);
+    --clr-primary-hover-light: var(--primary-700);
+    --clr-secondary-light: var(--accent-glow-2);
+    --clr-border-light: rgba(0, 0, 0, 0.08); /* Extremely subtle borders */
+    --clr-card-bg-light: rgba(255, 255, 255, 0.7); /* Glass-ready */
+    --clr-overlay-light: rgba(255, 255, 255, 0.85);
+    
+    /* Cinematic Dark Theme */
+    --clr-bg-dark: #000000; /* Pure OLED Black */
+    --clr-alt-dark: #0a0a0a; /* Very dark gray for depth */
+    --clr-text-dark: #f9fafb;
+    --clr-muted-dark: #9ca3af;
+    --clr-primary-dark: var(--primary-400);
+    --clr-primary-hover-dark: var(--primary-300);
+    --clr-secondary-dark: var(--accent-glow-2);
+    --clr-border-dark: rgba(255, 255, 255, 0.08); /* Ultra thin, low opacity */
+    --clr-card-bg-dark: rgba(25, 25, 25, 0.4); /* Deep glass */
+    --clr-overlay-dark: rgba(0, 0, 0, 0.85);
+
+    /* Default to Dark Theme variables */
     --bg: var(--clr-bg-dark);
     --alt-bg: var(--clr-alt-dark);
     --text: var(--clr-text-dark);
@@ -60,28 +90,28 @@
     --border: var(--clr-border-dark);
     --card-bg: var(--clr-card-bg-dark);
     --overlay: var(--clr-overlay-dark);
+    --glass-blur: blur(16px) saturate(180%);
 
-    /* Premium Shadow System — 3 elevations */
-    --shadow-low: 0 2px 8px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.12);
-    --shadow-mid: 0 8px 32px -4px rgba(0,0,0,0.38), 0 4px 16px -4px rgba(0,0,0,0.22);
-    --shadow-high: 0 20px 60px -8px rgba(0,0,0,0.55), 0 8px 24px -4px rgba(0,0,0,0.35);
+    /* Elevation & Shadow System (Apple/Stripe Style) */
+    --shadow-low: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-mid: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-high: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 40px rgba(45, 212, 191, 0.15); /* Primary color glow */
     --shadow: var(--shadow-mid);
 
-    /* Glow System */
-    --glow-sm: 0 0 12px rgba(45,212,191,0.18);
-    --glow-md: 0 0 28px rgba(45,212,191,0.28);
-    --glow-lg: 0 0 50px rgba(45,212,191,0.38);
-    --glow: var(--glow-sm);
-
     /* Layout & Spacing */
-    --nav-height: 60px;
-    --section-pad-y: 3rem;
+    --nav-height: 70px;
+    --section-pad-y: 6rem;
+    --border-radius-sm: 8px;
     --border-radius: 16px;
-    --border-radius-sm: 10px;
     --border-radius-lg: 24px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-fast: all 0.18s ease;
-    --transition-spring: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --border-radius-xl: 32px;
+    
+    /* Transitions (Cinematic & Snappy) */
+    --transition-fast: all 0.15s ease-out;
+    --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    --transition-slow: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 [data-theme="light"] {
@@ -95,7 +125,11 @@
     --border: var(--clr-border-light);
     --card-bg: var(--clr-card-bg-light);
     --overlay: var(--clr-overlay-light);
-    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 40px rgba(13, 148, 136, 0.15);
+    
+    /* In Light mode, shadows are softer but deeper */
+    --shadow-mid: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.025);
+    --shadow-high: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
 }
 
 /* =========================================

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -148,7 +148,29 @@
         .spinner-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
         .spinner-box p { color: var(--muted); margin: 0; font-size: 0.9rem; }
     </style>
+    <!-- Favicon & App Icons -->
+    <link rel="icon" href="images/profile-pic-nav.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/profile-pic-nav.png">
+    
+    <!-- SEO & Social Media Meta Tags -->
+    <meta name="description" content="Dr. Marwa Badr - Consultant & Trainer for Mental Health Professionals. Advanced training in CBT, DBT, and ACT therapies.">
+    <meta name="keywords" content="Dr. Marwa Badr, Ø¯ÙƒØªÙˆØ±Ø© Ù…Ø±ÙˆØ© Ø¨Ø¯Ø±, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù†ÙØ³ÙŠ, CBT, DBT, ACT, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù…Ø¹Ø±ÙÙŠ Ø§Ù„Ø³Ù„ÙˆÙƒÙŠ, ÙƒÙˆØ±Ø³Ø§Øª Ø¹Ù„Ù… Ù†ÙØ³, ØªØ¯Ø±ÙŠØ¨ Ø£Ø®ØµØ§Ø¦ÙŠÙŠÙ† Ù†ÙØ³ÙŠÙŠÙ†">
+    <meta name="author" content="Dr. Marwa Badr">
+    
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+    <meta property="og:title" content="Dr. Marwa Badr Platform">
+    <meta property="og:description" content="Empowering psychologists with advanced evidence-based practices (CBT, DBT, ACT).">
+    <meta property="og:image" content="https://drmarwa.pages.dev/images/profile-pic-nav.png">
+    <meta property="og:url" content="https://drmarwa.pages.dev/">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dr. Marwa Badr Platform">
+    <meta name="twitter:description" content="Empowering psychologists with advanced evidence-based practices (CBT, DBT, ACT).">
+    <meta name="twitter:image" content="https://drmarwa.pages.dev/images/profile-pic-nav.png">
 </head>
+
 <body>
 
     <!-- Loading Overlay -->
@@ -178,7 +200,7 @@
                 <div class="course-name" id="course-name-display">Loading...</div>
                 <div class="price-row">
                     <div>
-                        <span class="sale-price" id="sale-price-display">—</span>
+                        <span class="sale-price" id="sale-price-display">â€”</span>
                         <span class="original-price" id="original-price-display" style="margin-left: 0.5rem;"></span>
                     </div>
                     <span class="badge" id="discount-badge-display" style="display:none;"></span>
@@ -187,7 +209,7 @@
 
             <!-- What's included -->
             <div class="features-list">
-                <div class="feature"><i class="ph ph-infinity"></i> Lifetime access — always available on your account</div>
+                <div class="feature"><i class="ph ph-infinity"></i> Lifetime access â€” always available on your account</div>
                 <div class="feature"><i class="ph ph-video"></i> Video lectures + downloadable materials</div>
                 <div class="feature"><i class="ph ph-certificate"></i> Certificate of completion</div>
                 <div class="feature"><i class="ph ph-currency-dollar"></i> 7-day money-back guarantee</div>
@@ -200,7 +222,7 @@
 
             <div class="secure-footer">
                 <i class="ph ph-shield-check"></i>
-                <span>Secured by Gammal Tech · 256-bit SSL Encryption</span>
+                <span>Secured by Gammal Tech Â· 256-bit SSL Encryption</span>
             </div>
         </div>
     </div>
@@ -229,7 +251,7 @@
                 return;
             }
 
-            document.getElementById('course-name-display').textContent = course.name_ar + ' — ' + course.name_en;
+            document.getElementById('course-name-display').textContent = course.name_ar + ' â€” ' + course.name_en;
             document.getElementById('sale-price-display').textContent = `$${course.sale_price.toFixed(2)}`;
 
             if (course.full_price) {
@@ -289,3 +311,4 @@
 
 </body>
 </html>
+

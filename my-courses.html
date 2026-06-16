@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -9,10 +9,10 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* ── Page Layout ── */
+        /* â”€â”€ Page Layout â”€â”€ */
         .page-wrapper { min-height: 100vh; padding-top: var(--nav-height); }
 
-        /* ── Top Bar ── */
+        /* â”€â”€ Top Bar â”€â”€ */
         .top-bar {
             background: var(--card-bg);
             border-bottom: 1px solid var(--border);
@@ -40,7 +40,7 @@
         .user-greeting { font-size: 0.9rem; color: var(--muted); }
         .user-greeting strong { color: var(--text); }
 
-        /* ── Hero ── */
+        /* â”€â”€ Hero â”€â”€ */
         .hero-section {
             background: linear-gradient(135deg, rgba(20,184,166,0.08) 0%, transparent 60%);
             border-bottom: 1px solid var(--border);
@@ -63,7 +63,7 @@
         .hero-section h1 { font-size: 2.2rem; font-weight: 700; margin: 0 0 0.5rem; }
         .hero-section p { color: var(--muted); font-size: 1rem; margin: 0; }
 
-        /* ── Stats Bar ── */
+        /* â”€â”€ Stats Bar â”€â”€ */
         .stats-bar {
             max-width: 1100px;
             margin: 2rem auto 0;
@@ -85,10 +85,10 @@
         .stat-pill strong { color: var(--text); }
         .stat-pill span { color: var(--muted); }
 
-        /* ── Main Content ── */
+        /* â”€â”€ Main Content â”€â”€ */
         .main-content { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; }
 
-        /* ── Section Header ── */
+        /* â”€â”€ Section Header â”€â”€ */
         .section-label {
             font-size: 0.75rem;
             font-weight: 700;
@@ -107,14 +107,14 @@
             background: var(--border);
         }
 
-        /* ── Course Grid ── */
+        /* â”€â”€ Course Grid â”€â”€ */
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 1.5rem;
         }
 
-        /* ── Course Card ── */
+        /* â”€â”€ Course Card â”€â”€ */
         .course-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -212,7 +212,7 @@
             font-family: inherit;
         }
 
-        /* ── Loading State ── */
+        /* â”€â”€ Loading State â”€â”€ */
         .loading-state {
             grid-column: 1 / -1;
             text-align: center;
@@ -221,7 +221,7 @@
         }
         .loading-state i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; display: block; }
 
-        /* ── Empty State ── */
+        /* â”€â”€ Empty State â”€â”€ */
         .empty-state {
             grid-column: 1 / -1;
             text-align: center;
@@ -248,7 +248,29 @@
             .top-bar { padding: 0.75rem 1rem; }
         }
     </style>
+    <!-- Favicon & App Icons -->
+    <link rel="icon" href="images/profile-pic-nav.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/profile-pic-nav.png">
+    
+    <!-- SEO & Social Media Meta Tags -->
+    <meta name="description" content="Dr. Marwa Badr - Consultant & Trainer for Mental Health Professionals. Advanced training in CBT, DBT, and ACT therapies.">
+    <meta name="keywords" content="Dr. Marwa Badr, Ø¯ÙƒØªÙˆØ±Ø© Ù…Ø±ÙˆØ© Ø¨Ø¯Ø±, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù†ÙØ³ÙŠ, CBT, DBT, ACT, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù…Ø¹Ø±ÙÙŠ Ø§Ù„Ø³Ù„ÙˆÙƒÙŠ, ÙƒÙˆØ±Ø³Ø§Øª Ø¹Ù„Ù… Ù†ÙØ³, ØªØ¯Ø±ÙŠØ¨ Ø£Ø®ØµØ§Ø¦ÙŠÙŠÙ† Ù†ÙØ³ÙŠÙŠÙ†">
+    <meta name="author" content="Dr. Marwa Badr">
+    
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+    <meta property="og:title" content="Dr. Marwa Badr Platform">
+    <meta property="og:description" content="Empowering psychologists with advanced evidence-based practices (CBT, DBT, ACT).">
+    <meta property="og:image" content="https://drmarwa.pages.dev/images/profile-pic-nav.png">
+    <meta property="og:url" content="https://drmarwa.pages.dev/">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dr. Marwa Badr Platform">
+    <meta name="twitter:description" content="Empowering psychologists with advanced evidence-based practices (CBT, DBT, ACT).">
+    <meta name="twitter:image" content="https://drmarwa.pages.dev/images/profile-pic-nav.png">
 </head>
+
 <body>
 
     <!-- Top Navigation -->
@@ -286,7 +308,7 @@
             <div class="hero-inner">
                 <div class="hero-badge"><i class="ph ph-book-open"></i> My Learning Library</div>
                 <h1 id="hero-heading">My Courses</h1>
-                <p>All your purchased courses — accessible anytime, forever.</p>
+                <p>All your purchased courses â€” accessible anytime, forever.</p>
 
                 <!-- Stats Bar -->
                 <div class="stats-bar" id="stats-bar" style="display:none;">
@@ -325,70 +347,70 @@
 
     <script>
     // ============================================================
-    //  My Courses Page — Dr. Marwa Badr Platform
+    //  My Courses Page â€” Dr. Marwa Badr Platform
     // ============================================================
 
     const API_BASE = 'https://drmarwa.onrender.com';
 
-    // ── Course Catalog (matches payment-service.js) ──
+    // â”€â”€ Course Catalog (matches payment-service.js) â”€â”€
     const CATALOG = {
         'healing-journey-program': {
-            name_ar: 'رحلة تعافي',
+            name_ar: 'Ø±Ø­Ù„Ø© ØªØ¹Ø§ÙÙŠ',
             name_en: 'Healing Journey Program',
             icon: 'ph-heart-half',
             color: '#14b8a6',
             gradient: 'linear-gradient(135deg,rgba(20,184,166,0.18),rgba(20,184,166,0.05))',
-            desc: 'معالجة الصدمات وبناء المرونة العاطفية',
+            desc: 'Ù…Ø¹Ø§Ù„Ø¬Ø© Ø§Ù„ØµØ¯Ù…Ø§Øª ÙˆØ¨Ù†Ø§Ø¡ Ø§Ù„Ù…Ø±ÙˆÙ†Ø© Ø§Ù„Ø¹Ø§Ø·ÙÙŠØ©',
             duration: '2 Days'
         },
         'dbt-course': {
-            name_ar: 'العلاج الجدلي السلوكي',
+            name_ar: 'Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ø¬Ø¯Ù„ÙŠ Ø§Ù„Ø³Ù„ÙˆÙƒÙŠ',
             name_en: 'Dialectical Behavior Therapy (DBT)',
             icon: 'ph-waves',
             color: '#3b82f6',
             gradient: 'linear-gradient(135deg,rgba(59,130,246,0.18),rgba(59,130,246,0.05))',
-            desc: 'تنظيم المشاعر والمهارات الجدلية السلوكية',
+            desc: 'ØªÙ†Ø¸ÙŠÙ… Ø§Ù„Ù…Ø´Ø§Ø¹Ø± ÙˆØ§Ù„Ù…Ù‡Ø§Ø±Ø§Øª Ø§Ù„Ø¬Ø¯Ù„ÙŠØ© Ø§Ù„Ø³Ù„ÙˆÙƒÙŠØ©',
             duration: '5 Days'
         },
         'cbt-course': {
-            name_ar: 'العلاج المعرفي السلوكي',
+            name_ar: 'Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù…Ø¹Ø±ÙÙŠ Ø§Ù„Ø³Ù„ÙˆÙƒÙŠ',
             name_en: 'Cognitive Behavioral Therapy (CBT)',
             icon: 'ph-brain',
             color: '#8b5cf6',
             gradient: 'linear-gradient(135deg,rgba(139,92,246,0.18),rgba(139,92,246,0.05))',
-            desc: 'إعادة هيكلة الأفكار السلبية والمعتقدات المحدودة',
+            desc: 'Ø¥Ø¹Ø§Ø¯Ø© Ù‡ÙŠÙƒÙ„Ø© Ø§Ù„Ø£ÙÙƒØ§Ø± Ø§Ù„Ø³Ù„Ø¨ÙŠØ© ÙˆØ§Ù„Ù…Ø¹ØªÙ‚Ø¯Ø§Øª Ø§Ù„Ù…Ø­Ø¯ÙˆØ¯Ø©',
             duration: '4 Days'
         },
         'act-course': {
-            name_ar: 'القبول والالتزام',
+            name_ar: 'Ø§Ù„Ù‚Ø¨ÙˆÙ„ ÙˆØ§Ù„Ø§Ù„ØªØ²Ø§Ù…',
             name_en: 'Acceptance & Commitment Therapy (ACT)',
             icon: 'ph-compass',
             color: '#f59e0b',
             gradient: 'linear-gradient(135deg,rgba(245,158,11,0.18),rgba(245,158,11,0.05))',
-            desc: 'تطوير المرونة النفسية والتقبل الفعّال',
+            desc: 'ØªØ·ÙˆÙŠØ± Ø§Ù„Ù…Ø±ÙˆÙ†Ø© Ø§Ù„Ù†ÙØ³ÙŠØ© ÙˆØ§Ù„ØªÙ‚Ø¨Ù„ Ø§Ù„ÙØ¹Ù‘Ø§Ù„',
             duration: '4 Days'
         },
         'personality-disorders-course': {
-            name_ar: 'اضطرابات الشخصية',
+            name_ar: 'Ø§Ø¶Ø·Ø±Ø§Ø¨Ø§Øª Ø§Ù„Ø´Ø®ØµÙŠØ©',
             name_en: 'Personality Disorders Course',
             icon: 'ph-person-simple-circle',
             color: '#ec4899',
             gradient: 'linear-gradient(135deg,rgba(236,72,153,0.18),rgba(236,72,153,0.05))',
-            desc: 'فهم وإدارة أنماط الشخصية المعقدة',
+            desc: 'ÙÙ‡Ù… ÙˆØ¥Ø¯Ø§Ø±Ø© Ø£Ù†Ù…Ø§Ø· Ø§Ù„Ø´Ø®ØµÙŠØ© Ø§Ù„Ù…Ø¹Ù‚Ø¯Ø©',
             duration: '5 Days'
         },
         'tri-therapy-bundle': {
-            name_ar: 'باقة الثلاث علاجات',
+            name_ar: 'Ø¨Ø§Ù‚Ø© Ø§Ù„Ø«Ù„Ø§Ø« Ø¹Ù„Ø§Ø¬Ø§Øª',
             name_en: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
             icon: 'ph-star-four',
             color: '#f97316',
             gradient: 'linear-gradient(135deg,rgba(249,115,22,0.22),rgba(249,115,22,0.05))',
-            desc: 'التدريب الشامل على أقوى أساليب العلاج النفسي الحديث',
+            desc: 'Ø§Ù„ØªØ¯Ø±ÙŠØ¨ Ø§Ù„Ø´Ø§Ù…Ù„ Ø¹Ù„Ù‰ Ø£Ù‚ÙˆÙ‰ Ø£Ø³Ø§Ù„ÙŠØ¨ Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù†ÙØ³ÙŠ Ø§Ù„Ø­Ø¯ÙŠØ«',
             duration: '13 Days'
         }
     };
 
-    // ── Theme ──
+    // â”€â”€ Theme â”€â”€
     const html = document.documentElement;
     const savedTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', savedTheme);
@@ -398,7 +420,7 @@
         localStorage.setItem('theme', next);
     });
 
-    // ── Auth Guard ──
+    // â”€â”€ Auth Guard â”€â”€
     function getSession() {
         return JSON.parse(localStorage.getItem('site_current_session') || 'null');
     }
@@ -411,7 +433,7 @@
         window.location.href = 'index.html';
     }
 
-    // ── Format Date ──
+    // â”€â”€ Format Date â”€â”€
     function formatDate(iso) {
         if (!iso) return '';
         return new Date(iso).toLocaleDateString('en-GB', {
@@ -419,7 +441,7 @@
         });
     }
 
-    // ── Render Course Card ──
+    // â”€â”€ Render Course Card â”€â”€
     function renderCard(purchase, index) {
         const info = CATALOG[purchase.course_id] || {
             name_ar: purchase.course_id,
@@ -428,7 +450,7 @@
             color: '#14b8a6',
             gradient: 'linear-gradient(135deg,rgba(20,184,166,0.1),rgba(20,184,166,0.02))',
             desc: '',
-            duration: '—'
+            duration: 'â€”'
         };
 
         const card = document.createElement('div');
@@ -470,7 +492,7 @@
         return card;
     }
 
-    // ── Render Empty State ──
+    // â”€â”€ Render Empty State â”€â”€
     function renderEmpty() {
         return `
             <div class="empty-state">
@@ -482,12 +504,12 @@
         `;
     }
 
-    // ── Main: Load Courses ──
+    // â”€â”€ Main: Load Courses â”€â”€
     async function loadMyCourses() {
         const session = getSession();
         const user = getUser();
 
-        // Not logged in → redirect
+        // Not logged in â†’ redirect
         if (!session?.access_token || !user) {
             window.location.href = 'index.html';
             return;
@@ -513,7 +535,7 @@
 
             const purchases = await res.json();
 
-            // No purchases → show empty state (don't redirect, let them browse)
+            // No purchases â†’ show empty state (don't redirect, let them browse)
             if (!purchases || purchases.length === 0) {
                 grid.innerHTML = renderEmpty();
                 return;
@@ -543,8 +565,9 @@
         }
     }
 
-    // ── Boot ──
+    // â”€â”€ Boot â”€â”€
     loadMyCourses();
     </script>
 </body>
 </html>
+

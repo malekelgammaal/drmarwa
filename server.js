@@ -196,6 +196,15 @@ app.get('/api/sections', async (req, res) => {
 // ADMIN ENDPOINTS
 // ==========================================
 
+// --- ADMIN MIDDLEWARE ---
+async function requireAdmin(req, res, next) {
+    const user = await getUserFromRequest(req);
+    if (!user || user.email !== 'marwabadr638@gmail.com') {
+        return res.status(403).json({ error: 'Forbidden: Admin access required' });
+    }
+    next();
+}
+
 // --- REORDER HELPER ---
 async function handleReorder(req, res, table) {
     const { items } = req.body; // Array of { id, order_index }
@@ -213,16 +222,16 @@ async function handleReorder(req, res, table) {
 }
 
 // --- POSTS ---
-app.post('/api/posts', async (req, res) => {
+app.post('/api/posts', requireAdmin, async (req, res) => {
     const { title, excerpt, content } = req.body;
     const { data, error } = await supabase.from('posts').insert([{ title, excerpt, content, date: new Date().toISOString() }]);
     if (error) return res.status(400).json({ error: error.message });
     res.status(201).json({ message: 'Post created successfully', data });
 });
 
-app.put('/api/posts/reorder', (req, res) => handleReorder(req, res, 'posts'));
+app.put('/api/posts/reorder', requireAdmin, (req, res) => handleReorder(req, res, 'posts'));
 
-app.put('/api/posts/:id', async (req, res) => {
+app.put('/api/posts/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { title, excerpt, content } = req.body;
     const { data, error } = await supabase.from('posts').update({ title, excerpt, content }).eq('id', id);
@@ -230,7 +239,7 @@ app.put('/api/posts/:id', async (req, res) => {
     res.json({ message: 'Post updated successfully', data });
 });
 
-app.delete('/api/posts/:id', async (req, res) => {
+app.delete('/api/posts/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { error } = await supabase.from('posts').delete().eq('id', id);
     if (error) return res.status(400).json({ error: error.message });
@@ -238,7 +247,7 @@ app.delete('/api/posts/:id', async (req, res) => {
 });
 
 // --- COURSES ---
-app.post('/api/courses', async (req, res) => {
+app.post('/api/courses', requireAdmin, async (req, res) => {
     const { title, price, original_price, discount_badge, duration, excerpt, is_bundle, image_url } = req.body;
     const { data, error } = await supabase.from('courses').insert([{ 
         title, price, original_price: original_price || null, discount_badge, duration, excerpt, is_bundle, image_url 
@@ -247,9 +256,9 @@ app.post('/api/courses', async (req, res) => {
     res.status(201).json({ message: 'Course created successfully', data });
 });
 
-app.put('/api/courses/reorder', (req, res) => handleReorder(req, res, 'courses'));
+app.put('/api/courses/reorder', requireAdmin, (req, res) => handleReorder(req, res, 'courses'));
 
-app.put('/api/courses/:id', async (req, res) => {
+app.put('/api/courses/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { title, price, original_price, discount_badge, duration, excerpt, is_bundle, image_url } = req.body;
     const { data, error } = await supabase.from('courses').update({ 
@@ -259,7 +268,7 @@ app.put('/api/courses/:id', async (req, res) => {
     res.json({ message: 'Course updated successfully', data });
 });
 
-app.delete('/api/courses/:id', async (req, res) => {
+app.delete('/api/courses/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { error } = await supabase.from('courses').delete().eq('id', id);
     if (error) return res.status(400).json({ error: error.message });
@@ -267,16 +276,16 @@ app.delete('/api/courses/:id', async (req, res) => {
 });
 
 // --- TESTIMONIALS ---
-app.post('/api/testimonials', async (req, res) => {
+app.post('/api/testimonials', requireAdmin, async (req, res) => {
     const { author, quote, rating } = req.body;
     const { data, error } = await supabase.from('testimonials').insert([{ author, quote, rating }]);
     if (error) return res.status(400).json({ error: error.message });
     res.status(201).json({ message: 'Testimonial created successfully', data });
 });
 
-app.put('/api/testimonials/reorder', (req, res) => handleReorder(req, res, 'testimonials'));
+app.put('/api/testimonials/reorder', requireAdmin, (req, res) => handleReorder(req, res, 'testimonials'));
 
-app.put('/api/testimonials/:id', async (req, res) => {
+app.put('/api/testimonials/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { author, quote, rating } = req.body;
     const { data, error } = await supabase.from('testimonials').update({ author, quote, rating }).eq('id', id);
@@ -284,7 +293,7 @@ app.put('/api/testimonials/:id', async (req, res) => {
     res.json({ message: 'Testimonial updated successfully', data });
 });
 
-app.delete('/api/testimonials/:id', async (req, res) => {
+app.delete('/api/testimonials/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
     const { error } = await supabase.from('testimonials').delete().eq('id', id);
     if (error) return res.status(400).json({ error: error.message });
@@ -292,7 +301,7 @@ app.delete('/api/testimonials/:id', async (req, res) => {
 });
 
 // --- SECTIONS ---
-app.put('/api/sections/:key', async (req, res) => {
+app.put('/api/sections/:key', requireAdmin, async (req, res) => {
     const { key } = req.params;
     const { title, subtitle, content, is_visible } = req.body;
     
@@ -327,6 +336,16 @@ async function getUserFromRequest(req) {
     return user;
 }
 
+// Hardcoded course prices for backend validation (Prevents client spoofing)
+const COURSE_PRICES = {
+    'healing-journey-program': { price: 99.99, currency: 'USD' },
+    'dbt-course': { price: 174.99, currency: 'USD' },
+    'cbt-course': { price: 149.99, currency: 'USD' },
+    'act-course': { price: 149.99, currency: 'USD' },
+    'personality-disorders-course': { price: 174.99, currency: 'USD' },
+    'tri-therapy-bundle': { price: 349.99, currency: 'USD' }
+};
+
 // POST /api/record-purchase
 // Called by frontend after payment gateway confirms payment.
 // Saves purchase record to Supabase purchases table.
@@ -335,17 +354,26 @@ app.post('/api/record-purchase', async (req, res) => {
         // 1. Verify user identity from JWT
         const user = await getUserFromRequest(req);
         if (!user) {
-            return res.status(401).json({ error: 'Unauthorized — please log in' });
+            return res.status(401).json({ error: 'Unauthorized - please log in' });
         }
 
-        const { course_id, transaction_id, amount_paid, currency } = req.body;
+        const { course_id, transaction_id } = req.body;
 
         // 2. Validate required fields
-        if (!course_id || !transaction_id || !amount_paid) {
-            return res.status(400).json({ error: 'Missing required fields: course_id, transaction_id, amount_paid' });
+        if (!course_id || !transaction_id) {
+            return res.status(400).json({ error: 'Missing required fields: course_id, transaction_id' });
         }
 
-        // 3. Prevent duplicate purchases (idempotent)
+        // 3. SECURE PRICE LOOKUP (Ignores client's amount_paid)
+        const courseInfo = COURSE_PRICES[course_id];
+        if (!courseInfo) {
+            return res.status(400).json({ error: 'Invalid course ID' });
+        }
+
+        const secureAmountPaid = courseInfo.price;
+        const secureCurrency = courseInfo.currency;
+
+        // 4. Prevent duplicate purchases (idempotent)
         const { data: existing } = await supabase
             .from('purchases')
             .select('id')
@@ -356,15 +384,18 @@ app.post('/api/record-purchase', async (req, res) => {
             return res.status(200).json({ message: 'Purchase already recorded', already_exists: true });
         }
 
-        // 4. Insert purchase record
+        // 5. Insert purchase record
         const { data, error } = await supabase
             .from('purchases')
             .insert([{
                 user_id: user.id,
                 course_id: course_id,
                 transaction_id: transaction_id,
-                amount_paid: amount_paid,
-                currency: currency || 'USD',
+                amount_paid: secureAmountPaid,
+                currency: secureCurrency,
+                purchased_at: new Date().toISOString(),
+                is_active: true
+            }]);,
                 purchased_at: new Date().toISOString(),
                 is_active: true
             }]);
