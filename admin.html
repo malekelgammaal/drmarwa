@@ -310,8 +310,25 @@
         });
 
         const API_BASE_URL = 'https://drmarwa.onrender.com';
+        const ADMIN_EMAIL = 'marwabadr638@gmail.com';
+        
+        // --- Auth Guard ---
+        let currentSession = null;
+        try {
+            currentSession = JSON.parse(sessionStorage.getItem('site_current_session'));
+        } catch(e) {}
+        
+        if (!currentSession || !currentSession.user || currentSession.user.email !== ADMIN_EMAIL) {
+            // Kick out unauthorized users
+            window.location.href = 'index.html';
+        }
 
-        // Global State for Data and Editing
+        function getAuthHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${currentSession.access_token}`
+            };
+        }        // Global State for Data and Editing
         let globalData = {
             posts: [],
             courses: [],
@@ -332,32 +349,6 @@
             document.getElementById('stat-testimonials').innerText = globalData.testimonials.length;
         }
 
-        // --- Fetch Functions ---
-        async function loadList(endpoint, containerId, formatter) {
-            const container = document.getElementById(containerId);
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/${endpoint}`);
-                const data = await res.json();
-                
-                // Save to global state
-                globalData[endpoint] = data;
-                updateDashboardStats();
-
-                container.innerHTML = '';
-                if(!data || data.length === 0) {
-                    container.innerHTML = '<p class="arabic-text medium text-center" style="color: var(--muted); padding: 2rem;">لا توجد بيانات حالياً.</p>';
-                    return;
-                }
-                
-                data.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'list-item';
-                    div.innerHTML = `
-                        <div style="flex:1; padding-left: 2rem;">${formatter(item)}</div>
-                        <div style="display: flex;">
-                            <button class="btn-primary arabic-text medium" style="margin-left: 0.25rem; background: #64748b; padding: 0.75rem 1rem;" title="لأعلى" onclick="moveItem('${endpoint}', '${item.id}', -1)"><i class="ph ph-arrow-up"></i></button>
-                            <button class="btn-primary arabic-text medium" style="margin-left: 0.5rem; background: #64748b; padding: 0.75rem 1rem;" title="لأسفل" onclick="moveItem('${endpoint}', '${item.id}', 1)"><i class="ph ph-arrow-down"></i></button>
-                            <button class="btn-edit arabic-text medium" onclick="editItem('${endpoint}', '${item.id}')"><i class="ph ph-pencil"></i> تعديل</button>
         // --- Fetch & Render ---
         async function loadAll() {
             try {
