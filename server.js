@@ -85,7 +85,7 @@ app.get('/api/auth/oauth', async (req, res) => {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-            redirectTo: redirect_to || 'https://drmarwa.pages.dev/'
+            redirectTo: redirect_to || 'https://drmarwabadr.vercel.app/'
         }
     });
 
@@ -136,14 +136,14 @@ app.get('/api/courses', async (req, res) => {
         const { data, error } = await supabase.from('courses').select('*').order('order_index', { ascending: true, nullsFirst: false }).order('id', { ascending: true });
 
         if (error || !data || data.length === 0) {
-            // Fallback — all 6 courses with updated prices
+            // Fallback — all 6 courses with updated prices (EGP)
             return res.json([
-                { id: 1, title: 'Tri-Therapy Bundle <br><small class="arabic-text medium">(باقة العلاج الثلاثي)</small>', price: 349.99, original_price: 425.00, discount_badge: 'Save 18%', image_url: 'images/course-tri-therapy.png', is_bundle: true, duration: '15 Days', excerpt: 'Complete mastery of evidence-based therapies for mental health professionals. Includes full access to DBT, CBT, and ACT clinical training.' },
-                { id: 2, title: 'CBT Course <br><small class="arabic-text medium">(العلاج المعرفي السلوكي)</small>', price: 149.99, original_price: 200.00, discount_badge: 'Save 25%', image_url: 'images/course-cbt.png', is_bundle: false, duration: '5 Days', excerpt: 'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns and overcome anxiety and depression.' },
-                { id: 3, title: 'DBT Course <br><small class="arabic-text medium">(العلاج الجدلي السلوكي)</small>', price: 174.99, original_price: 225.00, discount_badge: 'Save 22%', image_url: 'images/course-dbt.png', is_bundle: false, duration: '5 Days', excerpt: 'Master Dialectical Behavior Therapy skills for mindfulness, emotional regulation, and distress tolerance.' },
-                { id: 4, title: 'Personality Disorders Course <br><small class="arabic-text medium">(اضطرابات الشخصية)</small>', price: 174.99, original_price: 225.00, discount_badge: 'Save 22%', image_url: 'images/course-personality-disorders.png', is_bundle: false, duration: '5 Days', excerpt: 'An in-depth understanding of personality disorders and effective coping mechanisms for mental health professionals.' },
-                { id: 5, title: 'ACT Course <br><small class="arabic-text medium">(العلاج بالقبول والالتزام)</small>', price: 149.99, original_price: 200.00, discount_badge: 'Save 25%', image_url: 'images/course-act.png', is_bundle: false, duration: '5 Days', excerpt: 'Acceptance & Commitment Therapy principles for living a value-driven life and increasing psychological flexibility.' },
-                { id: 6, title: 'Healing Journey Program <br><small class="arabic-text medium">(رحلة تعافي)</small>', price: 99.99, original_price: 150.00, discount_badge: 'Save 33%', image_url: 'images/course-healing-journey.png', is_bundle: false, duration: '2 Days', excerpt: 'A comprehensive program designed to help you process trauma and build emotional resilience.' }
+                { id: 1, title: 'Tri-Therapy Bundle <br><small class="arabic-text medium">(باقة العلاج الثلاثي)</small>', price: 17500, original_price: 21500, discount_badge: 'Save 18%', image_url: 'images/course-tri-therapy.png', is_bundle: true, duration: '15 Days', excerpt: 'Complete mastery of evidence-based therapies for mental health professionals. Includes full access to DBT, CBT, and ACT clinical training.' },
+                { id: 2, title: 'CBT Course <br><small class="arabic-text medium">(العلاج المعرفي السلوكي)</small>', price: 7500, original_price: 10000, discount_badge: 'Save 25%', image_url: 'images/course-cbt.png', is_bundle: false, duration: '5 Days', excerpt: 'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns and overcome anxiety and depression.' },
+                { id: 3, title: 'DBT Course <br><small class="arabic-text medium">(العلاج الجدلي السلوكي)</small>', price: 8500, original_price: 11500, discount_badge: 'Save 26%', image_url: 'images/course-dbt.png', is_bundle: false, duration: '5 Days', excerpt: 'Master Dialectical Behavior Therapy skills for mindfulness, emotional regulation, and distress tolerance.' },
+                { id: 4, title: 'Personality Disorders Course <br><small class="arabic-text medium">(اضطرابات الشخصية)</small>', price: 8500, original_price: 11500, discount_badge: 'Save 26%', image_url: 'images/course-personality-disorders.png', is_bundle: false, duration: '5 Days', excerpt: 'An in-depth understanding of personality disorders and effective coping mechanisms for mental health professionals.' },
+                { id: 5, title: 'ACT Course <br><small class="arabic-text medium">(العلاج بالقبول والالتزام)</small>', price: 7500, original_price: 10000, discount_badge: 'Save 25%', image_url: 'images/course-act.png', is_bundle: false, duration: '5 Days', excerpt: 'Acceptance & Commitment Therapy principles for living a value-driven life and increasing psychological flexibility.' },
+                { id: 6, title: 'Healing Journey Program <br><small class="arabic-text medium">(رحلة تعافي)</small>', price: 5000, original_price: 7500, discount_badge: 'Save 33%', image_url: 'images/course-healing-journey.png', is_bundle: false, duration: '2 Days', excerpt: 'A comprehensive program designed to help you process trauma and build emotional resilience.' }
             ]);
         }
 
@@ -211,12 +211,12 @@ async function getUserFromRequest(req) {
 
 // Hardcoded course prices for backend validation (Prevents client spoofing)
 const COURSE_PRICES = {
-    'healing-journey-program': { price: 99.99, currency: 'USD' },
-    'dbt-course': { price: 174.99, currency: 'USD' },
-    'cbt-course': { price: 149.99, currency: 'USD' },
-    'act-course': { price: 149.99, currency: 'USD' },
-    'personality-disorders-course': { price: 174.99, currency: 'USD' },
-    'tri-therapy-bundle': { price: 349.99, currency: 'USD' }
+    'healing-journey-program': { price: 5000, currency: 'EGP' },
+    'dbt-course': { price: 8500, currency: 'EGP' },
+    'cbt-course': { price: 7500, currency: 'EGP' },
+    'act-course': { price: 7500, currency: 'EGP' },
+    'personality-disorders-course': { price: 8500, currency: 'EGP' },
+    'tri-therapy-bundle': { price: 17500, currency: 'EGP' }
 };
 
 // POST /api/record-purchase

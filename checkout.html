@@ -248,7 +248,7 @@
                 </p>
                 
                 <div style="background: rgba(108, 30, 112, 0.1); border: 1px dashed #6C1E70; padding: 1.5rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem; transition: all 0.3s ease;">
-                    <span style="display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">رقم الهاتف / حساب إنستا باي</span>
+                    <span style="display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">لينك الدفع</span>
                     <strong style="font-size: 1.25rem; color: #6C1E70; letter-spacing: 1px; user-select: all;">[PLACEHOLDER_LINK]</strong>
                 </div>
 
@@ -272,20 +272,7 @@
                             </div>
                             <img id="receipt-preview" src="" style="display: none; max-width: 100%; max-height: 200px; margin: 0 auto; border-radius: 4px; object-fit: contain;">
                             
-                            <input type="file" id="instapay-receipt" accept="image/*" required style="display: none;" onchange="
-                                const file = this.files[0];
-                                if(file) {
-                                    const preview = document.getElementById('receipt-preview');
-                                    const placeholder = document.getElementById('upload-placeholder');
-                                    preview.src = URL.createObjectURL(file);
-                                    preview.style.display = 'block';
-                                    placeholder.style.display = 'none';
-                                    
-                                    document.getElementById('receipt-upload-area').style.borderColor = '#6C1E70';
-                                    document.getElementById('receipt-upload-area').style.background = 'rgba(108,30,112,0.05)';
-                                    document.getElementById('receipt-upload-area').style.padding = '0.5rem';
-                                }
-                            ">
+                            <input type="file" id="instapay-receipt" accept="image/*" required style="display: none;">
                         </div>
                     </div>
 
@@ -321,10 +308,10 @@
                 return;
             }
             document.getElementById('course-name-display').textContent = course.name_en;
-            document.getElementById('sale-price-display').textContent = `$${course.sale_price}`;
+            document.getElementById('sale-price-display').textContent = `${course.sale_price} ج.م`;
             
             if (course.full_price && course.full_price > course.sale_price) {
-                document.getElementById('original-price-display').textContent = `$${course.full_price}`;
+                document.getElementById('original-price-display').textContent = `${course.full_price} ج.م`;
                 const savings = Math.round((1 - (course.sale_price / course.full_price)) * 100);
                 const badge = document.getElementById('discount-badge-display');
                 badge.style.display = 'inline-block';
@@ -341,6 +328,23 @@
             document.getElementById('instapay-modal').classList.remove('active');
         }
 
+        // Handle image preview
+        document.getElementById('instapay-receipt').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const preview = document.getElementById('receipt-preview');
+                const placeholder = document.getElementById('upload-placeholder');
+                const area = document.getElementById('receipt-upload-area');
+                
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                
+                area.style.borderColor = '#6C1E70';
+                area.style.background = 'rgba(108,30,112,0.05)';
+                area.style.padding = '0.5rem';
+            }
+        });
         // Form submission handling
         document.getElementById('instapay-form').addEventListener('submit', async (e) => {
             e.preventDefault();

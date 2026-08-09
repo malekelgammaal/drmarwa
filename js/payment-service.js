@@ -219,7 +219,7 @@ class PaymentServiceInterface {
         const userEmail = currentUser.email || 'no-reply@drmarwa.com';
 
         const formData = new FormData();
-        formData.append("access_key", "9d8affa7-79dd-41e4-a9d6-0587948e964f");
+        formData.append("access_key", "fb92385f-3e85-4f05-8b04-69f61449449e");
         formData.append("subject", "💰 إشعار تحويل InstaPay جديد - Dr. Marwa Platform");
         formData.append("from_name", "نظام الدفع (InstaPay)");
         formData.append("email", userEmail);

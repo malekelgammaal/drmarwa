@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const price = courseCard.getAttribute('data-price') || '49';
             proceedCheckoutBtn.href = `checkout.html?course=${courseId}&price=${price}`;
-            proceedCheckoutBtn.textContent = `Proceed to Checkout — $${price}`;
+            proceedCheckoutBtn.textContent = `Proceed to Checkout — ${price} ج.م`;
             
             if (window.AnalyticsSystem) {
                 window.AnalyticsSystem.trackEvent(courseId === 'tri-therapy-bundle' ? 'bundle_view' : 'course_view', {
@@ -998,8 +998,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
                                 <h3>${course.title}</h3>
                                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                                    ${course.original_price ? `<span class="strikethrough-price" style="text-decoration: line-through; color: var(--muted); font-size: 0.9rem;">$${course.original_price}</span>` : ''}
-                                    <h3 style="color: var(--primary); white-space: nowrap; margin-top: 0;">$${course.price}</h3>
+                                    ${course.original_price ? `<span class="strikethrough-price" style="text-decoration: line-through; color: var(--muted); font-size: 0.9rem;">${course.original_price} ج.م</span>` : ''}
+                                    <h3 style="color: var(--primary); white-space: nowrap; margin-top: 0;">${course.price} ج.م</h3>
                                     ${course.discount_badge ? `<span class="discount-badge" style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-top: 4px; white-space: nowrap;">${course.discount_badge}</span>` : ''}
                                 </div>
                             </div>
