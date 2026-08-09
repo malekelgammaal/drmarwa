@@ -284,6 +284,52 @@ app.post('/api/record-purchase', async (req, res) => {
     }
 });
 
+// POST /api/instapay-request
+// Called by frontend when user submits an InstaPay manual request.
+// Saves purchase record as is_active = false for admin manual review.
+app.post('/api/instapay-request', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(401).json({ error: 'Unauthorized - please log in' });
+
+        const { course_id, username, whatsapp } = req.body;
+        if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
+
+        const courseInfo = COURSE_PRICES[course_id];
+        if (!courseInfo) return res.status(400).json({ error: 'Invalid course ID' });
+
+        const secureAmountPaid = courseInfo.price;
+        const secureCurrency = courseInfo.currency;
+        
+        // Use a unique placeholder transaction ID for manual requests
+        const transaction_id = 'instapay-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+
+        const { data, error } = await supabase
+            .from('purchases')
+            .insert([{
+                user_id: user.id,
+                course_id: course_id,
+                transaction_id: transaction_id,
+                amount_paid: secureAmountPaid,
+                currency: secureCurrency,
+                purchased_at: new Date().toISOString(),
+                is_active: false // Critical: Requires Admin Manual Verification
+            }]);
+
+        if (error) {
+            console.error('[API] instapay-request DB error:', error);
+            return res.status(500).json({ error: 'Failed to record request' });
+        }
+
+        console.log(`[API] 🟡 Pending InstaPay request: user=${user.id} course=${course_id} txn=${transaction_id}`);
+        res.status(201).json({ message: 'Request recorded successfully. Pending admin approval.', data });
+
+    } catch (err) {
+        console.error('[API] instapay-request exception:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // GET /api/check-access?course_id=cbt-course
 // Called by course content pages on load to verify access.
 // Returns { has_access: true/false }

@@ -215,14 +215,67 @@
                 <div class="feature"><i class="ph ph-currency-dollar"></i> 7-day money-back guarantee</div>
             </div>
 
-            <!-- Pay Button (Disabled until new gateway is added) -->
-            <button class="btn-primary" id="pay-btn" onclick="alert('Payment gateway is currently being updated. Please try again later or contact support.')" style="opacity: 0.7; cursor: not-allowed;">
-                <i class="ph ph-lock-key"></i> &nbsp;Payment System Unavailable
-            </button>
+            <!-- Payment Options -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                <!-- Kashier (Coming Soon) -->
+                <button class="btn-primary" style="background: var(--bg); color: var(--text); border: 2px solid var(--border);" onclick="alert('بوابة Kashier سيتم تفعيلها قريباً. يرجى استخدام InstaPay حالياً.')">
+                    <i class="ph ph-credit-card"></i> &nbsp;دفع بالبطاقة البنكية (Kashier)
+                </button>
+                
+                <!-- InstaPay -->
+                <button class="btn-primary" style="background: #6C1E70; color: white; border: none;" onclick="openInstapayModal()">
+                    <i class="ph ph-paper-plane-tilt"></i> &nbsp;الدفع السريع (InstaPay)
+                </button>
+            </div>
 
             <div class="secure-footer">
                 <i class="ph ph-shield-check"></i>
                 <span>256-bit SSL Encryption</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- InstaPay Modal -->
+    <div class="modal-overlay" id="instapay-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>الدفع عبر InstaPay</h3>
+                <button class="close-btn" onclick="closeInstapayModal()"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="modal-body" style="text-align: right; direction: rtl;">
+                <p style="margin-bottom: 1.5rem; color: var(--muted); font-size: 0.95rem;">
+                    يرجى تحويل قيمة الكورس إلى حساب إنستا باي التالي، ثم إرفاق صورة التحويل بالأسفل لتأكيد الدفع وفتح الكورس.
+                </p>
+                
+                <div style="background: rgba(108, 30, 112, 0.1); border: 1px dashed #6C1E70; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;">
+                    <span style="display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">رقم الهاتف / حساب إنستا باي</span>
+                    <strong style="font-size: 1.25rem; color: #6C1E70; letter-spacing: 1px;">[PLACEHOLDER_LINK]</strong>
+                </div>
+
+                <form id="instapay-form">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">اسم المستخدم الثلاثي</label>
+                        <input type="text" id="instapay-name" required placeholder="مثال: أحمد محمد محمود" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text);">
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">رقم الواتساب (للتواصل)</label>
+                        <input type="tel" id="instapay-whatsapp" required placeholder="مثال: +201000000000" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text);">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">صورة إيصال التحويل (Screenshot)</label>
+                        <div style="position: relative; border: 2px dashed var(--border); border-radius: var(--border-radius-sm); padding: 2rem; text-align: center; background: rgba(0,0,0,0.02); cursor: pointer;" onclick="document.getElementById('instapay-receipt').click()">
+                            <i class="ph ph-upload-simple" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                            <p style="margin:0; font-size: 0.9rem; color: var(--muted);" id="upload-text">اضغط هنا لاختيار الصورة</p>
+                            <input type="file" id="instapay-receipt" accept="image/*" required style="display: none;" onchange="document.getElementById('upload-text').innerText = this.files[0]?.name || 'اضغط هنا لاختيار الصورة'">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="width: 100%; background: #6C1E70; border: none; font-size: 1.1rem; padding: 1rem;" id="instapay-submit-btn">
+                        تأكيد وإرسال الإيصال
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -250,21 +303,52 @@
                 document.getElementById('course-name-display').textContent = 'Unknown Course';
                 return;
             }
-
-            document.getElementById('course-name-display').textContent = course.name_ar + ' — ' + course.name_en;
-            document.getElementById('sale-price-display').textContent = `$${course.sale_price.toFixed(2)}`;
-
-            if (course.full_price) {
-                document.getElementById('original-price-display').textContent = `$${course.full_price.toFixed(2)}`;
-                const savings = Math.round((1 - course.sale_price / course.full_price) * 100);
+            document.getElementById('course-name-display').textContent = course.name_en;
+            document.getElementById('sale-price-display').textContent = `$${course.sale_price}`;
+            
+            if (course.full_price && course.full_price > course.sale_price) {
+                document.getElementById('original-price-display').textContent = `$${course.full_price}`;
+                const savings = Math.round((1 - (course.sale_price / course.full_price)) * 100);
                 const badge = document.getElementById('discount-badge-display');
-                badge.textContent = `Save ${savings}%`;
                 badge.style.display = 'inline-block';
+                badge.textContent = `Save ${savings}%`;
             }
-
-            document.getElementById('pay-btn').innerHTML =
-                `<i class="ph ph-lock-key"></i> &nbsp;Pay $${course.sale_price.toFixed(2)} Now`;
         })();
+
+        // InstaPay Modal Logic
+        function openInstapayModal() {
+            document.getElementById('instapay-modal').classList.add('active');
+        }
+
+        function closeInstapayModal() {
+            document.getElementById('instapay-modal').classList.remove('active');
+        }
+
+        // Form submission handling
+        document.getElementById('instapay-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('instapay-submit-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> جاري الإرسال...';
+            btn.disabled = true;
+
+            const name = document.getElementById('instapay-name').value;
+            const whatsapp = document.getElementById('instapay-whatsapp').value;
+            const fileInput = document.getElementById('instapay-receipt');
+
+            try {
+                // Call PaymentService to handle the dual submission (Web3Forms + Backend API)
+                await window.PaymentService.processInstapay(courseId, name, whatsapp, fileInput.files[0]);
+                
+                alert('تم استلام إيصال التحويل بنجاح! سيتم مراجعته وفتح الكورس لحسابك في أقرب وقت. 🚀');
+                closeInstapayModal();
+                window.location.href = 'index.html#courses';
+            } catch (err) {
+                alert('عذراً، حدث خطأ أثناء إرسال الإيصال: ' + err.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
 
         // Verify the user is logged in before allowing payment
         window.addEventListener('DOMContentLoaded', () => {

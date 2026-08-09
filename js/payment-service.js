@@ -168,6 +168,62 @@ class PaymentServiceInterface {
     }
 
     // -------------------------------------------------------
+    //  processInstapay()
+    //  Handles manual payment submissions (InstaPay)
+    // -------------------------------------------------------
+    async processInstapay(courseId, name, whatsapp, receiptFile) {
+        if (!receiptFile) throw new Error("يرجى إرفاق صورة إيصال التحويل");
+
+        const courseInfo = this.getCourse(courseId);
+        if (!courseInfo) throw new Error("الكورس غير موجود");
+
+        // 1. Send Email via Web3Forms with Attachment
+        const formData = new FormData();
+        formData.append("access_key", "9d8affa7-79dd-41e4-a9d6-0587948e964f");
+        formData.append("subject", "💰 إشعار تحويل InstaPay جديد - Dr. Marwa Platform");
+        formData.append("from_name", "نظام الدفع (InstaPay)");
+        formData.append("اسم المستخدم", name);
+        formData.append("رقم الواتساب", whatsapp);
+        formData.append("الكورس المطلوب", courseInfo.name_ar + " - " + courseInfo.name_en);
+        formData.append("attachment", receiptFile);
+
+        const emailResponse = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
+        });
+
+        const emailResult = await emailResponse.json();
+        if (!emailResult.success) {
+            throw new Error("فشل في إرسال الإيميل. يرجى المحاولة مرة أخرى.");
+        }
+
+        // 2. Record pending purchase in Supabase Database (is_active = false)
+        const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+        const token = session?.access_token;
+        if (!token) throw new Error("انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً");
+
+        const dbResponse = await fetch(`${PAYMENT_API_BASE}/api/instapay-request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                course_id: courseId,
+                username: name,
+                whatsapp: whatsapp
+            })
+        });
+
+        if (!dbResponse.ok) {
+            const errorData = await dbResponse.json();
+            throw new Error(errorData.error || "فشل في تسجيل الطلب في قاعدة البيانات.");
+        }
+
+        return true;
+    }
+
+    // -------------------------------------------------------
     //  processPayment()
     //  Main entry point — currently disabled until new gateway
     // -------------------------------------------------------
