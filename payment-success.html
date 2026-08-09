@@ -143,7 +143,7 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
 
         // ── Read callback parameters from URL ──────────────────
-        // Gammal Tech sends: ?txn=XXXX&course=YYYY&status=success
+        // External Gateway sends: ?txn=XXXX&course=YYYY&status=success
         const params = new URLSearchParams(window.location.search);
         const txn    = params.get('txn')    || params.get('transaction_id') || '';
         const course = params.get('course') || sessionStorage.getItem('pending_course') || '';

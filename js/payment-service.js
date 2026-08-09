@@ -17,48 +17,42 @@ class PaymentServiceInterface {
                 name_en: 'Healing Journey Program',
                 sale_price: 99.99,
                 full_price: 150.00,
-                currency: 'USD',
-                payment_link: 'https://api.gammal.tech/sdk/pay/link/?pid=129&amount=92.58&desc=Healing%20Journy%20Program&currency=USD&callback=https%3A%2F%2Fdrmarwa.pages.dev%2Fpayment-success.html%3Fcourse%3Dhealing-journey-program'
+                currency: 'USD'
             },
             'dbt-course': {
                 name_ar: 'العلاج الجدلي السلوكي',
                 name_en: 'Dialectical Behavior Therapy (DBT)',
                 sale_price: 174.99,
                 full_price: 225.00,
-                currency: 'USD',
-                payment_link: 'https://api.gammal.tech/sdk/pay/link/?pid=129&amount=162.03&desc=DBT%20Course&currency=USD&callback=https%3A%2F%2Fdrmarwa.pages.dev%2Fpayment-success.html%3Fcourse%3Ddbt-course'
+                currency: 'USD'
             },
             'cbt-course': {
                 name_ar: 'العلاج المعرفي السلوكي',
                 name_en: 'Cognitive Behavioral Therapy (CBT)',
                 sale_price: 149.99,
                 full_price: 200.00,
-                currency: 'USD',
-                payment_link: 'https://api.gammal.tech/sdk/pay/link/?pid=129&amount=138.88&desc=CBT%20Course&currency=USD&callback=https%3A%2F%2Fdrmarwa.pages.dev%2Fpayment-success.html%3Fcourse%3Dcbt-course'
+                currency: 'USD'
             },
             'act-course': {
                 name_ar: 'القبول والالتزام',
                 name_en: 'Acceptance & Commitment Therapy (ACT)',
                 sale_price: 149.99,
                 full_price: 200.00,
-                currency: 'USD',
-                payment_link: 'https://api.gammal.tech/sdk/pay/link/?pid=129&amount=138.88&desc=ACT%20Course&currency=USD&callback=https%3A%2F%2Fdrmarwa.pages.dev%2Fpayment-success.html%3Fcourse%3Dact-course'
+                currency: 'USD'
             },
             'personality-disorders-course': {
                 name_ar: 'اضطرابات الشخصية',
                 name_en: 'Personality Disorders Course',
                 sale_price: 174.99,
                 full_price: 225.00,
-                currency: 'USD',
-                payment_link: 'https://api.gammal.tech/sdk/pay/link/?pid=129&amount=162.03&desc=Personality%20Disorders%20Course&currency=USD&callback=https%3A%2F%2Fdrmarwa.pages.dev%2Fpayment-success.html%3Fcourse%3Dpersonality-disorders-course'
+                currency: 'USD'
             },
             'tri-therapy-bundle': {
                 name_ar: 'باقة الثلاث علاجات (DBT + CBT + ACT)',
                 name_en: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
                 sale_price: 349.99,
                 full_price: 425.00,
-                currency: 'USD',
-                payment_link: 'https://api.gammal.tech/sdk/pay/link/?pid=129&amount=324.06&desc=Tri-Therapy%20Bundle%20(DBT%20%2B%20CBT%20%2B%20ACT)&currency=USD&callback=https%3A%2F%2Fdrmarwa.pages.dev%2Fpayment-success.html%3Fcourse%3Dtri-therapy-bundle'
+                currency: 'USD'
             }
         };
     }
@@ -73,7 +67,6 @@ class PaymentServiceInterface {
     // -------------------------------------------------------
     //  recordPurchase()
     //  Saves the purchase to Supabase via the Node.js backend
-    //  (We go through server.js to keep Supabase service key safe)
     // -------------------------------------------------------
     async recordPurchase(courseId, transactionId, amountPaid, currency) {
         try {
@@ -98,55 +91,20 @@ class PaymentServiceInterface {
             });
 
             if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || 'Failed to record purchase');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to record purchase in backend');
             }
 
-            return await response.json();
+            console.log('[PaymentService] ✅ Purchase recorded successfully on backend.');
+            return true;
         } catch (error) {
-            console.error('[PaymentService] recordPurchase error:', error);
+            console.error('[PaymentService] ❌ Failed to record purchase:', error);
             throw error;
         }
     }
 
     // -------------------------------------------------------
-    //  onPaymentSuccess()
-    //  Called after payment gateway confirms payment.
-    //  Records purchase → redirects to course content page.
-    // -------------------------------------------------------
-    async onPaymentSuccess(courseId, delivery) {
-        const courseInfo = this.getCourse(courseId);
-
-        console.log('[PaymentService] ✅ Payment confirmed:', delivery.txn || 'simulated');
-
-        try {
-            // 1. Save purchase to Supabase
-            await this.recordPurchase(
-                courseId,
-                delivery.txn || ('SIM-' + Date.now()), // fallback for simulation
-                courseInfo.sale_price,
-                courseInfo.currency
-            );
-
-            console.log('[PaymentService] ✅ Purchase recorded in database');
-
-            // 2. Invalidate purchase cache → My Courses btn will appear on next load
-            localStorage.setItem('user_has_purchases', 'true');
-
-            // 3. Redirect to course content page
-            window.location.href = `/course-${courseId}.html?access=granted`;
-
-        } catch (error) {
-            // Even if DB save fails, don't block the user — log for admin
-            console.error('[PaymentService] DB record failed:', error);
-            // Still redirect — purchase can be verified later via transaction ID
-            window.location.href = `/course-${courseId}.html?access=granted&sync=pending`;
-        }
-    }
-
-    // -------------------------------------------------------
     //  checkAccess()
-    //  Called on course content page load.
     //  Returns true if current user has purchased this course.
     // -------------------------------------------------------
     async checkAccess(courseId) {
@@ -210,45 +168,14 @@ class PaymentServiceInterface {
     }
 
     // -------------------------------------------------------
-    //  settlePending()
-    //  Call on page load — handles users who paid but closed
-    //  browser before the callback fired (Gammal Tech pattern)
-    // -------------------------------------------------------
-    settlePending(courseId) {
-        if (typeof GammalTech === 'undefined') return;
-
-        GammalTech.settlePending(async (delivery) => {
-            console.log('[PaymentService] Settling pending payment:', delivery.txn);
-            await this.onPaymentSuccess(courseId, delivery);
-        });
-    }
-
-    // -------------------------------------------------------
     //  processPayment()
-    //  Main entry point — called when user clicks "Buy"
+    //  Main entry point — currently disabled until new gateway
     // -------------------------------------------------------
     async processPayment(details) {
-        const { course: courseId } = details;
-        const courseInfo = this.getCourse(courseId);
-
-        if (!courseInfo) {
-            throw new Error('Course not found: ' + courseId);
-        }
-
-        if (!courseInfo.payment_link) {
-            throw new Error('Payment link not configured for: ' + courseId);
-        }
-
-        console.log(`[PaymentService] Redirecting to payment for: ${courseInfo.name_en} — $${courseInfo.sale_price}`);
-
-        // ── Save course so payment-success.html can read it if needed ──
-        sessionStorage.setItem('pending_course', courseId);
-
-        // Redirect directly to the Gammal Tech payment link
-        window.location.href = courseInfo.payment_link;
-        
-        // Return a promise that never resolves so the UI spinner stays active until browser navigates
-        return new Promise(() => {});
+        alert('Payment gateway is currently being updated. Please try again later or contact support.');
+        return new Promise((resolve, reject) => {
+            reject(new Error("Payment gateway disabled"));
+        });
     }
 }
 
