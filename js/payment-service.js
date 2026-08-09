@@ -178,10 +178,19 @@ class PaymentServiceInterface {
         if (!courseInfo) throw new Error("الكورس غير موجود");
 
         // 1. Send Email via Web3Forms with Attachment
+        const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+        const token = session?.access_token;
+        if (!token) throw new Error("انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً");
+
+        // We get the current user to pass their email to Web3Forms
+        const currentUser = JSON.parse(localStorage.getItem('site_current_user') || '{}');
+        const userEmail = currentUser.email || 'no-reply@drmarwa.com';
+
         const formData = new FormData();
         formData.append("access_key", "9d8affa7-79dd-41e4-a9d6-0587948e964f");
         formData.append("subject", "💰 إشعار تحويل InstaPay جديد - Dr. Marwa Platform");
         formData.append("from_name", "نظام الدفع (InstaPay)");
+        formData.append("email", userEmail); // Web3Forms often requires an email field
         formData.append("اسم المستخدم", name);
         formData.append("رقم الواتساب", whatsapp);
         formData.append("الكورس المطلوب", courseInfo.name_ar + " - " + courseInfo.name_en);
@@ -194,14 +203,10 @@ class PaymentServiceInterface {
 
         const emailResult = await emailResponse.json();
         if (!emailResult.success) {
-            throw new Error("فشل في إرسال الإيميل. يرجى المحاولة مرة أخرى.");
+            throw new Error(emailResult.message || "فشل في إرسال الإيميل. يرجى المحاولة مرة أخرى.");
         }
 
         // 2. Record pending purchase in Supabase Database (is_active = false)
-        const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
-        const token = session?.access_token;
-        if (!token) throw new Error("انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً");
-
         const dbResponse = await fetch(`${PAYMENT_API_BASE}/api/instapay-request`, {
             method: 'POST',
             headers: {

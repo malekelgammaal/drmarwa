@@ -265,15 +265,25 @@
 
                     <div class="form-group" style="margin-bottom: 2rem;">
                         <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">صورة إيصال التحويل (Screenshot)</label>
-                        <div id="receipt-upload-area" style="position: relative; border: 2px dashed var(--border); border-radius: var(--border-radius-sm); padding: 2rem; text-align: center; background: rgba(0,0,0,0.02); cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('instapay-receipt').click()">
-                            <i class="ph ph-upload-simple" style="font-size: 2.5rem; color: #6C1E70; margin-bottom: 0.5rem; opacity: 0.8;"></i>
-                            <p style="margin:0; font-size: 0.95rem; color: var(--muted);" id="upload-text">اضغط هنا لاختيار الصورة</p>
+                        <div id="receipt-upload-area" style="position: relative; border: 2px dashed var(--border); border-radius: var(--border-radius-sm); padding: 2rem; text-align: center; background: rgba(0,0,0,0.02); cursor: pointer; transition: all 0.3s ease; overflow: hidden;" onclick="document.getElementById('instapay-receipt').click()">
+                            <div id="upload-placeholder">
+                                <i class="ph ph-upload-simple" style="font-size: 2.5rem; color: #6C1E70; margin-bottom: 0.5rem; opacity: 0.8;"></i>
+                                <p style="margin:0; font-size: 0.95rem; color: var(--muted);" id="upload-text">اضغط هنا لاختيار الصورة</p>
+                            </div>
+                            <img id="receipt-preview" src="" style="display: none; max-width: 100%; max-height: 200px; margin: 0 auto; border-radius: 4px; object-fit: contain;">
+                            
                             <input type="file" id="instapay-receipt" accept="image/*" required style="display: none;" onchange="
                                 const file = this.files[0];
                                 if(file) {
-                                    document.getElementById('upload-text').innerText = file.name;
+                                    const preview = document.getElementById('receipt-preview');
+                                    const placeholder = document.getElementById('upload-placeholder');
+                                    preview.src = URL.createObjectURL(file);
+                                    preview.style.display = 'block';
+                                    placeholder.style.display = 'none';
+                                    
                                     document.getElementById('receipt-upload-area').style.borderColor = '#6C1E70';
                                     document.getElementById('receipt-upload-area').style.background = 'rgba(108,30,112,0.05)';
+                                    document.getElementById('receipt-upload-area').style.padding = '0.5rem';
                                 }
                             ">
                         </div>
