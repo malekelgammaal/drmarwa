@@ -9,50 +9,50 @@ class PaymentServiceInterface {
 
     constructor() {
         // -------------------------------------------------------
-        //  Course Catalog — Prices in USD
+        //  Course Catalog — Prices in EGP
         // -------------------------------------------------------
         this.courses = {
             'healing-journey-program': {
                 name_ar: 'رحلة تعافي',
                 name_en: 'Healing Journey Program',
-                sale_price: 99.99,
-                full_price: 150.00,
-                currency: 'USD'
+                sale_price: 5000,
+                full_price: 7500,
+                currency: 'EGP'
             },
             'dbt-course': {
                 name_ar: 'العلاج الجدلي السلوكي',
                 name_en: 'Dialectical Behavior Therapy (DBT)',
-                sale_price: 174.99,
-                full_price: 225.00,
-                currency: 'USD'
+                sale_price: 8500,
+                full_price: 11500,
+                currency: 'EGP'
             },
             'cbt-course': {
                 name_ar: 'العلاج المعرفي السلوكي',
                 name_en: 'Cognitive Behavioral Therapy (CBT)',
-                sale_price: 149.99,
-                full_price: 200.00,
-                currency: 'USD'
+                sale_price: 7500,
+                full_price: 10000,
+                currency: 'EGP'
             },
             'act-course': {
                 name_ar: 'القبول والالتزام',
                 name_en: 'Acceptance & Commitment Therapy (ACT)',
-                sale_price: 149.99,
-                full_price: 200.00,
-                currency: 'USD'
+                sale_price: 7500,
+                full_price: 10000,
+                currency: 'EGP'
             },
             'personality-disorders-course': {
                 name_ar: 'اضطرابات الشخصية',
                 name_en: 'Personality Disorders Course',
-                sale_price: 174.99,
-                full_price: 225.00,
-                currency: 'USD'
+                sale_price: 8500,
+                full_price: 11500,
+                currency: 'EGP'
             },
             'tri-therapy-bundle': {
                 name_ar: 'باقة الثلاث علاجات (DBT + CBT + ACT)',
                 name_en: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
-                sale_price: 349.99,
-                full_price: 425.00,
-                currency: 'USD'
+                sale_price: 17500,
+                full_price: 21500,
+                currency: 'EGP'
             }
         };
     }
@@ -208,6 +208,11 @@ class PaymentServiceInterface {
 
         if (!dbResponse.ok) {
             const errorData = await dbResponse.json();
+            if (dbResponse.status === 401 || errorData.error === 'Unauthorized - please log in') {
+                localStorage.removeItem('site_current_session');
+                localStorage.removeItem('site_current_user');
+                throw new Error("انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً من الصفحة الرئيسية.");
+            }
             throw new Error(errorData.error || "فشل في تسجيل الطلب في قاعدة البيانات.");
         }
 
