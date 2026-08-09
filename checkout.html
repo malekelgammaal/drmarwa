@@ -236,43 +236,50 @@
     </div>
 
     <!-- InstaPay Modal -->
-    <div class="modal-overlay" id="instapay-modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <div class="modal-header">
-                <h3>الدفع عبر InstaPay</h3>
-                <button class="close-btn" onclick="closeInstapayModal()"><i class="ph ph-x"></i></button>
+    <div class="modal" id="instapay-modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2rem;">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0;">الدفع عبر InstaPay</h3>
+                <button class="close-modal" onclick="closeInstapayModal()"><i class="ph ph-x"></i></button>
             </div>
             <div class="modal-body" style="text-align: right; direction: rtl;">
                 <p style="margin-bottom: 1.5rem; color: var(--muted); font-size: 0.95rem;">
                     يرجى تحويل قيمة الكورس إلى حساب إنستا باي التالي، ثم إرفاق صورة التحويل بالأسفل لتأكيد الدفع وفتح الكورس.
                 </p>
                 
-                <div style="background: rgba(108, 30, 112, 0.1); border: 1px dashed #6C1E70; padding: 1rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem;">
+                <div style="background: rgba(108, 30, 112, 0.1); border: 1px dashed #6C1E70; padding: 1.5rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem; transition: all 0.3s ease;">
                     <span style="display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">رقم الهاتف / حساب إنستا باي</span>
-                    <strong style="font-size: 1.25rem; color: #6C1E70; letter-spacing: 1px;">[PLACEHOLDER_LINK]</strong>
+                    <strong style="font-size: 1.25rem; color: #6C1E70; letter-spacing: 1px; user-select: all;">[PLACEHOLDER_LINK]</strong>
                 </div>
 
                 <form id="instapay-form">
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">اسم المستخدم الثلاثي</label>
-                        <input type="text" id="instapay-name" required placeholder="مثال: أحمد محمد محمود" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text);">
+                        <input type="text" id="instapay-name" required placeholder="مثال: أحمد محمد محمود" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text); transition: border-color 0.3s ease;">
                     </div>
                     
                     <div class="form-group" style="margin-bottom: 1.5rem;">
                         <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">رقم الواتساب (للتواصل)</label>
-                        <input type="tel" id="instapay-whatsapp" required placeholder="مثال: +201000000000" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text);">
+                        <input type="tel" id="instapay-whatsapp" required placeholder="مثال: +201000000000" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text); transition: border-color 0.3s ease;" dir="ltr" style="text-align: right;">
                     </div>
 
                     <div class="form-group" style="margin-bottom: 2rem;">
                         <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">صورة إيصال التحويل (Screenshot)</label>
-                        <div style="position: relative; border: 2px dashed var(--border); border-radius: var(--border-radius-sm); padding: 2rem; text-align: center; background: rgba(0,0,0,0.02); cursor: pointer;" onclick="document.getElementById('instapay-receipt').click()">
-                            <i class="ph ph-upload-simple" style="font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
-                            <p style="margin:0; font-size: 0.9rem; color: var(--muted);" id="upload-text">اضغط هنا لاختيار الصورة</p>
-                            <input type="file" id="instapay-receipt" accept="image/*" required style="display: none;" onchange="document.getElementById('upload-text').innerText = this.files[0]?.name || 'اضغط هنا لاختيار الصورة'">
+                        <div id="receipt-upload-area" style="position: relative; border: 2px dashed var(--border); border-radius: var(--border-radius-sm); padding: 2rem; text-align: center; background: rgba(0,0,0,0.02); cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('instapay-receipt').click()">
+                            <i class="ph ph-upload-simple" style="font-size: 2.5rem; color: #6C1E70; margin-bottom: 0.5rem; opacity: 0.8;"></i>
+                            <p style="margin:0; font-size: 0.95rem; color: var(--muted);" id="upload-text">اضغط هنا لاختيار الصورة</p>
+                            <input type="file" id="instapay-receipt" accept="image/*" required style="display: none;" onchange="
+                                const file = this.files[0];
+                                if(file) {
+                                    document.getElementById('upload-text').innerText = file.name;
+                                    document.getElementById('receipt-upload-area').style.borderColor = '#6C1E70';
+                                    document.getElementById('receipt-upload-area').style.background = 'rgba(108,30,112,0.05)';
+                                }
+                            ">
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-primary" style="width: 100%; background: #6C1E70; border: none; font-size: 1.1rem; padding: 1rem;" id="instapay-submit-btn">
+                    <button type="submit" class="btn-primary" style="width: 100%; background: #6C1E70; border: none; font-size: 1.1rem; padding: 1rem; transition: transform 0.2s ease, box-shadow 0.2s ease;" id="instapay-submit-btn" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(108,30,112,0.3)';" onmouseout="this.style.transform='none';this.style.boxShadow='none';">
                         تأكيد وإرسال الإيصال
                     </button>
                 </form>
