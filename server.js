@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Serve static files from the current directory
 // Note: In a production app, we usually put HTML/CSS/JS in a 'public' folder.
@@ -292,7 +292,7 @@ app.post('/api/instapay-request', async (req, res) => {
         const user = await getUserFromRequest(req);
         if (!user) return res.status(401).json({ error: 'Unauthorized - please log in' });
 
-        const { course_id, username, whatsapp } = req.body;
+        const { course_id, username, whatsapp, base64_receipt } = req.body;
         if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
 
         const courseInfo = COURSE_PRICES[course_id];
@@ -300,6 +300,29 @@ app.post('/api/instapay-request', async (req, res) => {
 
         const secureAmountPaid = courseInfo.price;
         const secureCurrency = courseInfo.currency;
+        
+        // Upload receipt to Supabase Storage if provided
+        let receiptUrl = null;
+        if (base64_receipt) {
+            const matches = base64_receipt.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            if (matches && matches.length === 3) {
+                const contentType = matches[1];
+                const buffer = Buffer.from(matches[2], 'base64');
+                const filename = `receipt_${Date.now()}_${Math.random().toString(36).substring(7)}.${contentType.split('/')[1] || 'jpg'}`;
+                
+                const { data: uploadData, error: uploadError } = await supabase
+                    .storage
+                    .from('receipts')
+                    .upload(filename, buffer, { contentType, upsert: true });
+
+                if (!uploadError) {
+                    const { data } = supabase.storage.from('receipts').getPublicUrl(filename);
+                    receiptUrl = data.publicUrl;
+                } else {
+                    console.error('[API] Failed to upload receipt:', uploadError);
+                }
+            }
+        }
         
         // Use a unique placeholder transaction ID for manual requests
         const transaction_id = 'instapay-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
@@ -322,7 +345,7 @@ app.post('/api/instapay-request', async (req, res) => {
         }
 
         console.log(`[API] 🟡 Pending InstaPay request: user=${user.id} course=${course_id} txn=${transaction_id}`);
-        res.status(201).json({ message: 'Request recorded successfully. Pending admin approval.', data });
+        res.status(201).json({ message: 'Request recorded successfully. Pending admin approval.', data, receipt_url: receiptUrl });
 
     } catch (err) {
         console.error('[API] instapay-request exception:', err);

@@ -177,36 +177,21 @@ class PaymentServiceInterface {
         const courseInfo = this.getCourse(courseId);
         if (!courseInfo) throw new Error("الكورس غير موجود");
 
-        // 1. Send Email via Web3Forms with Attachment
         const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
         const token = session?.access_token;
         if (!token) throw new Error("انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً");
 
-        // We get the current user to pass their email to Web3Forms
-        const currentUser = JSON.parse(localStorage.getItem('site_current_user') || '{}');
-        const userEmail = currentUser.email || 'no-reply@drmarwa.com';
-
-        const formData = new FormData();
-        formData.append("access_key", "9d8affa7-79dd-41e4-a9d6-0587948e964f");
-        formData.append("subject", "💰 إشعار تحويل InstaPay جديد - Dr. Marwa Platform");
-        formData.append("from_name", "نظام الدفع (InstaPay)");
-        formData.append("email", userEmail); // Web3Forms often requires an email field
-        formData.append("اسم المستخدم", name);
-        formData.append("رقم الواتساب", whatsapp);
-        formData.append("الكورس المطلوب", courseInfo.name_ar + " - " + courseInfo.name_en);
-        formData.append("attachment", receiptFile);
-
-        const emailResponse = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            body: formData
+        // Helper to convert file to Base64
+        const getBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
 
-        const emailResult = await emailResponse.json();
-        if (!emailResult.success) {
-            throw new Error(emailResult.message || "فشل في إرسال الإيميل. يرجى المحاولة مرة أخرى.");
-        }
+        const base64_receipt = await getBase64(receiptFile);
 
-        // 2. Record pending purchase in Supabase Database (is_active = false)
+        // 1. Record pending purchase in Supabase Database and upload receipt
         const dbResponse = await fetch(`${PAYMENT_API_BASE}/api/instapay-request`, {
             method: 'POST',
             headers: {
@@ -216,13 +201,46 @@ class PaymentServiceInterface {
             body: JSON.stringify({
                 course_id: courseId,
                 username: name,
-                whatsapp: whatsapp
+                whatsapp: whatsapp,
+                base64_receipt: base64_receipt
             })
         });
 
         if (!dbResponse.ok) {
             const errorData = await dbResponse.json();
             throw new Error(errorData.error || "فشل في تسجيل الطلب في قاعدة البيانات.");
+        }
+
+        const dbResult = await dbResponse.json();
+        const receiptUrl = dbResult.receipt_url || 'تعذر رفع الصورة، الرجاء مراجعة قاعدة البيانات.';
+
+        // 2. Send Email via Web3Forms with the Receipt URL
+        const currentUser = JSON.parse(localStorage.getItem('site_current_user') || '{}');
+        const userEmail = currentUser.email || 'no-reply@drmarwa.com';
+
+        const formData = new FormData();
+        formData.append("access_key", "9d8affa7-79dd-41e4-a9d6-0587948e964f");
+        formData.append("subject", "💰 إشعار تحويل InstaPay جديد - Dr. Marwa Platform");
+        formData.append("from_name", "نظام الدفع (InstaPay)");
+        formData.append("email", userEmail);
+        formData.append("اسم المستخدم", name);
+        formData.append("رقم الواتساب", whatsapp);
+        formData.append("الكورس المطلوب", courseInfo.name_ar + " - " + courseInfo.name_en);
+        formData.append("رابط صورة الإيصال", receiptUrl);
+
+        try {
+            const emailResponse = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData
+            });
+            const emailResult = await emailResponse.json();
+            if (!emailResult.success) {
+                console.error("Web3Forms failed:", emailResult);
+            }
+        } catch (e) {
+            console.error("Web3Forms error:", e);
+            // We do not throw here because the DB record is already saved securely.
+            // The admin can still see it in Supabase.
         }
 
         return true;
