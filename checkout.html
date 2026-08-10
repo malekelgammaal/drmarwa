@@ -222,12 +222,11 @@
 
             <!-- Payment Methods -->
             <div id="payment-methods" style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <!-- Kashier (Disabled) -->
-                <div class="btn-disabled-card">
+                <!-- Kashier (Active) -->
+                <button class="btn-primary" id="kashier-btn" onclick="openKashier()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; font-size: 0.95rem; font-weight: 600;">
                     <i class="ph ph-credit-card" style="font-size:1.2rem;"></i>
-                    <span>دفع بالبطاقة البنكية (Kashier)</span>
-                    <span class="soon-tag">قريباً</span>
-                </div>
+                    دفع بالبطاقة البنكية (Kashier)
+                </button>
 
                 <!-- InstaPay -->
                 <button class="btn-instapay" id="instapay-btn" onclick="openInstapayModal()">
@@ -436,6 +435,68 @@
     // Modal controls
     function openInstapayModal() { showModal('instapay-modal'); }
     function closeInstapayModal() { hideModal('instapay-modal'); }
+    
+    // Kashier integration
+    async function openKashier() {
+        const btn = document.getElementById('kashier-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> جاري التحميل...';
+        btn.disabled = true;
+
+        try {
+            const session = getSession();
+            if (!session?.access_token) throw new Error("يرجى تسجيل الدخول أولاً");
+
+            // 1. Fetch Kashier Hash from backend
+            const res = await fetch(`${API_BASE}/api/kashier-hash`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({ course_id: courseId })
+            });
+            if (!res.ok) throw new Error("فشل في تهيئة الدفع، يرجى المحاولة لاحقاً");
+            const data = await res.json();
+
+            // 2. Load Kashier SDK dynamically if not loaded
+            if (!document.getElementById('kashier-iFrame')) {
+                const script = document.createElement('script');
+                script.id = 'kashier-iFrame';
+                script.src = 'https://checkout.kashier.io/kashier-checkout.js';
+                // Pass attributes to script
+                script.setAttribute('data-amount', data.amount);
+                script.setAttribute('data-hash', data.hash);
+                script.setAttribute('data-currency', data.currency);
+                script.setAttribute('data-orderId', data.orderId);
+                script.setAttribute('data-merchantId', data.merchantId);
+                script.setAttribute('data-merchantRedirect', `${window.location.origin}/my-courses.html`);
+                script.setAttribute('data-mode', data.mode);
+                script.setAttribute('data-metaData', JSON.stringify({ courseId: courseId, userId: getUser()?.id }));
+                document.body.appendChild(script);
+
+                script.onload = () => {
+                    // Check if kashier is defined
+                    if (window.kashier) {
+                        window.kashier.init();
+                        // Reset button
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                    }
+                };
+            } else {
+                // If script already exists, just init again
+                if (window.kashier) window.kashier.init();
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+
+        } catch (err) {
+            showToast(err.message, 'error');
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+    }
 
     // Close modals on backdrop click
     document.querySelectorAll('.modal').forEach(modal => {

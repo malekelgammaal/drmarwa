@@ -30,21 +30,12 @@ app.use(express.static(__dirname, {
 // AUTHORITATIVE COURSE CATALOG
 // Single source of truth for all course data
 // ==========================================
+// STATIC COURSE DATA (Merged with DB dynamically)
 const COURSE_CATALOG = {
     'tri-therapy-bundle': {
-        id: 'tri-therapy-bundle',
-        slug: 'tri-therapy-bundle',
         name_ar: 'باقة العلاج الثلاثي',
         name_en: 'Tri-Therapy Bundle',
-        title: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
         description: 'Complete mastery of evidence-based therapies for mental health professionals. Includes full access to DBT, CBT, and ACT clinical training — a comprehensive system for transforming your therapeutic practice.',
-        duration: '15 Days',
-        price: 17500,
-        original_price: 21500,
-        currency: 'EGP',
-        is_bundle: true,
-        image_url: 'images/course-tri-therapy.png',
-        discount_badge: 'وفر 19%',
         curriculum: [
             'Advanced DBT skills: Mindfulness, Distress Tolerance, Emotional Regulation, Interpersonal Effectiveness',
             'Complete CBT framework: Cognitive Restructuring, Behavioral Activation, Schema Work',
@@ -57,19 +48,9 @@ const COURSE_CATALOG = {
         prerequisites: 'Basic psychology background or clinical experience recommended'
     },
     'cbt-course': {
-        id: 'cbt-course',
-        slug: 'cbt-course',
         name_ar: 'العلاج المعرفي السلوكي',
         name_en: 'Cognitive Behavioral Therapy (CBT)',
-        title: 'CBT Course — Cognitive Behavioral Therapy',
         description: 'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns and overcome anxiety and depression. A structured, evidence-based approach used by therapists worldwide.',
-        duration: '5 Days',
-        price: 7500,
-        original_price: 10000,
-        currency: 'EGP',
-        is_bundle: false,
-        image_url: 'images/course-cbt.png',
-        discount_badge: 'وفر 25%',
         curriculum: [
             'Foundations of CBT: Theory and evidence base',
             'Cognitive Restructuring techniques',
@@ -84,19 +65,9 @@ const COURSE_CATALOG = {
         prerequisites: 'No prior therapy training required'
     },
     'dbt-course': {
-        id: 'dbt-course',
-        slug: 'dbt-course',
         name_ar: 'العلاج الجدلي السلوكي',
         name_en: 'Dialectical Behavior Therapy (DBT)',
-        title: 'DBT Course — Dialectical Behavior Therapy',
         description: 'Master Dialectical Behavior Therapy skills for mindfulness, emotional regulation, and distress tolerance. The most effective treatment for borderline personality disorder and emotional dysregulation.',
-        duration: '5 Days',
-        price: 8500,
-        original_price: 11500,
-        currency: 'EGP',
-        is_bundle: false,
-        image_url: 'images/course-dbt.png',
-        discount_badge: 'وفر 26%',
         curriculum: [
             'DBT biosocial theory and dialectical philosophy',
             'Core Mindfulness skills module',
@@ -111,19 +82,9 @@ const COURSE_CATALOG = {
         prerequisites: 'Basic counseling or therapy background recommended'
     },
     'act-course': {
-        id: 'act-course',
-        slug: 'act-course',
         name_ar: 'العلاج بالقبول والالتزام',
         name_en: 'Acceptance & Commitment Therapy (ACT)',
-        title: 'ACT Course — Acceptance & Commitment Therapy',
         description: 'Acceptance & Commitment Therapy principles for living a value-driven life and increasing psychological flexibility. Learn to help clients stop fighting their inner experience and move toward meaningful action.',
-        duration: '5 Days',
-        price: 7500,
-        original_price: 10000,
-        currency: 'EGP',
-        is_bundle: false,
-        image_url: 'images/course-act.png',
-        discount_badge: 'وفر 25%',
         curriculum: [
             'ACT theoretical foundations and Relational Frame Theory',
             'The six core ACT processes',
@@ -138,19 +99,9 @@ const COURSE_CATALOG = {
         prerequisites: 'No prior therapy training required'
     },
     'personality-disorders-course': {
-        id: 'personality-disorders-course',
-        slug: 'personality-disorders-course',
         name_ar: 'اضطرابات الشخصية',
         name_en: 'Personality Disorders Course',
-        title: 'Personality Disorders — Advanced Clinical Training',
         description: 'An in-depth understanding of personality disorders and effective therapeutic approaches for mental health professionals. Learn to assess, formulate, and treat the full spectrum of personality disorders.',
-        duration: '5 Days',
-        price: 8500,
-        original_price: 11500,
-        currency: 'EGP',
-        is_bundle: false,
-        image_url: 'images/course-personality-disorders.png',
-        discount_badge: 'وفر 26%',
         curriculum: [
             'DSM-5 and ICD-11 personality disorder classification',
             'Cluster A, B, and C disorders in depth',
@@ -165,19 +116,9 @@ const COURSE_CATALOG = {
         prerequisites: 'Prior clinical experience with personality disorders recommended'
     },
     'healing-journey-program': {
-        id: 'healing-journey-program',
-        slug: 'healing-journey-program',
         name_ar: 'برنامج رحلة تعافي',
         name_en: 'Healing Journey Program',
-        title: 'Healing Journey Program — Trauma & Resilience',
         description: 'A comprehensive program designed to help you process trauma and build emotional resilience. Combines evidence-based trauma-informed approaches with practical healing strategies.',
-        duration: '2 Days',
-        price: 5000,
-        original_price: 7500,
-        currency: 'EGP',
-        is_bundle: false,
-        image_url: 'images/course-healing-journey.png',
-        discount_badge: 'وفر 33%',
         curriculum: [
             'Understanding trauma and its effects on the mind and body',
             'Trauma-informed care principles',
@@ -191,6 +132,52 @@ const COURSE_CATALOG = {
         prerequisites: 'No prior training required'
     }
 };
+
+const DB_ID_TO_SLUG = {
+    1: 'tri-therapy-bundle',
+    2: 'cbt-course',
+    3: 'dbt-course',
+    4: 'personality-disorders-course',
+    5: 'act-course',
+    6: 'healing-journey-program'
+};
+
+async function getCourseBySlug(slug) {
+    let dbId = null;
+    for (const [id, s] of Object.entries(DB_ID_TO_SLUG)) {
+        if (s === slug) dbId = parseInt(id);
+    }
+    if (!dbId) return null;
+
+    const { data, error } = await supabase.from('courses').select('*').eq('id', dbId).single();
+    if (error || !data) {
+        console.error(`[API] Failed to fetch course from DB for slug ${slug}:`, error);
+        return null;
+    }
+    
+    const staticInfo = COURSE_CATALOG[slug];
+    if (!staticInfo) return null;
+
+    return {
+        id: dbId,
+        slug: slug,
+        title: data.title,
+        name_ar: staticInfo.name_ar,
+        name_en: staticInfo.name_en,
+        price: data.price,
+        original_price: data.original_price,
+        discount_badge: data.discount_badge,
+        image_url: data.image_url,
+        is_bundle: data.is_bundle,
+        duration: data.duration,
+        excerpt: data.excerpt,
+        currency: 'EGP',
+        curriculum: staticInfo.curriculum,
+        target_audience: staticInfo.target_audience,
+        prerequisites: staticInfo.prerequisites,
+        description: staticInfo.description
+    };
+}
 
 // Helper: extract and verify user JWT from Authorization header
 async function getUserFromRequest(req) {
@@ -465,32 +452,53 @@ app.get('/api/posts', async (req, res) => {
     }
 });
 
+async function getAllCourses() {
+    const { data, error } = await supabase.from('courses')
+        .select('*')
+        .order('order_index', { ascending: true, nullsFirst: false })
+        .order('id', { ascending: true });
+
+    if (error || !data) {
+        console.error('[API] Failed to fetch all courses from DB:', error);
+        return [];
+    }
+
+    const merged = [];
+    for (const dbCourse of data) {
+        const slug = DB_ID_TO_SLUG[dbCourse.id];
+        if (!slug) continue;
+        
+        const staticInfo = COURSE_CATALOG[slug];
+        if (!staticInfo) continue;
+
+        merged.push({
+            id: dbCourse.id,
+            slug: slug,
+            title: dbCourse.title,
+            name_ar: staticInfo.name_ar,
+            name_en: staticInfo.name_en,
+            price: dbCourse.price,
+            original_price: dbCourse.original_price,
+            discount_badge: dbCourse.discount_badge,
+            image_url: dbCourse.image_url,
+            is_bundle: dbCourse.is_bundle,
+            duration: dbCourse.duration,
+            excerpt: dbCourse.excerpt,
+            currency: 'EGP',
+            curriculum: staticInfo.curriculum,
+            target_audience: staticInfo.target_audience,
+            prerequisites: staticInfo.prerequisites,
+            description: staticInfo.description
+        });
+    }
+    return merged;
+}
+
 // Get all courses — returns authoritative catalog
 app.get('/api/courses', async (req, res) => {
     try {
-        const { data, error } = await supabase.from('courses').select('*').order('order_index', { ascending: true, nullsFirst: false }).order('id', { ascending: true });
-
-        if (error || !data || data.length === 0) {
-            // Return from authoritative COURSE_CATALOG
-            const courses = Object.values(COURSE_CATALOG).map((c, i) => ({
-                id: i + 1,
-                slug: c.slug,
-                title: c.title,
-                name_ar: c.name_ar,
-                name_en: c.name_en,
-                price: c.price,
-                original_price: c.original_price,
-                discount_badge: c.discount_badge,
-                image_url: c.image_url,
-                is_bundle: c.is_bundle,
-                duration: c.duration,
-                excerpt: c.description.substring(0, 180) + '...',
-                currency: c.currency
-            }));
-            return res.json(courses);
-        }
-
-        res.json(data);
+        const courses = await getAllCourses();
+        res.json(courses);
     } catch (err) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -498,10 +506,14 @@ app.get('/api/courses', async (req, res) => {
 
 // Get single course by slug (for course detail page)
 app.get('/api/courses/:slug', async (req, res) => {
-    const { slug } = req.params;
-    const course = COURSE_CATALOG[slug];
-    if (!course) return res.status(404).json({ error: 'Course not found' });
-    res.json(course);
+    try {
+        const { slug } = req.params;
+        const course = await getCourseBySlug(slug);
+        if (!course) return res.status(404).json({ error: 'Course not found' });
+        res.json(course);
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 // Get all testimonials from Supabase
@@ -562,7 +574,7 @@ app.post('/api/record-purchase', async (req, res) => {
         }
 
         // SECURE PRICE LOOKUP — backend is authoritative, never trust client price
-        const courseInfo = COURSE_CATALOG[course_id];
+        const courseInfo = await getCourseBySlug(course_id);
         if (!courseInfo) {
             return res.status(400).json({ error: 'Invalid course ID' });
         }
@@ -616,6 +628,43 @@ app.post('/api/record-purchase', async (req, res) => {
 
     } catch (err) {
         console.error('[API] record-purchase exception:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// POST /api/kashier-hash
+app.post('/api/kashier-hash', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(401).json({ error: 'Unauthorized - please log in' });
+
+        const { course_id } = req.body;
+        if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
+
+        const courseInfo = await getCourseBySlug(course_id);
+        if (!courseInfo) return res.status(400).json({ error: 'Invalid course ID' });
+
+        const amount = courseInfo.price;
+        const currency = courseInfo.currency || 'EGP';
+        const merchantId = process.env.KASHIER_MERCHANT_ID || 'MID-1234-TEST';
+        const secret = process.env.KASHIER_API_KEY || 'TEST_SECRET_KEY';
+        const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+
+        // Kashier Hash Generation (Node.js)
+        const crypto = require('crypto');
+        const path = `/?payment=${merchantId}.${orderId}.${amount}.${currency}`;
+        const hash = crypto.createHmac('sha256', secret).update(path).digest('hex');
+
+        res.json({
+            hash: hash,
+            orderId: orderId,
+            merchantId: merchantId,
+            amount: amount,
+            currency: currency,
+            mode: process.env.KASHIER_MODE || 'test' // test or live
+        });
+    } catch (err) {
+        console.error('[API] kashier-hash exception:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -780,19 +829,33 @@ app.get('/api/my-courses', async (req, res) => {
 
         if (error) return res.status(500).json({ error: error.message });
 
-        // Enrich with authoritative course data
-        const enriched = (data || []).map(purchase => {
-            const courseInfo = COURSE_CATALOG[purchase.course_id];
-            return {
-                ...purchase,
-                course_name_ar: courseInfo?.name_ar || purchase.course_id,
-                course_name_en: courseInfo?.name_en || purchase.course_id,
-                course_duration: courseInfo?.duration || '—',
-                course_description: courseInfo?.description || '',
-                course_image: courseInfo?.image_url || '',
-                currency: purchase.currency || 'EGP'
-            };
-        });
+        // Enrich with authoritative course data from DB
+        const enriched = [];
+        for (const purchase of (data || [])) {
+            const courseInfo = await getCourseBySlug(purchase.course_id);
+            if (courseInfo) {
+                enriched.push({
+                    ...purchase,
+                    course_name_ar: courseInfo.name_ar,
+                    course_name_en: courseInfo.name_en,
+                    course_duration: courseInfo.duration || '—',
+                    course_description: courseInfo.description || '',
+                    course_image: courseInfo.image_url || '',
+                    currency: purchase.currency || 'EGP'
+                });
+            } else {
+                // Fallback if course not found in DB
+                enriched.push({
+                    ...purchase,
+                    course_name_ar: purchase.course_id,
+                    course_name_en: purchase.course_id,
+                    course_duration: '—',
+                    course_description: '',
+                    course_image: '',
+                    currency: purchase.currency || 'EGP'
+                });
+            }
+        }
 
         res.json(enriched);
     } catch (err) {

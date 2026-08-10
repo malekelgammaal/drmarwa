@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,103 +114,7 @@
             gap: 1.5rem;
         }
 
-        /* ── Course Card ── */
-        .course-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            animation: fadeInUp 0.4s ease forwards;
-            opacity: 0;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .course-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        .card-accent {
-            height: 4px;
-            width: 100%;
-        }
-        .card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
-        .card-icon-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-        }
-        .purchase-date {
-            font-size: 0.75rem;
-            color: var(--muted);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .course-name-ar {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin: 0 0 0.25rem;
-            font-family: 'Inter', sans-serif;
-            direction: rtl;
-        }
-        .course-name-en {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin: 0 0 0.75rem;
-        }
-        .course-desc {
-            font-size: 0.85rem;
-            color: var(--muted);
-            line-height: 1.5;
-            margin-bottom: 1rem;
-            flex: 1;
-        }
-        .card-meta {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.25rem;
-        }
-        .meta-tag {
-            font-size: 0.72rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        .open-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            font-family: inherit;
-        }
+        /* Course Cards use global styles from style.css */
 
         /* ── Loading State ── */
         .loading-state {
@@ -295,15 +199,15 @@
         <div class="top-bar">
             <div class="top-bar-left">
                 <a href="index.html#courses" class="back-btn">
-                    <i class="ph ph-arrow-left"></i> Browse Courses
+                    <i class="ph ph-arrow-right"></i> تصفح الكورسات
                 </a>
             </div>
             <div style="display:flex;align-items:center;gap:1rem;">
                 <a href="profile.html" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.875rem;display:flex;align-items:center;gap:0.4rem;font-family:inherit;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--muted)'">
-                    <i class="ph ph-user-circle"></i> My Profile
+                    <i class="ph ph-user-circle"></i> حسابي
                 </a>
             <button id="logout-btn" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.875rem;display:flex;align-items:center;gap:0.4rem;font-family:inherit;" onclick="handleLogout()">
-                <i class="ph ph-sign-out"></i> Log Out
+                <i class="ph ph-sign-out"></i> تسجيل الخروج
             </button>
             </div>
         </div>
@@ -311,26 +215,26 @@
         <!-- Hero Section -->
         <div class="hero-section">
             <div class="hero-inner">
-                <div class="hero-badge"><i class="ph ph-book-open"></i> My Learning Library</div>
-                <h1 id="hero-heading">My Courses</h1>
-                <p>All your purchased courses — accessible anytime, forever.</p>
+                <div class="hero-badge"><i class="ph ph-book-open"></i> مكتبتي التعليمية</div>
+                <h1 id="hero-heading">كورساتي</h1>
+                <p>جميع كورساتك التي قمت بشرائها — متاحة في أي وقت، مدى الحياة.</p>
 
                 <!-- Stats Bar -->
                 <div class="stats-bar" id="stats-bar" style="display:none;">
                     <div class="stat-pill">
                         <i class="ph ph-graduation-cap"></i>
                         <strong id="stat-count">0</strong>
-                        <span>Courses Owned</span>
+                        <span>كورس مملوك</span>
                     </div>
                     <div class="stat-pill">
                         <i class="ph ph-infinity"></i>
-                        <strong>Lifetime</strong>
-                        <span>Access</span>
+                        <strong>دخول</strong>
+                        <span>مدى الحياة</span>
                     </div>
                     <div class="stat-pill">
                         <i class="ph ph-currency-dollar"></i>
                         <strong id="stat-invested">0</strong>
-                        <span>Total Invested</span>
+                        <span>إجمالي الاستثمار</span>
                     </div>
                 </div>
             </div>
@@ -339,12 +243,12 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="section-label">
-                <i class="ph ph-books"></i> Your Courses
+                <i class="ph ph-books"></i> كورساتك
             </div>
             <div class="courses-grid" id="courses-grid">
                 <div class="loading-state">
                     <i class="ph ph-circle-notch ph-spin"></i>
-                    <p>Loading your courses...</p>
+                    <p>جاري تحميل كورساتك...</p>
                 </div>
             </div>
         </div>
@@ -357,63 +261,7 @@
 
     const API_BASE = 'https://drmarwa.onrender.com';
 
-    // ── Course Catalog (matches payment-service.js) ──
-    const CATALOG = {
-        'healing-journey-program': {
-            name_ar: 'رحلة تعافي',
-            name_en: 'Healing Journey Program',
-            icon: 'ph-heart-half',
-            color: '#14b8a6',
-            gradient: 'linear-gradient(135deg,rgba(20,184,166,0.18),rgba(20,184,166,0.05))',
-            desc: 'معالجة الصدمات وبناء المرونة العاطفية',
-            duration: '2 Days'
-        },
-        'dbt-course': {
-            name_ar: 'العلاج الجدلي السلوكي',
-            name_en: 'Dialectical Behavior Therapy (DBT)',
-            icon: 'ph-waves',
-            color: '#3b82f6',
-            gradient: 'linear-gradient(135deg,rgba(59,130,246,0.18),rgba(59,130,246,0.05))',
-            desc: 'تنظيم المشاعر والمهارات الجدلية السلوكية',
-            duration: '5 Days'
-        },
-        'cbt-course': {
-            name_ar: 'العلاج المعرفي السلوكي',
-            name_en: 'Cognitive Behavioral Therapy (CBT)',
-            icon: 'ph-brain',
-            color: '#8b5cf6',
-            gradient: 'linear-gradient(135deg,rgba(139,92,246,0.18),rgba(139,92,246,0.05))',
-            desc: 'إعادة هيكلة الأفكار السلبية والمعتقدات المحدودة',
-            duration: '4 Days'
-        },
-        'act-course': {
-            name_ar: 'القبول والالتزام',
-            name_en: 'Acceptance & Commitment Therapy (ACT)',
-            icon: 'ph-compass',
-            color: '#f59e0b',
-            gradient: 'linear-gradient(135deg,rgba(245,158,11,0.18),rgba(245,158,11,0.05))',
-            desc: 'تطوير المرونة النفسية والتقبل الفعّال',
-            duration: '4 Days'
-        },
-        'personality-disorders-course': {
-            name_ar: 'اضطرابات الشخصية',
-            name_en: 'Personality Disorders Course',
-            icon: 'ph-person-simple-circle',
-            color: '#ec4899',
-            gradient: 'linear-gradient(135deg,rgba(236,72,153,0.18),rgba(236,72,153,0.05))',
-            desc: 'فهم وإدارة أنماط الشخصية المعقدة',
-            duration: '5 Days'
-        },
-        'tri-therapy-bundle': {
-            name_ar: 'باقة الثلاث علاجات',
-            name_en: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
-            icon: 'ph-star-four',
-            color: '#f97316',
-            gradient: 'linear-gradient(135deg,rgba(249,115,22,0.22),rgba(249,115,22,0.05))',
-            desc: 'التدريب الشامل على أقوى أساليب العلاج النفسي الحديث',
-            duration: '13 Days'
-        }
-    };
+    // CATALOG removed: data is now provided dynamically from the backend
 
     // ── Theme ──
     const html = document.documentElement;
@@ -448,49 +296,30 @@
 
     // ── Render Course Card ──
     function renderCard(purchase, index) {
-        const amountStr = purchase.amount_paid
-            ? `${Number(parseFloat(purchase.amount_paid)).toLocaleString()} ج.م`
-            : '';
-
-        const info = CATALOG[purchase.course_id] || {
-            name_ar: purchase.course_id,
-            name_en: purchase.course_id,
-            icon: 'ph-book',
-            color: '#14b8a6',
-            gradient: 'linear-gradient(135deg,rgba(20,184,166,0.1),rgba(20,184,166,0.02))',
-            desc: '',
-            duration: '—'
-        };
-
         const card = document.createElement('div');
         card.className = 'course-card';
         card.style.animationDelay = `${index * 0.08}s`;
+        
+        // Handle bundle card specific styling
+        if (purchase.course_id === 'tri-therapy-bundle') {
+            card.classList.add('bundle-card');
+            card.style.border = '2px solid var(--primary)';
+        }
+
+        const fallbackImage = 'images/course-default.png'; // Make sure you have a default image or it will fail gracefully
+        const imageUrl = purchase.course_image || fallbackImage;
+        const durationText = purchase.course_duration || '—';
 
         card.innerHTML = `
-            <div class="card-accent" style="background:${info.color};"></div>
-            <div class="card-body" style="background:${info.gradient};">
-                <div class="card-icon-row">
-                    <div class="card-icon" style="background:${info.color}22;color:${info.color};">
-                        <i class="ph ${info.icon}"></i>
-                    </div>
-                    <div class="purchase-date">
-                        <i class="ph ph-calendar-check"></i>
-                        ${formatDate(purchase.purchased_at)}
-                    </div>
-                </div>
-                <p class="course-name-ar">${info.name_ar}</p>
-                <p class="course-name-en">${info.name_en}</p>
-                <p class="course-desc">${info.desc}</p>
-                <div class="card-meta">
-                    <span class="meta-tag" style="background:${info.color}18;color:${info.color};">
-                        <i class="ph ph-infinity"></i> Lifetime Access
-                    </span>
-                    ${info.duration ? `<span class="meta-tag" style="background:var(--alt-bg);color:var(--muted);"><i class="ph ph-clock"></i> ${info.duration}</span>` : ''}
-                    ${purchase.amount_paid ? `<span class="meta-tag" style="background:var(--alt-bg);color:var(--muted);"><i class="ph ph-receipt"></i> ${Number(purchase.amount_paid).toLocaleString()} ج.م</span>` : ''}
-                </div>
-                <a href="course-${purchase.course_id}.html" class="open-btn" style="background:${info.color};color:#fff;">
-                    <i class="ph ph-play-circle"></i> Open Course
-                    <i class="ph ph-arrow-right" style="margin-left:auto;"></i>
+            <div class="course-thumbnail">
+                <img src="${imageUrl}" alt="${purchase.course_name_ar || purchase.course_id}" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div class="course-info">
+                <h3>${purchase.course_name_ar || purchase.course_id}</h3>
+                <p style="margin-bottom: 0.5rem;"><i class="ph ph-calendar-check" style="margin-left:4px;"></i> تم الشراء في: <span dir="ltr">${formatDate(purchase.purchased_at)}</span></p>
+                <p>${purchase.course_description || ''}<br><br><strong><i class="ph ph-clock" style="margin-left:4px;"></i> المدة:</strong> <span dir="ltr">${durationText}</span></p>
+                <a href="course-${purchase.course_id}.html" class="btn-primary" style="display:block;text-align:center;margin-top:1.5rem;width:100%;">
+                    بدء التعلم <i class="ph ph-arrow-left" style="margin-right:6px;"></i>
                 </a>
             </div>
         `;
@@ -502,9 +331,9 @@
         return `
             <div class="empty-state">
                 <div class="empty-icon"><i class="ph ph-books"></i></div>
-                <h2>No Courses Yet</h2>
-                <p>You haven't purchased any courses yet.<br>Explore our programs and start your journey.</p>
-                <a href="index.html#courses" class="btn-primary">Browse Courses</a>
+                <h2>لا يوجد كورسات بعد</h2>
+                <p>لم تقم بشراء أي كورسات بعد.<br>تصفح برامجنا وابدأ رحلتك.</p>
+                <a href="index.html#courses" class="btn-primary">تصفح الكورسات</a>
             </div>
         `;
     }
@@ -521,9 +350,9 @@
         }
 
         // Show user name
-        const displayName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Student';
+        const displayName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'طالب';
         document.getElementById('nav-user-name').textContent = displayName;
-        document.getElementById('hero-heading').textContent = `${displayName}'s Courses`;
+        document.getElementById('hero-heading').textContent = `كورسات ${displayName}`;
 
         const grid = document.getElementById('courses-grid');
 
@@ -563,8 +392,8 @@
             grid.innerHTML = `
                 <div class="loading-state">
                     <i class="ph ph-warning-circle" style="color:#ef4444;"></i>
-                    <p style="color:#ef4444;">Failed to load courses. Please try again.</p>
-                    <button class="btn-outline" onclick="loadMyCourses()" style="margin-top:1rem;">Retry</button>
+                    <p style="color:#ef4444;">فشل في تحميل الكورسات. يرجى المحاولة مرة أخرى.</p>
+                    <button class="btn-outline" onclick="loadMyCourses()" style="margin-top:1rem;">إعادة المحاولة</button>
                 </div>
             `;
         }

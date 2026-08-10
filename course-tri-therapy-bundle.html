@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,7 +104,7 @@
 <!-- Loader -->
 <div id="loader">
     <div class="spinner"></div>
-    <p style="color:var(--muted);font-size:0.9rem;">Verifying access...</p>
+    <p style="color:var(--muted);font-size:0.9rem;">جاري التحقق من الصلاحية...</p>
 </div>
 
 <!-- Page (hidden until access confirmed) -->
@@ -112,10 +112,10 @@
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;"><i class="ph ph-stack" style="color:var(--primary);font-size:1.1rem;"></i><h2>Tri-Therapy Bundle</h2></div>
-            <p>3 Therapy Approaches · 15 Modules</p>
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;"><i class="ph ph-stack" style="color:var(--primary);font-size:1.1rem;"></i><h2>باقة العلاج الثلاثي</h2></div>
+            <p>3 مجالات علاجية · 15 وحدة</p>
             <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
-            <p class="prog-text" id="prog-text">1 of 15 modules</p>
+            <p class="prog-text" id="prog-text">0 مكتمل</p>
         </div>
 
         <div class="section-group">
@@ -148,33 +148,31 @@
 
     <main class="main">
         <div class="badges">
-            <span class="badge b-bundle"><i class="ph ph-stack"></i> Bundle</span>
-            <span class="badge b-dbt"><i class="ph ph-brain"></i> DBT</span>
-            <span class="badge b-cbt"><i class="ph ph-lightbulb"></i> CBT</span>
-            <span class="badge b-act"><i class="ph ph-leaf"></i> ACT</span>
+            <span class="badge"><i class="ph ph-graduation-cap"></i> باقة شاملة</span>
+            <span class="badge"><i class="ph ph-certificate"></i> شهادة معتمدة</span>
+            <span class="badge"><i class="ph ph-translate"></i> بالعربية</span>
         </div>
         <h1 id="mod-title" style="margin:0.4rem 0 1rem;font-size:1.55rem;">Introduction to Dialectical Behavior Therapy</h1>
         <div class="meta">
             <span class="chip"><i class="ph ph-clock"></i> <span id="mod-dur">45 min</span></span>
-            <span class="chip"><i class="ph ph-translate"></i> Arabic</span>
-            <span class="chip"><i class="ph ph-certificate"></i> Certificate</span>
+            <span class="chip"><i class="ph ph-translate"></i> العربية</span>
+            <span class="chip"><i class="ph ph-certificate"></i> شهادة</span>
         </div>
-                    <div class="video-box" id="video-container">
-                <!-- Video loaded dynamically by loadModule() -->
-                <p style="color:var(--muted);font-size:0.85rem;z-index:1;">Loading video...</p>
-            </div>
-        <h2 class="sec-h"><i class="ph ph-book-open"></i> About This Module</h2>
+        <div class="video-box" id="video-container">
+            <p style="color:var(--muted);font-size:0.85rem;z-index:1;">جاري تحميل الفيديو...</p>
+        </div>
+        <h2 class="sec-h"><i class="ph ph-book-open"></i> عن هذه الوحدة</h2>
         <p class="body-p" id="mod-body">Welcome to the first part of the Tri-Therapy Bundle. We begin with Dialectical Behavior Therapy — a comprehensive evidence-based approach that balances acceptance and change. You will master the core DBT philosophy and its clinical applications.</p>
         <div class="mats">
-            <h3><i class="ph ph-folder-open"></i> Downloadable Materials</h3>
+            <h3><i class="ph ph-folder-open"></i> المواد الملحقة</h3>
             <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> DBT Module 1 Workbook.pdf</a>
             <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> CBT Cognitive Distortions Checklist.pdf</a>
             <a href="#" class="mat-a"><i class="ph ph-file-text"></i> ACT Values Clarification Exercise.pdf</a>
             <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> Bundle Full Study Guide.pdf</a>
         </div>
         <div class="nav-btns">
-            <button class="nav-btn" id="btn-prev" onclick="prev()"><i class="ph ph-arrow-left"></i> Previous</button>
-            <button class="nav-btn primary" id="btn-next" onclick="next()">Next Module <i class="ph ph-arrow-right"></i></button>
+            <button class="nav-btn" id="btn-prev" onclick="prev()"><i class="ph ph-arrow-right"></i> السابق</button>
+            <button class="nav-btn primary" id="btn-next" onclick="next()">التالي <i class="ph ph-arrow-left"></i></button>
         </div>
     </main>
 </div>
@@ -210,18 +208,25 @@ function go(key) {
     document.getElementById('mod-title').textContent = m.t;
     document.getElementById('mod-dur').textContent   = m.d;
     document.getElementById('mod-body').textContent  = m.b;
-    document.getElementById('mod-vid').textContent   = m.t + ' — Click to play';
     KEYS.forEach(k => {
         const btn = document.getElementById('btn-' + k);
         if (btn) btn.classList.toggle('active', k === key);
     });
-    const pPct = Math.round(((idx + 1) / KEYS.length) * 100);
-    document.getElementById('prog').style.width = pPct + '%';
-    document.getElementById('prog-text').textContent = (idx+1) + ' of ' + KEYS.length + ' modules';
+    
+    const nextBtn = document.getElementById('btn-next');
+    if (idx === KEYS.length - 1) {
+        nextBtn.innerHTML = '<i class="ph ph-trophy"></i> اكتمل الكورس!';
+        nextBtn.disabled = true;
+    } else {
+        nextBtn.innerHTML = 'التالي <i class="ph ph-arrow-left"></i>';
+        nextBtn.disabled = false;
+    }
+    
+    const pct = Math.round(((idx + 1) / KEYS.length) * 100);
+    document.getElementById('prog').style.width = pct + '%';
+    document.getElementById('prog-text').textContent = (idx + 1) + ' من ' + KEYS.length + ' مكتمل';
+    
     document.getElementById('btn-prev').disabled = idx === 0;
-    const nb = document.getElementById('btn-next');
-    nb.disabled = idx === KEYS.length - 1;
-    nb.innerHTML = idx === KEYS.length - 1 ? '<i class="ph ph-trophy"></i> Complete!' : 'Next Module <i class="ph ph-arrow-right"></i>';
     window.scrollTo({top:0, behavior:'smooth'});
 }
 function next() { if (cur < KEYS.length-1) go(KEYS[cur+1]); }
@@ -236,14 +241,13 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
     localStorage.setItem('theme', n);
 });
 
-// ── User name ──
-const u = JSON.parse(localStorage.getItem('site_current_user') || 'null');
-if (u) document.getElementById('user-name').textContent = 'Welcome, ' + (u.user_metadata?.name || u.email?.split('@')[0] || 'Student');
-
-// ── Access check — ALL elements exist at this point ──
+// ── Access check ──
 function showPage() {
     document.getElementById('loader').style.display = 'none';
-    document.getElementById('page').style.display   = 'flex';
+    document.getElementById('page').style.display = 'flex';
+    const user = JSON.parse(localStorage.getItem('site_current_user') || 'null');
+    const name = user?.user_metadata?.name || user?.email?.split('@')[0] || 'طالب';
+    document.getElementById('user-welcome').textContent = 'مرحباً، ' + name;
     go('dbt-1');
 }
 
