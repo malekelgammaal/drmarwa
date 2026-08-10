@@ -226,12 +226,12 @@ class PaymentServiceInterface {
         const formData = new FormData();
         formData.append("access_key", "fb92385f-3e85-4f05-8b04-69f61449449e");
         formData.append("subject", "💰 إشعار تحويل InstaPay جديد - Dr. Marwa Platform");
-        formData.append("from_name", "نظام الدفع (InstaPay)");
+        formData.append("from_name", "InstaPay System");
         formData.append("email", userEmail);
-        formData.append("اسم المستخدم", name);
-        formData.append("رقم الواتساب", whatsapp);
-        formData.append("الكورس المطلوب", courseInfo.name_ar + " - " + courseInfo.name_en);
-        formData.append("رابط صورة الإيصال", receiptUrl);
+        formData.append("Client_Name", name);
+        formData.append("WhatsApp_Number", whatsapp);
+        formData.append("Course_Name", courseInfo.name_ar + " - " + courseInfo.name_en);
+        formData.append("Receipt_URL", receiptUrl);
 
         try {
             const emailResponse = await fetch("https://api.web3forms.com/submit", {

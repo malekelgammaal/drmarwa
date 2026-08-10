@@ -372,17 +372,18 @@ app.get('/api/check-access', async (req, res) => {
         // 2. Check purchases table
         const { data, error } = await supabase
             .from('purchases')
-            .select('id')
+            .select('id, is_active')
             .eq('user_id', user.id)
-            .eq('course_id', course_id)
-            .eq('is_active', true)
-            .single();
+            .eq('course_id', course_id);
 
-        if (error || !data) {
-            return res.status(200).json({ has_access: false, reason: 'not_purchased' });
+        if (error || !data || data.length === 0) {
+            return res.status(200).json({ has_access: false, pending: false, reason: 'not_purchased' });
         }
 
-        res.status(200).json({ has_access: true });
+        const isActive = data.some(p => p.is_active === true);
+        const isPending = data.some(p => p.is_active === false);
+
+        res.status(200).json({ has_access: isActive, pending: isPending });
 
     } catch (err) {
         console.error('[API] check-access exception:', err);

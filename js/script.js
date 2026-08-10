@@ -1095,5 +1095,41 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Cookies declined.', 'info');
         });
     }
+    }
+
+    // ==========================================
+    // My Courses Sticky Icon
+    // ==========================================
+    if (session?.access_token) {
+        fetch(`${API_BASE_URL}/api/my-courses`, {
+            headers: { 'Authorization': `Bearer ${session.access_token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.courses && data.courses.length > 0) {
+                const hasActive = data.courses.some(c => c.is_active);
+                if (hasActive) {
+                    const stickyBtn = document.createElement('a');
+                    stickyBtn.href = '#courses';
+                    stickyBtn.className = 'btn-primary';
+                    stickyBtn.innerHTML = '📚 كورساتي';
+                    stickyBtn.style.position = 'fixed';
+                    stickyBtn.style.bottom = '20px';
+                    stickyBtn.style.right = '20px';
+                    stickyBtn.style.zIndex = '1000';
+                    stickyBtn.style.boxShadow = '0 4px 12px rgba(108, 30, 112, 0.3)';
+                    stickyBtn.style.borderRadius = '50px';
+                    stickyBtn.style.padding = '10px 20px';
+                    stickyBtn.style.fontSize = '1.1rem';
+                    stickyBtn.style.display = 'flex';
+                    stickyBtn.style.alignItems = 'center';
+                    stickyBtn.style.gap = '8px';
+                    
+                    document.body.appendChild(stickyBtn);
+                }
+            }
+        })
+        .catch(console.error);
+    }
 
 });

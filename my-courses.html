@@ -544,7 +544,7 @@
             // Render stats
             const totalInvested = purchases.reduce((sum, p) => sum + parseFloat(p.amount_paid || 0), 0);
             document.getElementById('stat-count').textContent = purchases.length;
-            document.getElementById('stat-invested').textContent = `$${totalInvested.toFixed(2)}`;
+            document.getElementById('stat-invested').textContent = `${totalInvested} ج.م`;
             document.getElementById('stats-bar').style.display = 'flex';
 
             // Render cards

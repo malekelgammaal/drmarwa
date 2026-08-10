@@ -249,7 +249,7 @@
                 
                 <div style="background: rgba(108, 30, 112, 0.1); border: 1px dashed #6C1E70; padding: 1.5rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem; transition: all 0.3s ease;">
                     <span style="display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">لينك الدفع</span>
-                    <strong style="font-size: 1.25rem; color: #6C1E70; letter-spacing: 1px; user-select: all;">[PLACEHOLDER_LINK]</strong>
+                    <strong style="font-size: 1.25rem; color: #6C1E70; letter-spacing: 1px; user-select: all;">instapaylinkhere.com</strong>
                 </div>
 
                 <form id="instapay-form">
@@ -315,7 +315,7 @@
                 const savings = Math.round((1 - (course.sale_price / course.full_price)) * 100);
                 const badge = document.getElementById('discount-badge-display');
                 badge.style.display = 'inline-block';
-                badge.textContent = `Save ${savings}%`;
+                badge.textContent = `وفر ${savings}%`;
             }
         })();
 
@@ -384,7 +384,26 @@
             if (!courseId || !window.PaymentService.getCourse(courseId)) {
                 alert('Invalid course. Please go back and select a course.');
                 window.location.href = 'index.html#courses';
+                return;
             }
+
+            // Check if user already owns or has a pending request for this course
+            fetch(`https://drmarwa.onrender.com/api/check-access?course_id=${courseId}`, {
+                headers: {
+                    'Authorization': `Bearer ${session.access_token}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.has_access) {
+                    alert('أنت مشترك بالفعل في هذا الكورس!');
+                    window.location.href = 'index.html';
+                } else if (data.pending) {
+                    alert('لديك طلب اشتراك قيد المراجعة لهذا الكورس. يرجى الانتظار لحين التفعيل.');
+                    window.location.href = 'index.html';
+                }
+            })
+            .catch(console.error);
         });
 
         async function handlePayment() {
