@@ -1095,7 +1095,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Cookies declined.', 'info');
         });
     }
-    }
 
     // ==========================================
     // My Courses Sticky Icon
