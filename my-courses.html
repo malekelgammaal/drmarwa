@@ -298,9 +298,14 @@
                     <i class="ph ph-arrow-left"></i> Browse Courses
                 </a>
             </div>
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <a href="profile.html" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.875rem;display:flex;align-items:center;gap:0.4rem;font-family:inherit;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--muted)'">
+                    <i class="ph ph-user-circle"></i> My Profile
+                </a>
             <button id="logout-btn" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.875rem;display:flex;align-items:center;gap:0.4rem;font-family:inherit;" onclick="handleLogout()">
                 <i class="ph ph-sign-out"></i> Log Out
             </button>
+            </div>
         </div>
 
         <!-- Hero Section -->
@@ -443,6 +448,10 @@
 
     // ── Render Course Card ──
     function renderCard(purchase, index) {
+        const amountStr = purchase.amount_paid
+            ? `${Number(parseFloat(purchase.amount_paid)).toLocaleString()} ج.م`
+            : '';
+
         const info = CATALOG[purchase.course_id] || {
             name_ar: purchase.course_id,
             name_en: purchase.course_id,
@@ -456,10 +465,6 @@
         const card = document.createElement('div');
         card.className = 'course-card';
         card.style.animationDelay = `${index * 0.08}s`;
-
-        const amountStr = purchase.amount_paid
-            ? `$${parseFloat(purchase.amount_paid).toFixed(2)}`
-            : '';
 
         card.innerHTML = `
             <div class="card-accent" style="background:${info.color};"></div>
@@ -481,7 +486,7 @@
                         <i class="ph ph-infinity"></i> Lifetime Access
                     </span>
                     ${info.duration ? `<span class="meta-tag" style="background:var(--alt-bg);color:var(--muted);"><i class="ph ph-clock"></i> ${info.duration}</span>` : ''}
-                    ${amountStr ? `<span class="meta-tag" style="background:var(--alt-bg);color:var(--muted);"><i class="ph ph-receipt"></i> ${amountStr}</span>` : ''}
+                    ${purchase.amount_paid ? `<span class="meta-tag" style="background:var(--alt-bg);color:var(--muted);"><i class="ph ph-receipt"></i> ${Number(purchase.amount_paid).toLocaleString()} ج.م</span>` : ''}
                 </div>
                 <a href="course-${purchase.course_id}.html" class="open-btn" style="background:${info.color};color:#fff;">
                     <i class="ph ph-play-circle"></i> Open Course

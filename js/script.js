@@ -554,10 +554,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function revealMyCoursesButtons() {
-        // Desktop navbar button
-        // Mobile menu link
+        // Mobile menu links
         const mobileBtn = document.getElementById('mobile-my-courses');
         if (mobileBtn) mobileBtn.style.display = 'flex';
+        const mobileProfile = document.getElementById('mobile-profile-link');
+        if (mobileProfile) mobileProfile.style.display = 'flex';
     }
 
     
@@ -575,11 +576,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show/hide mobile menu items
             const mobileLogin = document.getElementById('mobile-login-btn');
             if (mobileLogin) mobileLogin.style.display = 'none';
+            // Always show profile link to logged-in users
+            const mobileProfile = document.getElementById('mobile-profile-link');
+            if (mobileProfile) mobileProfile.style.display = 'flex';
         } else {
             if (authButtonsDiv) authButtonsDiv.style.display = 'block';
             if (userProfileDiv) userProfileDiv.style.display = 'none';
             const mobileMyCourses = document.getElementById('mobile-my-courses');
             if (mobileMyCourses) mobileMyCourses.style.display = 'none';
+            const mobileProfile = document.getElementById('mobile-profile-link');
+            if (mobileProfile) mobileProfile.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     }
@@ -623,6 +629,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // Clean up URL without reloading
             window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
         }, 500);
+    }
+
+    // Auto-open Auth Modal if redirected from course-detail or checkout with open_auth=1
+    if (!currentUser && urlParams.get('open_auth') === '1') {
+        setTimeout(() => {
+            const authModalObj = document.getElementById('auth-modal');
+            if (authModalObj) authModalObj.classList.add('active');
+            switchAuthTab('signup');
+            showToast('Please create an account or log in to continue.', 'info');
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+        }, 400);
     }
 
     if (loginBtn) {
@@ -995,15 +1013,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
                                 <h3>${course.title}</h3>
                                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                                    ${course.original_price ? `<span class="strikethrough-price" style="text-decoration: line-through; color: var(--muted); font-size: 0.9rem;">${course.original_price} ج.م</span>` : ''}
-                                    <h3 style="color: var(--primary); white-space: nowrap; margin-top: 0;">${course.price} ج.م</h3>
+                                    ${course.original_price ? `<span class="strikethrough-price" style="text-decoration: line-through; color: var(--muted); font-size: 0.9rem;">${Number(course.original_price).toLocaleString()} ج.م</span>` : ''}
+                                    <h3 style="color: var(--primary); white-space: nowrap; margin-top: 0;">${Number(course.price).toLocaleString()} ج.م</h3>
                                     ${course.discount_badge ? `<span class="discount-badge" style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-top: 4px; white-space: nowrap;">${course.discount_badge}</span>` : ''}
                                 </div>
                             </div>
                             <p>${course.excerpt}<br><strong>Duration:</strong> ${course.duration || 'N/A'}</p>
-                            <button class="${course.is_bundle ? 'btn-primary' : 'btn-outline'} subscribe-btn" ${course.is_bundle ? 'style="width: 100%; margin-top: 1rem;"' : ''}>
-                                ${course.is_bundle ? 'Start Your Transformation' : 'Subscribe to Access'}
-                            </button>
+                            <a href="course-detail.html?course=${slug}" class="${course.is_bundle ? 'btn-primary' : 'btn-outline'}" ${course.is_bundle ? 'style="width: 100%; margin-top: 1rem; display: block; text-align: center;"' : 'style="display: block; text-align: center;"'}>
+                                <i class="ph ph-eye"></i> View Course Details
+                            </a>
                         </div>
                     `;
                     homeCoursesContainer.appendChild(card);
@@ -1017,18 +1035,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (homeTestimonialsContainer) {
+        const STATIC_TESTIMONIALS = [
+            { rating: 5, quote: 'هذه الدورة غيّرت حياتي بشكل جذري. تعلمت أدوات CBT فعّالة ساعدتني على التحكم في قلقي وأفكاري السلبية بطريقة علمية ومنظمة.', author: 'أسماء.م — معالجة نفسية' },
+            { rating: 5, quote: 'دورة DBT كانت بالضبط ما احتجته. الأساليب العملية وطريقة الشرح الواضحة جعلت المفاهيم المعقدة سهلة الفهم والتطبيق مع مرضاي.', author: 'خالد.ع — مرشد تربوي' },
+            { rating: 5, quote: 'برنامج باقة الثلاث علاجات هو استثمار حقيقي في مسيرتي المهنية. المحتوى شامل ومنظم، وأسلوب د. مروى في الشرح يجعل كل مفهوم واضحاً تماماً.', author: 'هند.ص — طالبة علم نفس' },
+            { rating: 5, quote: 'برنامج رحلة تعافي أعادني لنفسي من جديد. لم أتوقع أن أجد محتوى بهذا العمق والرقي باللغة العربية. شكراً جزيلاً دكتورة مروى.', author: 'نورا.ر — متخصصة في الصحة النفسية' }
+        ];
+
         async function fetchTestimonials() {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/testimonials`);
                 const testimonials = await res.json();
-                homeTestimonialsContainer.innerHTML = '';
-                
-                if(!testimonials || testimonials.length === 0) {
-                    homeTestimonialsContainer.innerHTML = '<p class="text-center" style="grid-column: 1 / -1; color: var(--muted);">No testimonials yet.</p>';
+
+                if (!testimonials || testimonials.length === 0) {
+                    renderTestimonials(STATIC_TESTIMONIALS);
                     return;
                 }
-                
-                testimonials.forEach(t => {
+                renderTestimonials(testimonials);
+            } catch (err) {
+                console.warn('[Testimonials] API unavailable, using static fallback.');
+                renderTestimonials(STATIC_TESTIMONIALS);
+            }
+        }
+
+        function renderTestimonials(testimonials) {
+            homeTestimonialsContainer.innerHTML = '';
+            testimonials.forEach(t => {
                     const card = document.createElement('div');
                     card.className = 'glass-card';
                     card.style.padding = '2rem';
@@ -1039,9 +1071,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     homeTestimonialsContainer.appendChild(card);
                 });
-            } catch (err) {
-                console.error('Error fetching testimonials:', err);
-            }
         }
         fetchTestimonials();
     }

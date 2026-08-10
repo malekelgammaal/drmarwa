@@ -7,6 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="icon" href="images/profile-pic-nav.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/profile-pic-nav.png">
+    <meta name="robots" content="noindex, nofollow">
     <style>
         body {
             display: flex;
@@ -16,15 +19,13 @@
             padding: 2rem 1rem;
             box-sizing: border-box;
         }
-
         .checkout-wrapper {
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
-
         .back-link {
             display: inline-flex;
             align-items: center;
@@ -33,9 +34,12 @@
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.2s;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.4rem 0.75rem;
+            width: fit-content;
         }
-        .back-link:hover { color: var(--primary); }
-
+        .back-link:hover { color: var(--primary); border-color: var(--primary); }
         .checkout-box {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -43,12 +47,10 @@
             padding: 2.5rem;
             box-shadow: 0 20px 60px rgba(0,0,0,0.2);
         }
-
         .checkout-header {
             text-align: center;
             margin-bottom: 2rem;
         }
-
         .checkout-header .lock-icon {
             width: 56px;
             height: 56px;
@@ -62,7 +64,6 @@
         .checkout-header .lock-icon i { font-size: 1.8rem; color: var(--primary); }
         .checkout-header h2 { font-size: 1.4rem; margin: 0 0 0.5rem; }
         .checkout-header p { color: var(--muted); font-size: 0.9rem; margin: 0; }
-
         .course-summary {
             background: var(--alt-bg);
             border: 1px solid var(--border);
@@ -72,118 +73,119 @@
         }
         .course-summary .label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
         .course-summary .course-name { font-weight: 600; font-size: 1rem; margin-bottom: 0.75rem; line-height: 1.4; }
-        .course-summary .price-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        .course-summary .price-row { display: flex; align-items: center; justify-content: space-between; }
         .course-summary .sale-price { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
         .course-summary .original-price { font-size: 0.9rem; color: var(--muted); text-decoration: line-through; }
-        .course-summary .badge {
-            background: #ef4444;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .features-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            margin-bottom: 2rem;
-        }
-        .features-list .feature {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 0.875rem;
-            color: var(--muted);
-        }
+        .course-summary .badge { background: #ef4444; color: white; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+        .features-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+        .features-list .feature { display: flex; align-items: center; gap: 0.6rem; font-size: 0.875rem; color: var(--muted); }
         .features-list .feature i { color: var(--primary); font-size: 1rem; flex-shrink: 0; }
-
-        #pay-btn {
-            width: 100%;
-            padding: 1rem;
-            font-size: 1rem;
-            font-weight: 600;
-            font-family: inherit;
-            letter-spacing: 0.01em;
-        }
-        #pay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .secure-footer {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.8rem;
-            color: var(--muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-        }
+        .secure-footer { text-align: center; margin-top: 1.5rem; font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
         .secure-footer i { color: var(--primary); }
 
         /* Loading overlay */
-        #loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            display: none;
-        }
-        .spinner-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            padding: 2.5rem;
+        #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .spinner-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--border-radius); padding: 2.5rem; text-align: center; max-width: 300px; }
+        .spinner-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; display: block; }
+
+        /* Modals */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--border-radius); padding: 2rem; max-width: 500px; width: 100%; transform: scale(0.95); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .close-modal { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1.25rem; padding: 0; transition: color 0.2s; }
+        .close-modal:hover { color: var(--text); }
+
+        /* InstaPay form */
+        .instapay-link-box {
+            background: rgba(108, 30, 112, 0.08);
+            border: 2px dashed #6C1E70;
+            border-radius: 8px;
+            padding: 1.25rem;
             text-align: center;
-            max-width: 300px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
         }
-        .spinner-box i { font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; }
-        .spinner-box p { color: var(--muted); margin: 0; font-size: 0.9rem; }
+        .instapay-link-box:hover { background: rgba(108,30,112,0.12); }
+        .instapay-link-label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .instapay-amount { font-size: 1.5rem; font-weight: 700; color: #6C1E70; direction: rtl; }
+        .instapay-amount small { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+
+        .form-field { margin-bottom: 1.1rem; }
+        .form-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-align: right; }
+        .form-field input {
+            width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--border);
+            border-radius: 8px; background: var(--bg); color: var(--text);
+            font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box;
+        }
+        .form-field input:focus { outline: none; border-color: #6C1E70; }
+
+        .upload-area {
+            border: 2px dashed var(--border); border-radius: 8px; padding: 2rem;
+            text-align: center; background: rgba(0,0,0,0.02); cursor: pointer;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .upload-area:hover { border-color: #6C1E70; background: rgba(108,30,112,0.04); }
+        .upload-area.has-image { padding: 0.5rem; border-color: #6C1E70; background: rgba(108,30,112,0.05); }
+        #receipt-preview { display: none; max-width: 100%; max-height: 200px; margin: 0 auto; border-radius: 4px; object-fit: contain; }
+
+        /* Status modals */
+        .status-icon { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+        .status-icon i { font-size: 2rem; }
+
+        /* Info banner (used instead of alerts) */
+        .info-banner { border-radius: 8px; padding: 1rem 1.25rem; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 0.75rem; }
+        .info-banner.warning { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #f59e0b; }
+        .info-banner.info { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.3); color: var(--primary); }
+        .info-banner.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; }
+        .info-banner i { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+        /* Toast */
+        .toast-container { position: fixed; bottom: 2rem; right: 1.5rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; }
+        .toast { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1.25rem; font-size: 0.875rem; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 0.6rem; transform: translateX(120%); transition: transform 0.3s ease; pointer-events: auto; }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left: 3px solid var(--primary); }
+        .toast.success i { color: var(--primary); }
+        .toast.error { border-left: 3px solid #ef4444; }
+        .toast.error i { color: #ef4444; }
+        .toast.warning { border-left: 3px solid #f59e0b; }
+        .toast.warning i { color: #f59e0b; }
+
+        /* Kashier disabled style */
+        .btn-disabled-card {
+            display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem;
+            border: 1px dashed var(--border); border-radius: 10px; background: var(--alt-bg);
+            color: var(--muted); cursor: not-allowed; position: relative; font-size: 0.95rem;
+        }
+        .btn-disabled-card .soon-tag {
+            margin-left: auto; background: rgba(100,100,100,0.15); color: var(--muted);
+            padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+        }
+
+        /* Payment buttons */
+        .btn-instapay {
+            display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+            width: 100%; padding: 1rem; border: none; border-radius: 10px;
+            background: #6C1E70; color: white; font-size: 1rem; font-weight: 600;
+            font-family: inherit; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-instapay:hover { background: #580c5d; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,30,112,0.35); }
+        .btn-instapay:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     </style>
-    <!-- Favicon & App Icons -->
-    <link rel="icon" href="images/profile-pic-nav.png" type="image/png">
-    <link rel="apple-touch-icon" href="images/profile-pic-nav.png">
-    
-    <!-- SEO & Social Media Meta Tags -->
-    <meta name="description" content="Dr. Marwa Badr - Consultant & Trainer for Mental Health Professionals. Advanced training in CBT, DBT, and ACT therapies.">
-    <meta name="keywords" content="Dr. Marwa Badr, دكتورة مروة بدر, العلاج النفسي, CBT, DBT, ACT, العلاج المعرفي السلوكي, كورسات علم نفس, تدريب أخصائيين نفسيين">
-    <meta name="author" content="Dr. Marwa Badr">
-    
-    <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
-    <meta property="og:title" content="Dr. Marwa Badr Platform">
-    <meta property="og:description" content="Empowering psychologists with advanced evidence-based practices (CBT, DBT, ACT).">
-    <meta property="og:image" content="https://drmarwa.pages.dev/images/profile-pic-nav.png">
-    <meta property="og:url" content="https://drmarwa.pages.dev/">
-    <meta property="og:type" content="website">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Dr. Marwa Badr Platform">
-    <meta name="twitter:description" content="Empowering psychologists with advanced evidence-based practices (CBT, DBT, ACT).">
-    <meta name="twitter:image" content="https://drmarwa.pages.dev/images/profile-pic-nav.png">
 </head>
-
 <body>
-
     <!-- Loading Overlay -->
     <div id="loading-overlay">
         <div class="spinner-box">
             <i class="ph ph-circle-notch ph-spin"></i>
-            <h3 style="margin: 0 0 0.5rem;">Processing Payment</h3>
+            <h3 style="margin: 0 0 0.5rem;">Processing</h3>
             <p>Please do not close this window...</p>
         </div>
     </div>
 
     <div class="checkout-wrapper">
-        <a href="index.html#courses" class="back-link">
+        <a href="index.html#courses" class="back-link" id="back-link">
             <i class="ph ph-arrow-left"></i> Back to Courses
         </a>
 
@@ -194,7 +196,10 @@
                 <p>Complete your purchase to get instant access</p>
             </div>
 
-            <!-- Course Summary (filled by JS) -->
+            <!-- Status Banner (shown when already enrolled / pending) -->
+            <div id="status-banner" style="display:none; margin-bottom:1.25rem;"></div>
+
+            <!-- Course Summary -->
             <div class="course-summary">
                 <div class="label">You are purchasing</div>
                 <div class="course-name" id="course-name-display">Loading...</div>
@@ -212,71 +217,80 @@
                 <div class="feature"><i class="ph ph-infinity"></i> Lifetime access — always available on your account</div>
                 <div class="feature"><i class="ph ph-video"></i> Video lectures + downloadable materials</div>
                 <div class="feature"><i class="ph ph-certificate"></i> Certificate of completion</div>
-                <div class="feature"><i class="ph ph-currency-dollar"></i> 7-day money-back guarantee</div>
+                <div class="feature"><i class="ph ph-arrow-counter-clockwise"></i> 7-day money-back guarantee</div>
             </div>
 
-            <!-- Payment Options -->
-            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                <!-- Kashier (Coming Soon) -->
-                <button class="btn-primary" style="background: var(--bg); color: var(--text); border: 2px solid var(--border);" onclick="alert('بوابة Kashier سيتم تفعيلها قريباً. يرجى استخدام InstaPay حالياً.')">
-                    <i class="ph ph-credit-card"></i> &nbsp;دفع بالبطاقة البنكية (Kashier)
-                </button>
-                
+            <!-- Payment Methods -->
+            <div id="payment-methods" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Kashier (Disabled) -->
+                <div class="btn-disabled-card">
+                    <i class="ph ph-credit-card" style="font-size:1.2rem;"></i>
+                    <span>دفع بالبطاقة البنكية (Kashier)</span>
+                    <span class="soon-tag">قريباً</span>
+                </div>
+
                 <!-- InstaPay -->
-                <button class="btn-primary" style="background: #6C1E70; color: white; border: none;" onclick="openInstapayModal()">
-                    <i class="ph ph-paper-plane-tilt"></i> &nbsp;الدفع السريع (InstaPay)
+                <button class="btn-instapay" id="instapay-btn" onclick="openInstapayModal()">
+                    <i class="ph ph-paper-plane-tilt"></i> الدفع السريع عبر InstaPay
                 </button>
             </div>
 
             <div class="secure-footer">
                 <i class="ph ph-shield-check"></i>
-                <span>256-bit SSL Encryption</span>
+                <span>256-bit SSL Encryption — Secure & Safe</span>
             </div>
         </div>
     </div>
 
     <!-- InstaPay Modal -->
     <div class="modal" id="instapay-modal">
-        <div class="modal-content" style="max-width: 500px; padding: 2rem;">
-            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="margin: 0;">الدفع عبر InstaPay</h3>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin: 0; direction: rtl;">الدفع عبر InstaPay</h3>
                 <button class="close-modal" onclick="closeInstapayModal()"><i class="ph ph-x"></i></button>
             </div>
-            <div class="modal-body" style="text-align: right; direction: rtl;">
-                <p style="margin-bottom: 1.5rem; color: var(--muted); font-size: 0.95rem;">
+            <div style="direction: rtl; text-align: right;">
+                <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; line-height: 1.7;">
                     يرجى تحويل قيمة الكورس إلى حساب إنستا باي التالي، ثم إرفاق صورة التحويل بالأسفل لتأكيد الدفع وفتح الكورس.
                 </p>
-                
-                <div style="background: rgba(108, 30, 112, 0.1); border: 1px dashed #6C1E70; padding: 1.5rem; border-radius: 8px; text-align: center; margin-bottom: 1.5rem; transition: all 0.3s ease;">
-                    <span style="display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem;">لينك الدفع</span>
-                    <strong style="font-size: 1.25rem; color: #6C1E70; letter-spacing: 1px; user-select: all;">instapaylinkhere.com</strong>
+
+                <!-- Amount & Link Box -->
+                <div class="instapay-link-box">
+                    <span class="instapay-link-label">المبلغ المطلوب</span>
+                    <div class="instapay-amount" id="instapay-amount-display">
+                        — <small>ج.م</small>
+                    </div>
+                    <div style="margin-top: 0.85rem; padding-top: 0.85rem; border-top: 1px solid rgba(108,30,112,0.2);">
+                        <span style="display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem;">رقم التحويل (InstaPay)</span>
+                        <strong style="font-size: 1.1rem; color: #6C1E70; user-select: all;">01096311675</strong>
+                        <p style="font-size: 0.72rem; color: var(--muted); margin: 0.4rem 0 0;">اسم المستلم: <strong>مروة بدر</strong></p>
+                    </div>
                 </div>
 
-                <form id="instapay-form">
-                    <div class="form-group" style="margin-bottom: 1rem;">
-                        <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">اسم المستخدم الثلاثي</label>
-                        <input type="text" id="instapay-name" required placeholder="مثال: أحمد محمد محمود" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text); transition: border-color 0.3s ease;">
-                    </div>
-                    
-                    <div class="form-group" style="margin-bottom: 1.5rem;">
-                        <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">رقم الواتساب (للتواصل)</label>
-                        <input type="tel" id="instapay-whatsapp" required placeholder="مثال: +201000000000" style="width: 100%; padding: 0.85rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background: var(--bg); color: var(--text); transition: border-color 0.3s ease;" dir="ltr" style="text-align: right;">
-                    </div>
+                <div id="instapay-form-msg" style="margin-bottom:1rem;"></div>
 
-                    <div class="form-group" style="margin-bottom: 2rem;">
-                        <label style="display:block; margin-bottom:0.5rem; color:var(--text); text-align:right;">صورة إيصال التحويل (Screenshot)</label>
-                        <div id="receipt-upload-area" style="position: relative; border: 2px dashed var(--border); border-radius: var(--border-radius-sm); padding: 2rem; text-align: center; background: rgba(0,0,0,0.02); cursor: pointer; transition: all 0.3s ease; overflow: hidden;" onclick="document.getElementById('instapay-receipt').click()">
+                <form id="instapay-form" onsubmit="event.preventDefault(); submitInstapay();">
+                    <div class="form-field">
+                        <label>اسم المستخدم الثلاثي</label>
+                        <input type="text" id="instapay-name" required placeholder="مثال: أحمد محمد محمود">
+                    </div>
+                    <div class="form-field">
+                        <label>رقم الواتساب (للتواصل)</label>
+                        <input type="tel" id="instapay-whatsapp" required placeholder="مثال: +201000000000" dir="ltr">
+                    </div>
+                    <div class="form-field">
+                        <label>صورة إيصال التحويل</label>
+                        <div class="upload-area" id="receipt-upload-area" onclick="document.getElementById('instapay-receipt').click()">
                             <div id="upload-placeholder">
-                                <i class="ph ph-upload-simple" style="font-size: 2.5rem; color: #6C1E70; margin-bottom: 0.5rem; opacity: 0.8;"></i>
-                                <p style="margin:0; font-size: 0.95rem; color: var(--muted);" id="upload-text">اضغط هنا لاختيار الصورة</p>
+                                <i class="ph ph-upload-simple" style="font-size: 2.5rem; color: #6C1E70; margin-bottom: 0.5rem; opacity: 0.8; display: block;"></i>
+                                <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">اضغط هنا لاختيار الصورة</p>
                             </div>
-                            <img id="receipt-preview" src="" style="display: none; max-width: 100%; max-height: 200px; margin: 0 auto; border-radius: 4px; object-fit: contain;">
-                            
-                            <input type="file" id="instapay-receipt" accept="image/*" required style="display: none;">
+                            <img id="receipt-preview" src="" alt="Receipt Preview">
+                            <input type="file" id="instapay-receipt" accept="image/*" style="display: none;">
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-primary" style="width: 100%; background: #6C1E70; border: none; font-size: 1.1rem; padding: 1rem; transition: transform 0.2s ease, box-shadow 0.2s ease;" id="instapay-submit-btn" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 12px rgba(108,30,112,0.3)';" onmouseout="this.style.transform='none';this.style.boxShadow='none';">
+                    <button type="submit" class="btn-instapay" id="instapay-submit-btn" style="margin-top: 0.5rem;">
                         تأكيد وإرسال الإيصال
                     </button>
                 </form>
@@ -284,155 +298,269 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Success Modal (InstaPay submitted) -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content" style="text-align: center; max-width: 420px;">
+            <div class="status-icon" style="background: rgba(20,184,166,0.12);">
+                <i class="ph ph-check-circle" style="color: var(--primary);"></i>
+            </div>
+            <h3 style="margin: 0 0 0.75rem;">تم إرسال الإيصال بنجاح! 🎉</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.75rem;">
+                تم استلام إيصال التحويل الخاص بك. سيتم مراجعته وتفعيل الكورس لحسابك في أقرب وقت ممكن.
+                سيتم التواصل معك عبر الواتساب عند التفعيل.
+            </p>
+            <a href="index.html" class="btn-primary" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
+                <i class="ph ph-house"></i> العودة للرئيسية
+            </a>
+        </div>
+    </div>
+
+    <!-- Already Enrolled Modal -->
+    <div class="modal" id="enrolled-modal">
+        <div class="modal-content" style="text-align: center; max-width: 420px;">
+            <div class="status-icon" style="background: rgba(20,184,166,0.12);">
+                <i class="ph ph-check-circle" style="color: var(--primary);"></i>
+            </div>
+            <h3 style="margin: 0 0 0.75rem;">أنت مسجل بالفعل في هذا الكورس!</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem;">
+                لديك وصول كامل لهذا الكورس من حسابك. يمكنك الوصول إليه من صفحة كورساتي.
+            </p>
+            <a href="my-courses.html" class="btn-primary" style="width: 100%; display: block; text-align: center; box-sizing: border-box; margin-bottom: 0.75rem;">
+                <i class="ph ph-books"></i> كورساتي
+            </a>
+            <a href="index.html" class="btn-outline" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
+                العودة للرئيسية
+            </a>
+        </div>
+    </div>
+
+    <!-- Pending Modal -->
+    <div class="modal" id="pending-modal">
+        <div class="modal-content" style="text-align: center; max-width: 420px;">
+            <div class="status-icon" style="background: rgba(245,158,11,0.1);">
+                <i class="ph ph-clock" style="color: #f59e0b; font-size: 2rem;"></i>
+            </div>
+            <h3 style="margin: 0 0 0.75rem;">طلبك قيد المراجعة</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.75rem;">
+                لديك طلب اشتراك قيد المراجعة لهذا الكورس. سيتم التواصل معك وتفعيل الكورس في أقرب وقت.
+            </p>
+            <a href="index.html" class="btn-primary" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
+                <i class="ph ph-house"></i> العودة للرئيسية
+            </a>
+        </div>
+    </div>
+
+    <!-- Auth Required Modal -->
+    <div class="modal" id="auth-required-modal">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <div class="status-icon" style="background: rgba(20,184,166,0.1);">
+                <i class="ph ph-sign-in" style="color: var(--primary); font-size: 2rem;"></i>
+            </div>
+            <h3 style="margin: 0 0 0.5rem;">يجب تسجيل الدخول أولاً</h3>
+            <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem;">
+                يجب تسجيل الدخول أو إنشاء حساب للمتابعة إلى صفحة الدفع.
+            </p>
+            <a href="index.html" class="btn-primary" id="auth-redirect-btn" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
+                <i class="ph ph-arrow-left"></i> تسجيل الدخول
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
     <script src="js/payment-service.js"></script>
     <script>
-        // ============================================================
-        //  Checkout Page Logic
-        // ============================================================
+    // ============================================================
+    //  Checkout Page — Dr. Marwa Badr Platform
+    //  Zero alert() calls — all feedback via modals & toasts
+    // ============================================================
 
-        // Apply saved theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
+    const API_BASE = 'https://drmarwa.onrender.com';
 
-        // Read course from URL params
-        const urlParams = new URLSearchParams(window.location.search);
-        const courseId = urlParams.get('course') || '';
+    // Theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
 
-        // Populate course summary from PaymentService
-        (function populateSummary() {
-            if (!window.PaymentService || !courseId) return;
-            const course = window.PaymentService.getCourse(courseId);
-            if (!course) {
-                document.getElementById('course-name-display').textContent = 'Unknown Course';
-                return;
-            }
-            document.getElementById('course-name-display').textContent = course.name_en;
-            document.getElementById('sale-price-display').textContent = `${course.sale_price} ج.م`;
-            
-            if (course.full_price && course.full_price > course.sale_price) {
-                document.getElementById('original-price-display').textContent = `${course.full_price} ج.م`;
-                const savings = Math.round((1 - (course.sale_price / course.full_price)) * 100);
-                const badge = document.getElementById('discount-badge-display');
-                badge.style.display = 'inline-block';
-                badge.textContent = `وفر ${savings}%`;
-            }
-        })();
+    // Toast helper
+    function showToast(msg, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const iconMap = { success: 'ph-check-circle', error: 'ph-warning-circle', warning: 'ph-warning', info: 'ph-info' };
+        toast.innerHTML = `<i class="ph ${iconMap[type] || 'ph-info'}" style="font-size:1.1rem;"></i><span>${msg}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 5000);
+    }
 
-        // InstaPay Modal Logic
-        function openInstapayModal() {
-            document.getElementById('instapay-modal').classList.add('active');
+    function showModal(id) { document.getElementById(id).classList.add('active'); }
+    function hideModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    // Session helpers
+    function getSession() { try { return JSON.parse(localStorage.getItem('site_current_session')); } catch { return null; } }
+    function getUser() { try { return JSON.parse(localStorage.getItem('site_current_user')); } catch { return null; } }
+
+    // URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseId = urlParams.get('course') || '';
+
+    // Update back link to point to course detail
+    if (courseId) {
+        document.getElementById('back-link').href = `course-detail.html?course=${courseId}`;
+    }
+
+    // Populate course summary from PaymentService
+    function populateSummary() {
+        if (!window.PaymentService || !courseId) return;
+        const course = window.PaymentService.getCourse(courseId);
+        if (!course) {
+            document.getElementById('course-name-display').textContent = 'Unknown Course';
+            return;
+        }
+        document.getElementById('course-name-display').textContent = course.name_en + ' — ' + course.name_ar;
+        document.getElementById('sale-price-display').textContent = `${course.sale_price.toLocaleString()} ج.م`;
+
+        if (course.full_price && course.full_price > course.sale_price) {
+            document.getElementById('original-price-display').textContent = `${course.full_price.toLocaleString()} ج.م`;
+            const savings = Math.round((1 - (course.sale_price / course.full_price)) * 100);
+            const badge = document.getElementById('discount-badge-display');
+            badge.style.display = 'inline-block';
+            badge.textContent = `وفر ${savings}%`;
         }
 
-        function closeInstapayModal() {
-            document.getElementById('instapay-modal').classList.remove('active');
+        // Update instapay amount display
+        document.getElementById('instapay-amount-display').innerHTML = `${course.sale_price.toLocaleString()} <small>ج.م</small>`;
+    }
+
+    // Modal controls
+    function openInstapayModal() { showModal('instapay-modal'); }
+    function closeInstapayModal() { hideModal('instapay-modal'); }
+
+    // Close modals on backdrop click
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal && modal.id !== 'auth-required-modal') {
+                modal.classList.remove('active');
+            }
+        });
+    });
+
+    // Receipt image preview
+    document.getElementById('instapay-receipt').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+
+        if (file.size > 10 * 1024 * 1024) {
+            showToast('الصورة كبيرة جداً. الحد الأقصى 10MB', 'error');
+            this.value = '';
+            return;
         }
 
-        // Handle image preview
-        document.getElementById('instapay-receipt').addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const preview = document.getElementById('receipt-preview');
-                const placeholder = document.getElementById('upload-placeholder');
-                const area = document.getElementById('receipt-upload-area');
-                
-                preview.src = URL.createObjectURL(file);
-                preview.style.display = 'block';
-                placeholder.style.display = 'none';
-                
-                area.style.borderColor = '#6C1E70';
-                area.style.background = 'rgba(108,30,112,0.05)';
-                area.style.padding = '0.5rem';
-            }
-        });
-        // Form submission handling
-        document.getElementById('instapay-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('instapay-submit-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> جاري الإرسال...';
-            btn.disabled = true;
+        const preview = document.getElementById('receipt-preview');
+        const placeholder = document.getElementById('upload-placeholder');
+        const area = document.getElementById('receipt-upload-area');
 
-            const name = document.getElementById('instapay-name').value;
-            const whatsapp = document.getElementById('instapay-whatsapp').value;
-            const fileInput = document.getElementById('instapay-receipt');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+        area.classList.add('has-image');
+    });
 
-            try {
-                // Call PaymentService to handle the dual submission (Web3Forms + Backend API)
-                await window.PaymentService.processInstapay(courseId, name, whatsapp, fileInput.files[0]);
-                
-                alert('تم استلام إيصال التحويل بنجاح! سيتم مراجعته وفتح الكورس لحسابك في أقرب وقت. 🚀');
-                closeInstapayModal();
-                window.location.href = 'index.html#courses';
-            } catch (err) {
-                alert('عذراً، حدث خطأ أثناء إرسال الإيصال: ' + err.message);
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        });
+    // Form message helper
+    function showFormMsg(msg, type = 'error') {
+        const area = document.getElementById('instapay-form-msg');
+        const icons = { error: 'ph-warning-circle', success: 'ph-check-circle', warning: 'ph-warning' };
+        area.innerHTML = `<div class="info-banner ${type}"><i class="ph ${icons[type] || 'ph-info'}"></i><span>${msg}</span></div>`;
+    }
 
-        // Verify the user is logged in before allowing payment
-        window.addEventListener('DOMContentLoaded', () => {
-            const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
-            if (!session?.access_token) {
-                // Store intended course for post-login redirect
-                sessionStorage.setItem('intended_course', courseId);
-                alert('Please log in to proceed to checkout.');
-                window.location.href = 'index.html';
-            }
+    // Submit InstaPay form
+    async function submitInstapay() {
+        const btn = document.getElementById('instapay-submit-btn');
+        const name = document.getElementById('instapay-name').value.trim();
+        const whatsapp = document.getElementById('instapay-whatsapp').value.trim();
+        const fileInput = document.getElementById('instapay-receipt');
 
-            if (!courseId || !window.PaymentService.getCourse(courseId)) {
-                alert('Invalid course. Please go back and select a course.');
-                window.location.href = 'index.html#courses';
-                return;
-            }
-
-            // Check if user already owns or has a pending request for this course
-            fetch(`https://drmarwa.onrender.com/api/check-access?course_id=${courseId}`, {
-                headers: {
-                    'Authorization': `Bearer ${session.access_token}`
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.has_access) {
-                    alert('أنت مشترك بالفعل في هذا الكورس!');
-                    window.location.href = 'index.html';
-                } else if (data.pending) {
-                    alert('لديك طلب اشتراك قيد المراجعة لهذا الكورس. يرجى الانتظار لحين التفعيل.');
-                    window.location.href = 'index.html';
-                }
-            })
-            .catch(console.error);
-        });
-
-        async function handlePayment() {
-            const btn = document.getElementById('pay-btn');
-            const overlay = document.getElementById('loading-overlay');
-
-            btn.disabled = true;
-            overlay.style.display = 'flex';
-
-            try {
-                await window.PaymentService.processPayment({ course: courseId });
-                // processPayment handles redirect on success
-            } catch (error) {
-                overlay.style.display = 'none';
-                btn.disabled = false;
-
-                if (error.message !== 'Payment cancelled') {
-                    const msg = error.message || 'Payment failed. Please try again.';
-                    // Show inline error instead of ugly alert
-                    const errDiv = document.createElement('div');
-                    errDiv.style.cssText = 'background:#ef444420;border:1px solid #ef4444;color:#ef4444;padding:0.75rem 1rem;border-radius:8px;font-size:0.875rem;margin-top:1rem;display:flex;align-items:center;gap:0.5rem;';
-                    errDiv.innerHTML = `<i class="ph ph-warning-circle"></i> ${msg}`;
-                    btn.parentNode.insertBefore(errDiv, btn.nextSibling);
-                    setTimeout(() => errDiv.remove(), 5000);
-                }
-            }
+        if (!name || !whatsapp) {
+            showFormMsg('يرجى ملء جميع الحقول المطلوبة.');
+            return;
         }
+        if (!fileInput.files || fileInput.files.length === 0) {
+            showFormMsg('يرجى إرفاق صورة إيصال التحويل.');
+            return;
+        }
+
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> جاري الإرسال...';
+        btn.disabled = true;
+        document.getElementById('instapay-form-msg').innerHTML = '';
+
+        try {
+            await window.PaymentService.processInstapay(courseId, name, whatsapp, fileInput.files[0]);
+
+            closeInstapayModal();
+            showModal('success-modal');
+        } catch (err) {
+            const errMsg = err.message || 'حدث خطأ أثناء إرسال الإيصال. يرجى المحاولة مجدداً.';
+            showFormMsg(errMsg, 'error');
+            showToast(errMsg, 'error');
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+    }
+
+    // ── Auth Guard & Enrollment Check ──
+    window.addEventListener('DOMContentLoaded', async () => {
+        const session = getSession();
+
+        // Guard: not logged in
+        if (!session?.access_token) {
+            sessionStorage.setItem('intended_course', courseId);
+            // Show auth required modal — then redirect
+            showModal('auth-required-modal');
+            document.getElementById('auth-redirect-btn').href = 'index.html?open_auth=1';
+            // Hide payment methods
+            document.getElementById('payment-methods').style.display = 'none';
+            return;
+        }
+
+        // Guard: invalid course
+        if (!courseId || !window.PaymentService?.getCourse(courseId)) {
+            document.getElementById('status-banner').style.display = 'block';
+            document.getElementById('status-banner').innerHTML = `
+                <div class="info-banner error">
+                    <i class="ph ph-warning-circle"></i>
+                    <span>الكورس المطلوب غير موجود. يرجى العودة لاختيار كورس صحيح.</span>
+                </div>`;
+            document.getElementById('payment-methods').style.display = 'none';
+            return;
+        }
+
+        // Populate the summary
+        populateSummary();
+
+        // Check enrollment status
+        try {
+            const res = await fetch(`${API_BASE}/api/check-access?course_id=${courseId}`, {
+                headers: { 'Authorization': `Bearer ${session.access_token}` }
+            });
+            const data = await res.json();
+
+            if (data.has_access) {
+                // User already owns this course
+                showModal('enrolled-modal');
+                document.getElementById('payment-methods').style.display = 'none';
+            } else if (data.pending) {
+                // User has pending request
+                showModal('pending-modal');
+                document.getElementById('payment-methods').style.display = 'none';
+            }
+            // else: allow normal checkout
+        } catch (err) {
+            // Silent fail — let the user proceed to payment
+            console.warn('[Checkout] Enrollment check failed (possibly server sleeping):', err.message);
+        }
+    });
     </script>
-
 </body>
 </html>
-

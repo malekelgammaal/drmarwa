@@ -256,9 +256,10 @@ class PaymentServiceInterface {
     //  Main entry point — currently disabled until new gateway
     // -------------------------------------------------------
     async processPayment(details) {
-        alert('Payment gateway is currently being updated. Please try again later or contact support.');
-        return new Promise((resolve, reject) => {
-            reject(new Error("Payment gateway disabled"));
+        // Card payment gateway is currently being updated.
+        // This is handled by the UI — button should not call this.
+        return new Promise((_, reject) => {
+            reject(new Error("Card payment gateway is temporarily disabled. Please use InstaPay."));
         });
     }
 }

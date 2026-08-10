@@ -93,7 +93,7 @@
                         style="display: none; align-items: center; gap: 0.5rem; font-weight: 500;">
                         <i class="ph ph-user-circle" style="font-size: 1.5rem; color: var(--primary);"></i>
                         <span id="user-name-display"></span>
-
+                        <a href="profile.html" style="background: none; border: none; color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: underline; font-family: inherit;">Profile</a>
                         <button id="logout-btn"
                             style="background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.8rem; text-decoration: underline;">Logout</button>
                     </div>
@@ -126,6 +126,7 @@
             <div style="padding: 0.5rem 0 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;">
                 <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0 1.25rem;margin:0 0 0.5rem;">Account</p>
                 <a href="my-courses.html" class="mobile-link" id="mobile-my-courses" style="display:none;"><i class="ph ph-books"></i> My Courses</a>
+                <a href="profile.html" class="mobile-link" id="mobile-profile-link" style="display:none;"><i class="ph ph-user-circle"></i> My Profile</a>
                 <a href="#" class="mobile-link" id="mobile-login-btn" onclick="document.getElementById('auth-modal').classList.add('active'); document.getElementById('mobile-menu').classList.remove('open'); document.getElementById('mobile-menu-btn').classList.remove('active');"><i class="ph ph-sign-in"></i> Log In / Sign Up</a>
             </div>
             <div style="padding: 0.5rem 0;">
@@ -365,15 +366,15 @@
                 </div>
 
                 <script>
-                // ── Static fallback — renders immediately, replaced by API if available ──
+                // ── Static fallback — EGP prices, links to course-detail page ──
                 (function() {
                     const STATIC_COURSES = [
-                        { id:1, title:'Tri-Therapy Bundle<br><small class="arabic-text medium">(باقة العلاج الثلاثي)</small>', price:349.99, original_price:425.00, discount_badge:'Save 18%', image_url:'images/course-tri-therapy.png', is_bundle:true, duration:'15 Days', excerpt:'Complete mastery of evidence-based therapies. Includes full access to DBT, CBT, and ACT clinical training.', slug:'tri-therapy-bundle' },
-                        { id:2, title:'CBT Course<br><small class="arabic-text medium">(العلاج المعرفي السلوكي)</small>', price:149.99, original_price:200.00, discount_badge:'Save 25%', image_url:'images/course-cbt.png', is_bundle:false, duration:'5 Days', excerpt:'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns.', slug:'cbt-course' },
-                        { id:3, title:'DBT Course<br><small class="arabic-text medium">(العلاج الجدلي السلوكي)</small>', price:174.99, original_price:225.00, discount_badge:'Save 22%', image_url:'images/course-dbt.png', is_bundle:false, duration:'5 Days', excerpt:'Master Dialectical Behavior Therapy skills for mindfulness and emotional regulation.', slug:'dbt-course' },
-                        { id:4, title:'Personality Disorders Course<br><small class="arabic-text medium">(اضطرابات الشخصية)</small>', price:174.99, original_price:225.00, discount_badge:'Save 22%', image_url:'images/course-personality-disorders.png', is_bundle:false, duration:'5 Days', excerpt:'An in-depth understanding of personality disorders and effective coping mechanisms.', slug:'personality-disorders-course' },
-                        { id:5, title:'ACT Course<br><small class="arabic-text medium">(العلاج بالقبول والالتزام)</small>', price:149.99, original_price:200.00, discount_badge:'Save 25%', image_url:'images/course-act.png', is_bundle:false, duration:'5 Days', excerpt:'Acceptance & Commitment Therapy principles for living a value-driven life.', slug:'act-course' },
-                        { id:6, title:'Healing Journey Program<br><small class="arabic-text medium">(رحلة تعافي)</small>', price:99.99, original_price:150.00, discount_badge:'Save 33%', image_url:'images/course-healing-journey.png', is_bundle:false, duration:'2 Days', excerpt:'A comprehensive program to help you process trauma and build emotional resilience.', slug:'healing-journey-program' }
+                        { id:1, title:'Tri-Therapy Bundle<br><small class="arabic-text medium">(باقة العلاج الثلاثي)</small>', price:17500, original_price:21500, discount_badge:'وفر 19%', image_url:'images/course-tri-therapy.png', is_bundle:true, duration:'15 Days', excerpt:'Complete mastery of evidence-based therapies. Includes full access to DBT, CBT, and ACT clinical training.', slug:'tri-therapy-bundle' },
+                        { id:2, title:'CBT Course<br><small class="arabic-text medium">(العلاج المعرفي السلوكي)</small>', price:7500, original_price:10000, discount_badge:'وفر 25%', image_url:'images/course-cbt.png', is_bundle:false, duration:'5 Days', excerpt:'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns and overcome anxiety.', slug:'cbt-course' },
+                        { id:3, title:'DBT Course<br><small class="arabic-text medium">(العلاج الجدلي السلوكي)</small>', price:8500, original_price:11500, discount_badge:'وفر 26%', image_url:'images/course-dbt.png', is_bundle:false, duration:'5 Days', excerpt:'Master Dialectical Behavior Therapy skills for mindfulness, emotional regulation, and distress tolerance.', slug:'dbt-course' },
+                        { id:4, title:'Personality Disorders Course<br><small class="arabic-text medium">(اضطرابات الشخصية)</small>', price:8500, original_price:11500, discount_badge:'وفر 26%', image_url:'images/course-personality-disorders.png', is_bundle:false, duration:'5 Days', excerpt:'An in-depth understanding of personality disorders and effective therapeutic approaches for clinicians.', slug:'personality-disorders-course' },
+                        { id:5, title:'ACT Course<br><small class="arabic-text medium">(العلاج بالقبول والالتزام)</small>', price:7500, original_price:10000, discount_badge:'وفر 25%', image_url:'images/course-act.png', is_bundle:false, duration:'5 Days', excerpt:'Acceptance & Commitment Therapy principles for living a value-driven life and building psychological flexibility.', slug:'act-course' },
+                        { id:6, title:'Healing Journey Program<br><small class="arabic-text medium">(رحلة تعافي)</small>', price:5000, original_price:7500, discount_badge:'وفر 33%', image_url:'images/course-healing-journey.png', is_bundle:false, duration:'2 Days', excerpt:'A comprehensive program designed to help you process trauma and build lasting emotional resilience.', slug:'healing-journey-program' }
                     ];
                     window.STATIC_COURSES = STATIC_COURSES;
 
@@ -394,15 +395,15 @@
                                 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
                                     <h3>${course.title}</h3>
                                     <div style="display:flex;flex-direction:column;align-items:flex-end;">
-                                        ${course.original_price ? `<span class="strikethrough-price" style="text-decoration:line-through;color:var(--muted);font-size:0.9rem;">$${course.original_price}</span>` : ''}
-                                        <h3 style="color:var(--primary);white-space:nowrap;margin-top:0;">$${course.price}</h3>
+                                        ${course.original_price ? `<span class="strikethrough-price" style="text-decoration:line-through;color:var(--muted);font-size:0.9rem;">${course.original_price.toLocaleString()} ج.م</span>` : ''}
+                                        <h3 style="color:var(--primary);white-space:nowrap;margin-top:0;">${course.price.toLocaleString()} ج.م</h3>
                                         ${course.discount_badge ? `<span style="background:#ef4444;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:bold;margin-top:4px;white-space:nowrap;">${course.discount_badge}</span>` : ''}
                                     </div>
                                 </div>
                                 <p>${course.excerpt}<br><strong>Duration:</strong> ${course.duration}</p>
-                                <button class="${course.is_bundle ? 'btn-primary' : 'btn-outline'} subscribe-btn" ${course.is_bundle ? 'style="width:100%;margin-top:1rem;"' : ''}>
-                                    ${course.is_bundle ? 'Start Your Transformation' : 'Subscribe to Access'}
-                                </button>
+                                <a href="course-detail.html?course=${course.slug}" class="${course.is_bundle ? 'btn-primary' : 'btn-outline'}" ${course.is_bundle ? 'style="width:100%;margin-top:1rem;display:block;text-align:center;"' : 'style="display:block;text-align:center;"'}>
+                                    <i class="ph ph-eye"></i> View Course Details
+                                </a>
                             </div>`;
                         return card;
                     }
@@ -421,48 +422,7 @@
 
 
 
-        <!-- Pricing Comparison Section -->
-        <section id="pricing" class="pricing section-padding alt-bg">
-            <div class="container animate-on-scroll fade-up">
-                <div class="section-header center">
-                    <h2>Pricing Options</h2>
-                    <div class="divider mx-auto"></div>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: var(--border-radius); overflow: hidden; border: 1px solid var(--border);">
-                        <thead>
-                            <tr style="background: rgba(20, 184, 166, 0.1);">
-                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid var(--border);">Features</th>
-                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border);">Individual Courses<br><small style="font-weight: normal; color: var(--muted);">(يبدأ من 5000 ج.م)</small></th>
-                                <th style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); background: var(--primary); color: white;">Tri-Therapy Bundle<br><small style="font-weight: normal; color: rgba(255,255,255,0.8);">(17500 ج.م)</small></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Specific Therapy Focus</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Comprehensive Framework</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--muted);">-</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Lifetime Access</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--primary);">✓</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 1rem; border-bottom: 1px solid var(--border);">Value / Savings</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--muted);">Standard</td>
-                                <td style="padding: 1rem; text-align: center; border-bottom: 1px solid var(--border); color: #ef4444; font-weight: bold;">وفر 19%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
+        <!-- Pricing Options section removed as per requirements -->
 
         <!-- Testimonials Section -->
         <section id="testimonials" class="testimonials section-padding">
@@ -578,6 +538,7 @@
                         <li><a href="blog.html" class="footer-link">Blog</a></li>
                         <li><a href="#booking" class="footer-link">Book Session</a></li>
                         <li><a href="my-courses.html" class="footer-link">My Courses</a></li>
+                        <li><a href="profile.html" class="footer-link">My Profile</a></li>
                     </ul>
                 </div>
                 <div>

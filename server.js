@@ -22,11 +22,186 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // Serve static files from the current directory
-// Note: In a production app, we usually put HTML/CSS/JS in a 'public' folder.
-// Since the structure is flat, we serve the root directory, but exclude node_modules.
 app.use(express.static(__dirname, {
     index: ['index.html']
 }));
+
+// ==========================================
+// AUTHORITATIVE COURSE CATALOG
+// Single source of truth for all course data
+// ==========================================
+const COURSE_CATALOG = {
+    'tri-therapy-bundle': {
+        id: 'tri-therapy-bundle',
+        slug: 'tri-therapy-bundle',
+        name_ar: 'باقة العلاج الثلاثي',
+        name_en: 'Tri-Therapy Bundle',
+        title: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
+        description: 'Complete mastery of evidence-based therapies for mental health professionals. Includes full access to DBT, CBT, and ACT clinical training — a comprehensive system for transforming your therapeutic practice.',
+        duration: '15 Days',
+        price: 17500,
+        original_price: 21500,
+        currency: 'EGP',
+        is_bundle: true,
+        image_url: 'images/course-tri-therapy.png',
+        discount_badge: 'وفر 19%',
+        curriculum: [
+            'Advanced DBT skills: Mindfulness, Distress Tolerance, Emotional Regulation, Interpersonal Effectiveness',
+            'Complete CBT framework: Cognitive Restructuring, Behavioral Activation, Schema Work',
+            'ACT mastery: Psychological Flexibility, Values Clarification, Committed Action',
+            'Integration of all three modalities for complex cases',
+            'Case formulation across all three frameworks',
+            'Clinical supervision techniques'
+        ],
+        target_audience: 'Mental health professionals seeking comprehensive training in evidence-based therapies',
+        prerequisites: 'Basic psychology background or clinical experience recommended'
+    },
+    'cbt-course': {
+        id: 'cbt-course',
+        slug: 'cbt-course',
+        name_ar: 'العلاج المعرفي السلوكي',
+        name_en: 'Cognitive Behavioral Therapy (CBT)',
+        title: 'CBT Course — Cognitive Behavioral Therapy',
+        description: 'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns and overcome anxiety and depression. A structured, evidence-based approach used by therapists worldwide.',
+        duration: '5 Days',
+        price: 7500,
+        original_price: 10000,
+        currency: 'EGP',
+        is_bundle: false,
+        image_url: 'images/course-cbt.png',
+        discount_badge: 'وفر 25%',
+        curriculum: [
+            'Foundations of CBT: Theory and evidence base',
+            'Cognitive Restructuring techniques',
+            'Behavioral Activation strategies',
+            'Identifying and challenging cognitive distortions',
+            'Schema therapy integration',
+            'CBT for anxiety, depression, and OCD',
+            'Case formulation using CBT framework',
+            'Homework and between-session exercises'
+        ],
+        target_audience: 'Psychologists, therapists, counselors, and mental health students',
+        prerequisites: 'No prior therapy training required'
+    },
+    'dbt-course': {
+        id: 'dbt-course',
+        slug: 'dbt-course',
+        name_ar: 'العلاج الجدلي السلوكي',
+        name_en: 'Dialectical Behavior Therapy (DBT)',
+        title: 'DBT Course — Dialectical Behavior Therapy',
+        description: 'Master Dialectical Behavior Therapy skills for mindfulness, emotional regulation, and distress tolerance. The most effective treatment for borderline personality disorder and emotional dysregulation.',
+        duration: '5 Days',
+        price: 8500,
+        original_price: 11500,
+        currency: 'EGP',
+        is_bundle: false,
+        image_url: 'images/course-dbt.png',
+        discount_badge: 'وفر 26%',
+        curriculum: [
+            'DBT biosocial theory and dialectical philosophy',
+            'Core Mindfulness skills module',
+            'Distress Tolerance skills and crisis survival',
+            'Emotional Regulation: understanding and changing emotions',
+            'Interpersonal Effectiveness skills',
+            'DBT for BPD and emotional dysregulation',
+            'Individual therapy + skills group structure',
+            'Chain analysis and diary cards'
+        ],
+        target_audience: 'Therapists working with emotionally dysregulated clients, BPD, and self-harm',
+        prerequisites: 'Basic counseling or therapy background recommended'
+    },
+    'act-course': {
+        id: 'act-course',
+        slug: 'act-course',
+        name_ar: 'العلاج بالقبول والالتزام',
+        name_en: 'Acceptance & Commitment Therapy (ACT)',
+        title: 'ACT Course — Acceptance & Commitment Therapy',
+        description: 'Acceptance & Commitment Therapy principles for living a value-driven life and increasing psychological flexibility. Learn to help clients stop fighting their inner experience and move toward meaningful action.',
+        duration: '5 Days',
+        price: 7500,
+        original_price: 10000,
+        currency: 'EGP',
+        is_bundle: false,
+        image_url: 'images/course-act.png',
+        discount_badge: 'وفر 25%',
+        curriculum: [
+            'ACT theoretical foundations and Relational Frame Theory',
+            'The six core ACT processes',
+            'Acceptance and willingness techniques',
+            'Cognitive defusion strategies',
+            'Present moment awareness and mindfulness in ACT',
+            'Self-as-context and observer self',
+            'Values clarification exercises',
+            'Committed action and behavior change'
+        ],
+        target_audience: 'Therapists, coaches, and counselors seeking a mindfulness-based approach',
+        prerequisites: 'No prior therapy training required'
+    },
+    'personality-disorders-course': {
+        id: 'personality-disorders-course',
+        slug: 'personality-disorders-course',
+        name_ar: 'اضطرابات الشخصية',
+        name_en: 'Personality Disorders Course',
+        title: 'Personality Disorders — Advanced Clinical Training',
+        description: 'An in-depth understanding of personality disorders and effective therapeutic approaches for mental health professionals. Learn to assess, formulate, and treat the full spectrum of personality disorders.',
+        duration: '5 Days',
+        price: 8500,
+        original_price: 11500,
+        currency: 'EGP',
+        is_bundle: false,
+        image_url: 'images/course-personality-disorders.png',
+        discount_badge: 'وفر 26%',
+        curriculum: [
+            'DSM-5 and ICD-11 personality disorder classification',
+            'Cluster A, B, and C disorders in depth',
+            'Assessment and differential diagnosis',
+            'Evidence-based treatment approaches (DBT, Schema Therapy, MBT)',
+            'Therapeutic alliance with challenging clients',
+            'Managing countertransference',
+            'Case formulation for personality disorders',
+            'Long-term treatment planning'
+        ],
+        target_audience: 'Experienced therapists and mental health professionals',
+        prerequisites: 'Prior clinical experience with personality disorders recommended'
+    },
+    'healing-journey-program': {
+        id: 'healing-journey-program',
+        slug: 'healing-journey-program',
+        name_ar: 'برنامج رحلة تعافي',
+        name_en: 'Healing Journey Program',
+        title: 'Healing Journey Program — Trauma & Resilience',
+        description: 'A comprehensive program designed to help you process trauma and build emotional resilience. Combines evidence-based trauma-informed approaches with practical healing strategies.',
+        duration: '2 Days',
+        price: 5000,
+        original_price: 7500,
+        currency: 'EGP',
+        is_bundle: false,
+        image_url: 'images/course-healing-journey.png',
+        discount_badge: 'وفر 33%',
+        curriculum: [
+            'Understanding trauma and its effects on the mind and body',
+            'Trauma-informed care principles',
+            'Processing traumatic memories safely',
+            'Building emotional regulation skills',
+            'Developing post-traumatic growth',
+            'Self-compassion and inner healing practices',
+            'Creating a personal recovery roadmap'
+        ],
+        target_audience: 'Individuals and professionals interested in trauma recovery and resilience',
+        prerequisites: 'No prior training required'
+    }
+};
+
+// Helper: extract and verify user JWT from Authorization header
+async function getUserFromRequest(req) {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '').trim();
+    if (!token) return null;
+
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) return null;
+    return user;
+}
 
 // ==========================================
 // AUTHENTICATION ENDPOINTS
@@ -85,12 +260,175 @@ app.get('/api/auth/oauth', async (req, res) => {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
-            redirectTo: redirect_to || 'https://drmarwabadr.vercel.app/'
+            redirectTo: redirect_to || 'https://drmarwa.pages.dev/'
         }
     });
 
     if (error) return res.status(400).json({ error: error.message });
     res.json({ url: data.url });
+});
+
+// 4. Forgot Password
+app.post('/api/auth/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+
+    // Use the correct deployed URL for the reset page
+    const resetUrl = process.env.SITE_URL
+        ? `${process.env.SITE_URL}/reset-password.html`
+        : 'https://drmarwabadr.vercel.app/reset-password.html';
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: resetUrl
+    });
+
+    // Anti-enumeration: always return success
+    if (error && !error.message.includes('not found')) {
+        return res.status(400).json({ error: error.message });
+    }
+
+    res.json({ message: 'If this email is registered, a password reset link has been sent.' });
+});
+
+// 5. Verify OTP (email confirmation)
+app.post('/api/auth/verify-otp', async (req, res) => {
+    const { email, token } = req.body;
+    if (!email || !token) return res.status(400).json({ error: 'Email and code are required' });
+
+    const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: 'signup'
+    });
+
+    if (error) return res.status(400).json({ error: error.message });
+    res.json({ session: data.session, user: data.user || data.session?.user });
+});
+
+// 6. Update Password (authenticated users)
+app.post('/api/auth/update-password', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(401).json({ error: 'Unauthorized — please log in' });
+
+        const { new_password } = req.body;
+        if (!new_password || new_password.length < 8) {
+            return res.status(400).json({ error: 'New password must be at least 8 characters' });
+        }
+
+        // Use admin API to update password (service role key required)
+        const { error } = await supabase.auth.admin.updateUserById(user.id, {
+            password: new_password
+        });
+
+        if (error) return res.status(400).json({ error: error.message });
+
+        res.json({ message: 'Password updated successfully' });
+    } catch (err) {
+        console.error('[API] update-password exception:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 7. Delete Account (authenticated users)
+app.delete('/api/auth/delete-account', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(401).json({ error: 'Unauthorized — please log in' });
+
+        // Delete related purchases first
+        await supabase.from('purchases').delete().eq('user_id', user.id);
+
+        // Delete user via admin API
+        const { error } = await supabase.auth.admin.deleteUser(user.id);
+        if (error) {
+            console.error('[API] delete-account error:', error);
+            return res.status(500).json({ error: 'Failed to delete account' });
+        }
+
+        console.log(`[API] 🗑️ Account deleted: user=${user.id}`);
+        res.json({ message: 'Account deleted successfully' });
+    } catch (err) {
+        console.error('[API] delete-account exception:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 8. Update Profile (name, bio)
+app.post('/api/profile/update', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(401).json({ error: 'Unauthorized' });
+
+        const { name, bio } = req.body;
+        const updateData = {};
+        if (name !== undefined) updateData.name = name;
+        if (bio !== undefined) updateData.bio = bio;
+
+        const { data, error } = await supabase.auth.admin.updateUserById(user.id, {
+            user_metadata: { ...user.user_metadata, ...updateData }
+        });
+
+        if (error) return res.status(400).json({ error: error.message });
+        res.json({ message: 'Profile updated successfully', user: data.user });
+    } catch (err) {
+        console.error('[API] profile update exception:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 9. Upload Profile Picture
+app.post('/api/profile/picture', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(401).json({ error: 'Unauthorized' });
+
+        const { base64_image } = req.body;
+        if (!base64_image) return res.status(400).json({ error: 'No image provided' });
+
+        const matches = base64_image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            return res.status(400).json({ error: 'Invalid image format' });
+        }
+
+        const contentType = matches[1];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(contentType)) {
+            return res.status(400).json({ error: 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.' });
+        }
+
+        const buffer = Buffer.from(matches[2], 'base64');
+        // Max 5MB
+        if (buffer.length > 5 * 1024 * 1024) {
+            return res.status(400).json({ error: 'Image too large. Maximum size is 5MB.' });
+        }
+
+        const ext = contentType.split('/')[1] || 'jpg';
+        const filename = `avatar_${user.id}.${ext}`;
+
+        const { data: uploadData, error: uploadError } = await supabase
+            .storage
+            .from('avatars')
+            .upload(filename, buffer, { contentType, upsert: true });
+
+        if (uploadError) {
+            console.error('[API] Avatar upload error:', uploadError);
+            return res.status(500).json({ error: 'Failed to upload image' });
+        }
+
+        const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filename);
+        const avatarUrl = urlData.publicUrl;
+
+        // Save avatar URL to user metadata
+        await supabase.auth.admin.updateUserById(user.id, {
+            user_metadata: { ...user.user_metadata, avatar_url: avatarUrl }
+        });
+
+        res.json({ message: 'Profile picture updated', avatar_url: avatarUrl });
+    } catch (err) {
+        console.error('[API] profile picture exception:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // ==========================================
@@ -100,7 +438,6 @@ app.get('/api/auth/oauth', async (req, res) => {
 // Get all posts from Supabase
 app.get('/api/posts', async (req, res) => {
     try {
-        // We assume you have a 'posts' table in Supabase
         const { data, error } = await supabase
             .from('posts')
             .select('*')
@@ -109,14 +446,12 @@ app.get('/api/posts', async (req, res) => {
 
         if (error) {
             console.error("Error fetching posts from DB:", error);
-            // Fallback to dummy data if DB query fails (e.g. table doesn't exist yet)
             return res.json([
                 { id: 1, title: 'Understanding CBT', excerpt: 'A brief introduction to Cognitive Behavioral Therapy.', date: '2026-05-01' },
                 { id: 2, title: 'Emotional Regulation Techniques', excerpt: 'How to manage overwhelming emotions.', date: '2026-05-15' }
             ]);
         }
 
-        // If no posts in DB yet, return the dummy data for now
         if (!data || data.length === 0) {
             return res.json([
                 { id: 1, title: 'Understanding CBT', excerpt: 'A brief introduction to Cognitive Behavioral Therapy.', date: '2026-05-01' },
@@ -130,27 +465,43 @@ app.get('/api/posts', async (req, res) => {
     }
 });
 
-// Get all courses from Supabase
+// Get all courses — returns authoritative catalog
 app.get('/api/courses', async (req, res) => {
     try {
         const { data, error } = await supabase.from('courses').select('*').order('order_index', { ascending: true, nullsFirst: false }).order('id', { ascending: true });
 
         if (error || !data || data.length === 0) {
-            // Fallback — all 6 courses with updated prices (EGP)
-            return res.json([
-                { id: 1, title: 'Tri-Therapy Bundle <br><small class="arabic-text medium">(باقة العلاج الثلاثي)</small>', price: 17500, original_price: 21500, discount_badge: 'Save 18%', image_url: 'images/course-tri-therapy.png', is_bundle: true, duration: '15 Days', excerpt: 'Complete mastery of evidence-based therapies for mental health professionals. Includes full access to DBT, CBT, and ACT clinical training.' },
-                { id: 2, title: 'CBT Course <br><small class="arabic-text medium">(العلاج المعرفي السلوكي)</small>', price: 7500, original_price: 10000, discount_badge: 'Save 25%', image_url: 'images/course-cbt.png', is_bundle: false, duration: '5 Days', excerpt: 'Learn Cognitive Behavioral Therapy techniques to reframe negative thought patterns and overcome anxiety and depression.' },
-                { id: 3, title: 'DBT Course <br><small class="arabic-text medium">(العلاج الجدلي السلوكي)</small>', price: 8500, original_price: 11500, discount_badge: 'Save 26%', image_url: 'images/course-dbt.png', is_bundle: false, duration: '5 Days', excerpt: 'Master Dialectical Behavior Therapy skills for mindfulness, emotional regulation, and distress tolerance.' },
-                { id: 4, title: 'Personality Disorders Course <br><small class="arabic-text medium">(اضطرابات الشخصية)</small>', price: 8500, original_price: 11500, discount_badge: 'Save 26%', image_url: 'images/course-personality-disorders.png', is_bundle: false, duration: '5 Days', excerpt: 'An in-depth understanding of personality disorders and effective coping mechanisms for mental health professionals.' },
-                { id: 5, title: 'ACT Course <br><small class="arabic-text medium">(العلاج بالقبول والالتزام)</small>', price: 7500, original_price: 10000, discount_badge: 'Save 25%', image_url: 'images/course-act.png', is_bundle: false, duration: '5 Days', excerpt: 'Acceptance & Commitment Therapy principles for living a value-driven life and increasing psychological flexibility.' },
-                { id: 6, title: 'Healing Journey Program <br><small class="arabic-text medium">(رحلة تعافي)</small>', price: 5000, original_price: 7500, discount_badge: 'Save 33%', image_url: 'images/course-healing-journey.png', is_bundle: false, duration: '2 Days', excerpt: 'A comprehensive program designed to help you process trauma and build emotional resilience.' }
-            ]);
+            // Return from authoritative COURSE_CATALOG
+            const courses = Object.values(COURSE_CATALOG).map((c, i) => ({
+                id: i + 1,
+                slug: c.slug,
+                title: c.title,
+                name_ar: c.name_ar,
+                name_en: c.name_en,
+                price: c.price,
+                original_price: c.original_price,
+                discount_badge: c.discount_badge,
+                image_url: c.image_url,
+                is_bundle: c.is_bundle,
+                duration: c.duration,
+                excerpt: c.description.substring(0, 180) + '...',
+                currency: c.currency
+            }));
+            return res.json(courses);
         }
 
         res.json(data);
     } catch (err) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+// Get single course by slug (for course detail page)
+app.get('/api/courses/:slug', async (req, res) => {
+    const { slug } = req.params;
+    const course = COURSE_CATALOG[slug];
+    if (!course) return res.status(404).json({ error: 'Course not found' });
+    res.json(course);
 });
 
 // Get all testimonials from Supabase
@@ -160,9 +511,10 @@ app.get('/api/testimonials', async (req, res) => {
 
         if (error || !data || data.length === 0) {
             return res.json([
-                { id: 1, rating: 5, quote: "The CBT training provided me with invaluable clinical tools for my practice.", author: "Sarah M., Clinical Psychologist" },
-                { id: 2, rating: 5, quote: "I took the Tri-Therapy bundle. Best investment ever for my career.", author: "Ahmed K." },
-                { id: 3, rating: 5, quote: "Dr. Marwa has a way of explaining complex psychological concepts simply.", author: "Laila T." }
+                { id: 1, rating: 5, quote: "The CBT training provided me with invaluable clinical tools. Dr. Marwa's approach is both scientific and deeply practical.", author: "Sarah M., Clinical Psychologist" },
+                { id: 2, rating: 5, quote: "I took the Tri-Therapy Bundle — the best investment I've made for my career. The integration of CBT, DBT, and ACT has transformed how I work with clients.", author: "Ahmed K., Psychotherapist" },
+                { id: 3, rating: 5, quote: "Dr. Marwa has a remarkable ability to explain complex psychological concepts in an accessible, applicable way. The DBT course changed my practice.", author: "Laila T., Counseling Psychologist" },
+                { id: 4, rating: 5, quote: "The Personality Disorders course gave me the confidence to work with the most challenging clinical presentations. Highly recommend to any serious clinician.", author: "Omar R., Mental Health Counselor" }
             ]);
         }
         res.json(data);
@@ -177,7 +529,6 @@ app.get('/api/sections', async (req, res) => {
         const { data, error } = await supabase.from('sections').select('*').order('id', { ascending: true });
 
         if (error || !data || data.length === 0) {
-            // Fallback to dummy data
             return res.json([
                 { section_key: 'hero', title: 'Dr. Marwa Badr Ahmed', subtitle: 'Consultant & Trainer for Mental Health Professionals', content: 'Empowering psychologists and mental health professionals with advanced evidence-based practices (CBT, DBT, ACT) to elevate their clinical skills and therapeutic impact.', is_visible: true },
                 { section_key: 'about', title: 'About Me', subtitle: '', content: '<p>I am a Mental Health Specialist and Trainer dedicated to elevating the standards of psychological practice. With extensive experience in clinical supervision and professional training, my mission is to equip psychologists with practical, evidence-based tools.</p><p>I specialize in training professionals in <strong>Cognitive Behavioral Therapy (CBT)</strong>, <strong>Dialectical Behavior Therapy (DBT)</strong>, and <strong>Acceptance & Commitment Therapy (ACT)</strong>. My programs focus on case formulation, advanced therapeutic techniques, and managing complex clinical cases.</p><p>Whether you are a newly graduated psychologist or an experienced practitioner, my courses and supervision sessions are designed to build your clinical confidence and enhance your therapeutic effectiveness.</p>', is_visible: true },
@@ -192,39 +543,13 @@ app.get('/api/sections', async (req, res) => {
     }
 });
 
-// Admin endpoints removed. Data management will be handled directly via Supabase Dashboard.
-
 // ==========================================
 // PAYMENT & ACCESS ENDPOINTS
 // ==========================================
 
-// Helper: extract and verify user JWT from Authorization header
-async function getUserFromRequest(req) {
-    const authHeader = req.headers.authorization || '';
-    const token = authHeader.replace('Bearer ', '').trim();
-    if (!token) return null;
-
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    if (error || !user) return null;
-    return user;
-}
-
-// Hardcoded course prices for backend validation (Prevents client spoofing)
-const COURSE_PRICES = {
-    'healing-journey-program': { price: 5000, currency: 'EGP' },
-    'dbt-course': { price: 8500, currency: 'EGP' },
-    'cbt-course': { price: 7500, currency: 'EGP' },
-    'act-course': { price: 7500, currency: 'EGP' },
-    'personality-disorders-course': { price: 8500, currency: 'EGP' },
-    'tri-therapy-bundle': { price: 17500, currency: 'EGP' }
-};
-
 // POST /api/record-purchase
-// Called by frontend after payment gateway confirms payment.
-// Saves purchase record to Supabase purchases table.
 app.post('/api/record-purchase', async (req, res) => {
     try {
-        // 1. Verify user identity from JWT
         const user = await getUserFromRequest(req);
         if (!user) {
             return res.status(401).json({ error: 'Unauthorized - please log in' });
@@ -232,13 +557,12 @@ app.post('/api/record-purchase', async (req, res) => {
 
         const { course_id, transaction_id } = req.body;
 
-        // 2. Validate required fields
         if (!course_id || !transaction_id) {
             return res.status(400).json({ error: 'Missing required fields: course_id, transaction_id' });
         }
 
-        // 3. SECURE PRICE LOOKUP (Ignores client's amount_paid)
-        const courseInfo = COURSE_PRICES[course_id];
+        // SECURE PRICE LOOKUP — backend is authoritative, never trust client price
+        const courseInfo = COURSE_CATALOG[course_id];
         if (!courseInfo) {
             return res.status(400).json({ error: 'Invalid course ID' });
         }
@@ -246,18 +570,30 @@ app.post('/api/record-purchase', async (req, res) => {
         const secureAmountPaid = courseInfo.price;
         const secureCurrency = courseInfo.currency;
 
-        // 4. Prevent duplicate purchases (idempotent)
-        const { data: existing } = await supabase
+        // Prevent duplicate purchases (idempotent)
+        const { data: existingByTxn } = await supabase
             .from('purchases')
             .select('id')
             .eq('transaction_id', transaction_id)
             .single();
 
-        if (existing) {
+        if (existingByTxn) {
             return res.status(200).json({ message: 'Purchase already recorded', already_exists: true });
         }
 
-        // 5. Insert purchase record
+        // Check if user already has an active enrollment for this course
+        const { data: existingEnrollment } = await supabase
+            .from('purchases')
+            .select('id, is_active')
+            .eq('user_id', user.id)
+            .eq('course_id', course_id)
+            .eq('is_active', true)
+            .single();
+
+        if (existingEnrollment) {
+            return res.status(200).json({ message: 'Already enrolled in this course', already_enrolled: true });
+        }
+
         const { data, error } = await supabase
             .from('purchases')
             .insert([{
@@ -285,8 +621,6 @@ app.post('/api/record-purchase', async (req, res) => {
 });
 
 // POST /api/instapay-request
-// Called by frontend when user submits an InstaPay manual request.
-// Saves purchase record as is_active = false for admin manual review.
 app.post('/api/instapay-request', async (req, res) => {
     try {
         const user = await getUserFromRequest(req);
@@ -295,12 +629,25 @@ app.post('/api/instapay-request', async (req, res) => {
         const { course_id, username, whatsapp, base64_receipt } = req.body;
         if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
 
-        const courseInfo = COURSE_PRICES[course_id];
+        const courseInfo = COURSE_CATALOG[course_id];
         if (!courseInfo) return res.status(400).json({ error: 'Invalid course ID' });
 
         const secureAmountPaid = courseInfo.price;
         const secureCurrency = courseInfo.currency;
-        
+
+        // Check if already enrolled (active)
+        const { data: existingActive } = await supabase
+            .from('purchases')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('course_id', course_id)
+            .eq('is_active', true)
+            .single();
+
+        if (existingActive) {
+            return res.status(200).json({ message: 'Already enrolled in this course', already_enrolled: true });
+        }
+
         // Upload receipt to Supabase Storage if provided
         let receiptUrl = null;
         if (base64_receipt) {
@@ -324,7 +671,6 @@ app.post('/api/instapay-request', async (req, res) => {
             }
         }
         
-        // Use a unique placeholder transaction ID for manual requests
         const transaction_id = 'instapay-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
 
         const { data, error } = await supabase
@@ -345,7 +691,11 @@ app.post('/api/instapay-request', async (req, res) => {
         }
 
         console.log(`[API] 🟡 Pending InstaPay request: user=${user.id} course=${course_id} txn=${transaction_id}`);
-        res.status(201).json({ message: 'Request recorded successfully. Pending admin approval.', data, receipt_url: receiptUrl });
+        res.status(201).json({ 
+            message: 'Request recorded successfully. Pending admin approval.', 
+            data, 
+            receipt_url: receiptUrl 
+        });
 
     } catch (err) {
         console.error('[API] instapay-request exception:', err);
@@ -354,11 +704,8 @@ app.post('/api/instapay-request', async (req, res) => {
 });
 
 // GET /api/check-access?course_id=cbt-course
-// Called by course content pages on load to verify access.
-// Returns { has_access: true/false }
 app.get('/api/check-access', async (req, res) => {
     try {
-        // 1. Verify user identity
         const user = await getUserFromRequest(req);
         if (!user) {
             return res.status(200).json({ has_access: false, reason: 'not_logged_in' });
@@ -369,7 +716,6 @@ app.get('/api/check-access', async (req, res) => {
             return res.status(400).json({ error: 'Missing course_id query parameter' });
         }
 
-        // 2. Check purchases table
         const { data, error } = await supabase
             .from('purchases')
             .select('id, is_active')
@@ -391,6 +737,34 @@ app.get('/api/check-access', async (req, res) => {
     }
 });
 
+// GET /api/enrollment-status — alias for /api/check-access (used by course-detail page)
+// Returns { enrolled: bool, pending: bool }
+app.get('/api/enrollment-status', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(200).json({ enrolled: false, pending: false });
+
+        const { course_id } = req.query;
+        if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
+
+        const { data, error } = await supabase
+            .from('purchases')
+            .select('id, is_active')
+            .eq('user_id', user.id)
+            .eq('course_id', course_id);
+
+        if (error || !data || data.length === 0) {
+            return res.status(200).json({ enrolled: false, pending: false });
+        }
+
+        const isActive = data.some(p => p.is_active === true);
+        const isPending = data.some(p => p.is_active === false);
+        res.status(200).json({ enrolled: isActive, pending: isPending && !isActive });
+    } catch (err) {
+        res.status(500).json({ enrolled: false, error: 'Internal server error' });
+    }
+});
+
 // GET /api/my-courses — returns all purchases for authenticated user
 app.get('/api/my-courses', async (req, res) => {
     try {
@@ -399,55 +773,66 @@ app.get('/api/my-courses', async (req, res) => {
 
         const { data, error } = await supabase
             .from('purchases')
-            .select('course_id, purchased_at, amount_paid, currency, transaction_id')
+            .select('course_id, purchased_at, amount_paid, currency, transaction_id, is_active')
             .eq('user_id', user.id)
             .eq('is_active', true)
             .order('purchased_at', { ascending: false });
 
         if (error) return res.status(500).json({ error: error.message });
-        res.json(data || []);
+
+        // Enrich with authoritative course data
+        const enriched = (data || []).map(purchase => {
+            const courseInfo = COURSE_CATALOG[purchase.course_id];
+            return {
+                ...purchase,
+                course_name_ar: courseInfo?.name_ar || purchase.course_id,
+                course_name_en: courseInfo?.name_en || purchase.course_id,
+                course_duration: courseInfo?.duration || '—',
+                course_description: courseInfo?.description || '',
+                course_image: courseInfo?.image_url || '',
+                currency: purchase.currency || 'EGP'
+            };
+        });
+
+        res.json(enriched);
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// POST /api/auth/forgot-password — sends Supabase password reset email
-app.post('/api/auth/forgot-password', async (req, res) => {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: 'Email is required' });
+// GET /api/enrollment-status?course_id=cbt-course — check if user is enrolled
+app.get('/api/enrollment-status', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user) return res.status(200).json({ enrolled: false, pending: false, reason: 'not_logged_in' });
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://drmarwa.pages.dev/reset-password.html'
-    });
+        const { course_id } = req.query;
+        if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
 
-    if (error && !error.message.includes('not found')) {
-        return res.status(400).json({ error: error.message });
+        const { data, error } = await supabase
+            .from('purchases')
+            .select('id, is_active')
+            .eq('user_id', user.id)
+            .eq('course_id', course_id);
+
+        if (error || !data || data.length === 0) {
+            return res.status(200).json({ enrolled: false, pending: false });
+        }
+
+        const isActive = data.some(p => p.is_active === true);
+        const isPending = data.some(p => p.is_active === false);
+
+        res.status(200).json({ enrolled: isActive, pending: isPending });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-    res.json({ message: 'If this email is registered, a password reset link has been sent.' });
 });
 
-// POST /api/auth/verify-otp — verifies the 6-digit code sent to user email on signup
-app.post('/api/auth/verify-otp', async (req, res) => {
-    const { email, token } = req.body;
-    if (!email || !token) return res.status(400).json({ error: 'Email and code are required' });
-
-    const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'signup'
-    });
-
-    if (error) return res.status(400).json({ error: error.message });
-    res.json({ session: data.session, user: data.user || data.session?.user });
-});
-
-// Fallback route to serve index.html for SPA-like behavior or if page not found
+// Fallback route to serve index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`To start this server, run 'npm install' then 'node server.js'`);
 });

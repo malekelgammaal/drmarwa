@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Dr. Marwa Badr</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="icon" href="images/profile-pic-nav.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/profile-pic-nav.png">
+    <style>
+        .page-wrapper { min-height: 100vh; padding-top: var(--nav-height); }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--card-bg); border-bottom: 1px solid var(--border);
+            padding: 0.75rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--muted); text-decoration: none; font-size: 0.875rem;
+            border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.75rem; transition: all 0.2s;
+        }
+        .back-btn:hover { color: var(--primary); border-color: var(--primary); }
+
+        /* Layout */
+        .profile-layout { max-width: 900px; margin: 0 auto; padding: 2.5rem 2rem; display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start; }
+
+        /* Avatar Section */
+        .avatar-card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--border-radius);
+            padding: 2rem; text-align: center; position: sticky; top: calc(var(--nav-height) + 2rem);
+        }
+        .avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto 1.25rem; }
+        .avatar-img {
+            width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--primary); background: var(--alt-bg);
+        }
+        .avatar-overlay {
+            position: absolute; inset: 0; border-radius: 50%; background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center; opacity: 0;
+            transition: opacity 0.2s; cursor: pointer;
+        }
+        .avatar-wrapper:hover .avatar-overlay { opacity: 1; }
+        .avatar-overlay i { color: white; font-size: 1.5rem; }
+        .avatar-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .avatar-email { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem; word-break: break-all; }
+        #avatar-upload { display: none; }
+
+        /* Cards */
+        .profile-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--border-radius); padding: 2rem; margin-bottom: 1.5rem; }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+        .card-title i { color: var(--primary); }
+
+        /* Form */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--border); border-radius: 8px;
+            background: var(--bg); color: var(--text); font-size: 0.9rem; font-family: inherit;
+            transition: border-color 0.2s; box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .form-group input:disabled { opacity: 0.6; cursor: not-allowed; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+
+        .input-wrapper { position: relative; }
+        .input-wrapper input { padding-right: 3rem; }
+        .toggle-pw {
+            position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: var(--muted); padding: 0; font-size: 1.1rem;
+        }
+
+        .strength-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+        .strength-fill { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; width: 0%; }
+        .strength-label { font-size: 0.72rem; margin-top: 0.3rem; color: var(--muted); }
+
+        /* Message areas */
+        .msg-area { margin-bottom: 1rem; }
+        .msg-box { border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0; }
+        .msg-box.error { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+        .msg-box.success { background: rgba(20,184,166,0.12); color: var(--primary); border: 1px solid rgba(20,184,166,0.3); }
+
+        /* Danger Zone */
+        .danger-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.25); border-radius: var(--border-radius); padding: 1.75rem; }
+        .danger-title { font-size: 1rem; font-weight: 700; color: #ef4444; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .danger-desc { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.25rem; line-height: 1.6; }
+        .btn-danger { background: #ef4444; color: white; border: none; border-radius: 8px; padding: 0.75rem 1.25rem; cursor: pointer; font-family: inherit; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
+        .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Modals */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--border-radius); padding: 2rem; max-width: 440px; width: 100%; transform: scale(0.95); transition: transform 0.3s; }
+        .modal.active .modal-box { transform: scale(1); }
+
+        /* Upload Progress */
+        .upload-progress { display: none; align-items: center; gap: 0.75rem; margin-top: 0.75rem; font-size: 0.85rem; color: var(--muted); }
+        .upload-progress.show { display: flex; }
+
+        @media (max-width: 768px) {
+            .profile-layout { grid-template-columns: 1fr; padding: 1.5rem 1rem; }
+            .avatar-card { position: static; }
+            .top-bar { padding: 0.75rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo" style="display:flex;align-items:center;gap:0.5rem;">
+                <img src="images/profile-pic-nav.png" alt="Dr. Marwa" class="logo-img">
+                Dr. Marwa
+            </a>
+            <div class="nav-actions">
+                <div id="user-display" style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--muted);">
+                    <i class="ph ph-user-circle" style="font-size:1.5rem;color:var(--primary);"></i>
+                    <span id="nav-user-name"></span>
+                </div>
+                <button id="theme-toggle" aria-label="Toggle Theme">
+                    <i class="ph ph-sun"></i><i class="ph ph-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="top-bar">
+            <a href="index.html" class="back-btn"><i class="ph ph-arrow-left"></i> Back to Home</a>
+            <button onclick="handleLogout()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.875rem;display:flex;align-items:center;gap:0.4rem;font-family:inherit;">
+                <i class="ph ph-sign-out"></i> Log Out
+            </button>
+        </div>
+
+        <div class="profile-layout">
+            <!-- Left: Avatar -->
+            <div>
+                <div class="avatar-card">
+                    <div class="avatar-wrapper" onclick="document.getElementById('avatar-upload').click()">
+                        <img id="avatar-img" src="images/profile-pic-nav.png" alt="Profile" class="avatar-img">
+                        <div class="avatar-overlay"><i class="ph ph-camera"></i></div>
+                    </div>
+                    <div class="avatar-name" id="avatar-name">Loading...</div>
+                    <div class="avatar-email" id="avatar-email"></div>
+
+                    <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/gif,image/webp">
+                    <div class="upload-progress" id="upload-progress">
+                        <i class="ph ph-circle-notch ph-spin" style="color:var(--primary);"></i>
+                        Uploading photo...
+                    </div>
+                    <div id="avatar-msg" class="msg-area"></div>
+
+                    <a href="my-courses.html" class="buy-btn" style="margin-top:1rem;text-decoration:none;display:flex;justify-content:center;align-items:center;gap:0.5rem;padding:0.75rem;">
+                        <i class="ph ph-books"></i> My Courses
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right: Form Cards -->
+            <div>
+                <!-- Personal Info -->
+                <div class="profile-card">
+                    <div class="card-title"><i class="ph ph-user"></i> Personal Information</div>
+                    <div id="info-msg" class="msg-area"></div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="profile-name" placeholder="Your full name" autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label>Bio <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+                        <textarea id="profile-bio" placeholder="A short bio about yourself..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="profile-email" disabled style="opacity:0.6;cursor:not-allowed;">
+                        <p style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem;display:flex;align-items:center;gap:0.3rem;">
+                            <i class="ph ph-info"></i> Email cannot be changed for security reasons.
+                        </p>
+                    </div>
+                    <button class="btn-primary" id="save-info-btn" onclick="saveProfileInfo()" style="display:flex;align-items:center;gap:0.5rem;">
+                        <i class="ph ph-floppy-disk"></i> Save Changes
+                    </button>
+                </div>
+
+                <!-- Change Password -->
+                <div class="profile-card">
+                    <div class="card-title"><i class="ph ph-lock-key"></i> Change Password</div>
+                    <div id="pw-msg" class="msg-area"></div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="new-password" placeholder="Enter new password (min. 8 chars)" autocomplete="new-password" oninput="checkStrength(this.value)">
+                            <button type="button" class="toggle-pw" onclick="togglePw('new-password',this)"><i class="ph ph-eye"></i></button>
+                        </div>
+                        <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+                        <div class="strength-label" id="strength-label">Enter a password</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirm-password" placeholder="Repeat new password" autocomplete="new-password">
+                            <button type="button" class="toggle-pw" onclick="togglePw('confirm-password',this)"><i class="ph ph-eye"></i></button>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="change-pw-btn" onclick="changePassword()" style="display:flex;align-items:center;gap:0.5rem;">
+                        <i class="ph ph-lock-key-open"></i> Update Password
+                    </button>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="danger-card">
+                    <div class="danger-title"><i class="ph ph-warning"></i> Danger Zone</div>
+                    <p class="danger-desc">
+                        Permanently delete your account and all associated data. 
+                        This action <strong>cannot be undone</strong>. Your enrolled courses and purchase history will be permanently removed.
+                    </p>
+                    <button class="btn-danger" id="delete-account-btn" onclick="openDeleteModal()">
+                        <i class="ph ph-trash"></i> Delete My Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-box">
+            <div style="text-align:center;margin-bottom:1.5rem;">
+                <div style="width:64px;height:64px;background:rgba(239,68,68,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                    <i class="ph ph-trash" style="font-size:1.8rem;color:#ef4444;"></i>
+                </div>
+                <h3 style="margin:0 0 0.5rem;color:#ef4444;">Delete Account?</h3>
+                <p style="color:var(--muted);font-size:0.9rem;line-height:1.6;">
+                    This will permanently delete your account and all your course enrollments. 
+                    <strong style="color:var(--text);">This cannot be undone.</strong>
+                </p>
+            </div>
+            <div id="delete-msg" class="msg-area"></div>
+            <p style="font-size:0.875rem;color:var(--muted);margin-bottom:1rem;">Type <strong style="color:var(--text);">DELETE</strong> to confirm:</p>
+            <input type="text" id="delete-confirm-input" placeholder="Type DELETE here" 
+                style="width:100%;padding:0.85rem;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:0.9rem;font-family:inherit;box-sizing:border-box;margin-bottom:1rem;">
+            <div style="display:flex;gap:0.75rem;">
+                <button onclick="document.getElementById('delete-modal').classList.remove('active')"
+                    style="flex:1;background:none;border:1px solid var(--border);color:var(--muted);padding:0.85rem;border-radius:8px;cursor:pointer;font-family:inherit;font-size:0.9rem;">
+                    Cancel
+                </button>
+                <button class="btn-danger" id="confirm-delete-btn" onclick="confirmDeleteAccount()" style="flex:1;justify-content:center;">
+                    <i class="ph ph-trash"></i> Delete Forever
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+    // ============================================================
+    //  Profile Page — Dr. Marwa Badr Platform
+    // ============================================================
+
+    const API_BASE = 'https://drmarwa.onrender.com';
+
+    // Theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+    });
+
+    // Session helpers
+    function getSession() { try { return JSON.parse(localStorage.getItem('site_current_session')); } catch { return null; } }
+    function getUser() { try { return JSON.parse(localStorage.getItem('site_current_user')); } catch { return null; } }
+
+    function handleLogout() {
+        localStorage.removeItem('site_current_session');
+        localStorage.removeItem('site_current_user');
+        localStorage.removeItem('user_has_purchases');
+        window.location.href = 'index.html';
+    }
+
+    // Toast
+    function showToast(msg, type = 'info') {
+        let container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        const icon = type === 'success' ? 'ph-check-circle' : type === 'error' ? 'ph-warning-circle' : 'ph-info';
+        toast.innerHTML = `<i class="ph ${icon}" style="font-size:1.25rem;"></i> <span>${msg}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
+    }
+
+    function showMsg(areaId, msg, type = 'error') {
+        const area = document.getElementById(areaId);
+        if (!area) return;
+        const icon = type === 'error' ? 'ph-warning-circle' : 'ph-check-circle';
+        area.innerHTML = `<div class="msg-box ${type}"><i class="ph ${icon}"></i><span>${msg}</span></div>`;
+    }
+
+    function clearMsg(areaId) {
+        const area = document.getElementById(areaId);
+        if (area) area.innerHTML = '';
+    }
+
+    // Password strength
+    function checkStrength(value) {
+        let score = 0;
+        if (value.length >= 8) score++;
+        if (/[A-Z]/.test(value)) score++;
+        if (/[0-9]/.test(value)) score++;
+        if (/[^A-Za-z0-9]/.test(value)) score++;
+        const lvls = [
+            { pct: '0%', color: '#ef4444', text: 'Enter a password' },
+            { pct: '25%', color: '#ef4444', text: 'Too weak' },
+            { pct: '50%', color: '#f59e0b', text: 'Fair' },
+            { pct: '75%', color: '#3b82f6', text: 'Good' },
+            { pct: '100%', color: '#14b8a6', text: 'Strong ✓' }
+        ];
+        const l = value.length === 0 ? lvls[0] : lvls[score];
+        document.getElementById('strength-fill').style.width = l.pct;
+        document.getElementById('strength-fill').style.background = l.color;
+        document.getElementById('strength-label').textContent = l.text;
+        document.getElementById('strength-label').style.color = l.color;
+    }
+
+    function togglePw(id, btn) {
+        const el = document.getElementById(id);
+        const ic = btn.querySelector('i');
+        el.type = el.type === 'password' ? 'text' : 'password';
+        ic.className = el.type === 'text' ? 'ph ph-eye-slash' : 'ph ph-eye';
+    }
+
+    // Boot
+    (function init() {
+        const session = getSession();
+        const user = getUser();
+
+        if (!session?.access_token || !user) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        const name = user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+        const email = user.email || '';
+        const avatarUrl = user.user_metadata?.avatar_url;
+        const bio = user.user_metadata?.bio || '';
+
+        // Populate UI
+        document.getElementById('nav-user-name').textContent = name;
+        document.getElementById('avatar-name').textContent = name;
+        document.getElementById('avatar-email').textContent = email;
+        document.getElementById('profile-name').value = name;
+        document.getElementById('profile-email').value = email;
+        document.getElementById('profile-bio').value = bio;
+
+        if (avatarUrl) {
+            document.getElementById('avatar-img').src = avatarUrl;
+        }
+    })();
+
+    // Save Profile Info
+    async function saveProfileInfo() {
+        const session = getSession();
+        if (!session?.access_token) return;
+
+        const btn = document.getElementById('save-info-btn');
+        const name = document.getElementById('profile-name').value.trim();
+        const bio = document.getElementById('profile-bio').value.trim();
+
+        if (!name) { showMsg('info-msg', 'Name cannot be empty.'); return; }
+
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Saving...';
+        btn.disabled = true;
+        clearMsg('info-msg');
+
+        try {
+            const res = await fetch(`${API_BASE}/api/profile/update`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({ name, bio })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to update profile');
+
+            // Update local state
+            const user = JSON.parse(localStorage.getItem('site_current_user') || '{}');
+            user.user_metadata = { ...user.user_metadata, name, bio };
+            localStorage.setItem('site_current_user', JSON.stringify(user));
+
+            // Update UI
+            document.getElementById('avatar-name').textContent = name;
+            showMsg('info-msg', 'Profile updated successfully!', 'success');
+            showToast('Profile saved!', 'success');
+        } catch (err) {
+            showMsg('info-msg', err.message || 'Failed to save. Please try again.');
+        } finally {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+    }
+
+    // Change Password
+    async function changePassword() {
+        const session = getSession();
+        if (!session?.access_token) return;
+
+        const btn = document.getElementById('change-pw-btn');
+        const newPw = document.getElementById('new-password').value;
+        const confirmPw = document.getElementById('confirm-password').value;
+
+        if (newPw.length < 8) { showMsg('pw-msg', 'Password must be at least 8 characters.'); return; }
+        if (newPw !== confirmPw) { showMsg('pw-msg', 'Passwords do not match.'); return; }
+
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Updating...';
+        btn.disabled = true;
+        clearMsg('pw-msg');
+
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/update-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({ new_password: newPw })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to update password');
+
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            checkStrength('');
+            showMsg('pw-msg', 'Password updated successfully!', 'success');
+            showToast('Password changed!', 'success');
+        } catch (err) {
+            showMsg('pw-msg', err.message || 'Failed to update password. Please try again.');
+        } finally {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+    }
+
+    // Avatar Upload
+    document.getElementById('avatar-upload').addEventListener('change', async function() {
+        const file = this.files[0];
+        if (!file) return;
+
+        const session = getSession();
+        if (!session?.access_token) return;
+
+        // Validate file
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            showToast('Invalid file type. Please upload a JPEG, PNG, GIF, or WebP.', 'error');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('Image too large. Maximum size is 5MB.', 'error');
+            return;
+        }
+
+        const progress = document.getElementById('upload-progress');
+        progress.classList.add('show');
+        clearMsg('avatar-msg');
+
+        // Preview immediately
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('avatar-img').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        // Upload
+        const base64Reader = new FileReader();
+        base64Reader.readAsDataURL(file);
+        base64Reader.onload = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/api/profile/picture`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ base64_image: base64Reader.result })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+                // Update local state
+                const user = JSON.parse(localStorage.getItem('site_current_user') || '{}');
+                user.user_metadata = { ...user.user_metadata, avatar_url: data.avatar_url };
+                localStorage.setItem('site_current_user', JSON.stringify(user));
+
+                document.getElementById('avatar-img').src = data.avatar_url;
+                showToast('Profile picture updated!', 'success');
+            } catch (err) {
+                showToast(err.message || 'Failed to upload image', 'error');
+                // Revert preview
+                const user = getUser();
+                const prevUrl = user?.user_metadata?.avatar_url || 'images/profile-pic-nav.png';
+                document.getElementById('avatar-img').src = prevUrl;
+            } finally {
+                progress.classList.remove('show');
+            }
+        };
+    });
+
+    // Delete Account Modal
+    function openDeleteModal() {
+        document.getElementById('delete-confirm-input').value = '';
+        clearMsg('delete-msg');
+        document.getElementById('delete-modal').classList.add('active');
+    }
+
+    async function confirmDeleteAccount() {
+        const input = document.getElementById('delete-confirm-input').value.trim();
+        if (input !== 'DELETE') {
+            showMsg('delete-msg', 'Please type DELETE exactly to confirm.');
+            return;
+        }
+
+        const session = getSession();
+        if (!session?.access_token) return;
+
+        const btn = document.getElementById('confirm-delete-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Deleting...';
+        btn.disabled = true;
+        clearMsg('delete-msg');
+
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/delete-account`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${session.access_token}` }
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to delete account');
+
+            // Clear all local state
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to home
+            window.location.href = 'index.html';
+        } catch (err) {
+            showMsg('delete-msg', err.message || 'Failed to delete account. Please try again.');
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('delete-modal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) e.currentTarget.classList.remove('active');
+    });
+    </script>
+</body>
+</html>
