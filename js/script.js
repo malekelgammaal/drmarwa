@@ -862,7 +862,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', async () => {
+            const session = getSession();
+            if (session?.access_token) {
+                try {
+                    await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${session.access_token}` }
+                    });
+                } catch(e) { console.error('Logout API error:', e); }
+            }
             localStorage.removeItem('user_has_purchases'); // clear purchase cache
             setSession(null, null);
             showToast('Logged out successfully.', 'info');

@@ -219,6 +219,15 @@ app.post('/api/auth/signup', async (req, res) => {
         return res.status(400).json({ error: 'This account already exists. Please log in instead.' });
     }
 
+    if (data.session && data.user) {
+        await supabase.from('active_sessions').upsert({
+            user_id: data.user.id,
+            email: data.user.email,
+            name: data.user.user_metadata?.name || '',
+            last_seen: new Date().toISOString()
+        });
+    }
+
     res.status(201).json({ message: 'Account created successfully!', user: data.user, session: data.session });
 });
 
@@ -236,6 +245,16 @@ app.post('/api/auth/login', async (req, res) => {
     });
 
     if (error) return res.status(400).json({ error: error.message });
+
+    if (data.session && data.user) {
+        await supabase.from('active_sessions').upsert({
+            user_id: data.user.id,
+            email: data.user.email,
+            name: data.user.user_metadata?.name || data.user.user_metadata?.full_name || '',
+            last_seen: new Date().toISOString()
+        });
+    }
+
     res.status(200).json({ message: 'Login successful', session: data.session });
 });
 
@@ -253,6 +272,40 @@ app.get('/api/auth/oauth', async (req, res) => {
 
     if (error) return res.status(400).json({ error: error.message });
     res.json({ url: data.url });
+});
+
+// 3.5 Logout Endpoint
+app.delete('/api/auth/logout', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (user) {
+            await supabase.from('active_sessions').delete().eq('user_id', user.id);
+        }
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch (err) {
+        console.error('[API] logout error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// 3.6 Admin Active Users Endpoint
+app.get('/api/admin/active-users', async (req, res) => {
+    try {
+        const user = await getUserFromRequest(req);
+        if (!user || user.email !== 'malekelgammal013@gmail.com') {
+            return res.status(403).json({ error: 'Forbidden: Admin access only' });
+        }
+        const { data, error } = await supabase
+            .from('active_sessions')
+            .select('*')
+            .order('last_seen', { ascending: false });
+            
+        if (error) throw error;
+        res.status(200).json(data);
+    } catch (err) {
+        console.error('[API] active-users error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // 4. Forgot Password
