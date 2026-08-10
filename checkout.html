@@ -279,13 +279,13 @@
                     </div>
                     <div class="form-field">
                         <label>صورة إيصال التحويل</label>
-                        <div class="upload-area" id="receipt-upload-area" onclick="document.getElementById('instapay-receipt').click()">
+                        <div class="upload-area" id="receipt-upload-area" role="button" tabindex="0" aria-label="Choose an InstaPay receipt image" onclick="document.getElementById('instapay-receipt').click()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); document.getElementById('instapay-receipt').click(); }">
                             <div id="upload-placeholder">
                                 <i class="ph ph-upload-simple" style="font-size: 2.5rem; color: #6C1E70; margin-bottom: 0.5rem; opacity: 0.8; display: block;"></i>
                                 <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">اضغط هنا لاختيار الصورة</p>
                             </div>
                             <img id="receipt-preview" src="" alt="Receipt Preview">
-                            <input type="file" id="instapay-receipt" accept="image/*" style="display: none;">
+                            <input type="file" id="instapay-receipt" accept="image/jpeg,image/png,image/webp" style="display: none;">
                         </div>
                     </div>
 
@@ -512,7 +512,7 @@
         const file = this.files[0];
         if (!file) return;
 
-        if (file.size > 10 * 1024 * 1024) {
+        if (file.size > 5 * 1024 * 1024) {
             showToast('الصورة كبيرة جداً. الحد الأقصى 10MB', 'error');
             this.value = '';
             return;

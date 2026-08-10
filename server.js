@@ -16,13 +16,61 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SITE_URL = (process.env.SITE_URL || 'https://drmarwa.pages.dev').replace(/\/+$/, '');
+
+// Public pages live beside server and maintenance files. Keep the static surface
+// explicit so source files and local configuration cannot be downloaded.
+const PUBLIC_ROOT_FILES = new Set([
+    'index.html', 'blog.html', 'checkout.html', 'course-act-course.html',
+    'course-cbt-course.html', 'course-dbt-course.html', 'course-detail.html',
+    'course-healing-journey-program.html', 'course-personality-disorders-course.html',
+    'course-tri-therapy-bundle.html', 'my-courses.html', 'payment-success.html',
+    'privacy-policy.html', 'profile.html', 'refund-policy.html',
+    'reset-password.html', 'terms.html'
+]);
+const PUBLIC_DIRECTORIES = new Set(['css', 'fonts', 'images', 'js']);
+
+function isPublicStaticRequest(req) {
+    if (!['GET', 'HEAD'].includes(req.method) || req.path.startsWith('/api/')) return true;
+
+    let requestedPath;
+    try {
+        requestedPath = decodeURIComponent(req.path).replace(/^\/+/, '');
+    } catch {
+        return false;
+    }
+
+    if (!requestedPath) return true;
+    const segments = requestedPath.split('/');
+    if (segments.some(segment => !segment || segment === '.' || segment === '..')) return false;
+    if (segments.length === 1) return PUBLIC_ROOT_FILES.has(segments[0]);
+    return PUBLIC_DIRECTORIES.has(segments[0]);
+}
+
+function decodeImageDataUrl(value, allowedTypes, maxBytes) {
+    if (typeof value !== 'string') return null;
+    const matches = value.match(/^data:([A-Za-z-+/]+);base64,([A-Za-z0-9+/=]+)$/);
+    if (!matches || !allowedTypes.includes(matches[1])) return null;
+
+    const buffer = Buffer.from(matches[2], 'base64');
+    if (!buffer.length || buffer.length > maxBytes) return null;
+    return { contentType: matches[1], buffer };
+}
 
 // Middleware
+app.disable('x-powered-by');
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+app.use((req, res, next) => {
+    res.set('X-Content-Type-Options', 'nosniff');
+    res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    if (!isPublicStaticRequest(req)) return res.status(404).send('Not found');
+    next();
+});
 
-// Serve static files from the current directory
+// Serve only the explicitly public portion of the project directory.
 app.use(express.static(__dirname, {
+    dotfiles: 'deny',
     index: ['index.html']
 }));
 
@@ -198,17 +246,19 @@ async function getUserFromRequest(req) {
 app.post('/api/auth/signup', async (req, res) => {
     try {
         const { email, password, name } = req.body || {};
+        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+        const normalizedName = typeof name === 'string' ? name.trim().slice(0, 120) : '';
         
-        if (!email || !password) {
+        if (!normalizedEmail || typeof password !== 'string' || password.length < 8) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
         
         const { data, error } = await supabase.auth.signUp({
-            email: email,
+            email: normalizedEmail,
             password: password,
             options: {
                 data: {
-                    name: name || ''
+                    name: normalizedName
                 }
             }
         });
@@ -233,13 +283,14 @@ app.post('/api/auth/signup', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body || {};
+        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-        if (!email || !password) {
+        if (!normalizedEmail || typeof password !== 'string' || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
         const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
+            email: normalizedEmail,
             password: password,
         });
 
@@ -258,12 +309,15 @@ app.post('/api/auth/login', async (req, res) => {
 app.get('/api/auth/oauth', async (req, res) => {
     try {
         const { provider, redirect_to } = req.query || {};
-        if (!provider) return res.status(400).json({ error: 'Provider is required' });
+        const allowedProviders = new Set(['google']);
+        if (!allowedProviders.has(provider)) return res.status(400).json({ error: 'Unsupported OAuth provider' });
         
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: provider,
             options: {
-                redirectTo: redirect_to || 'https://drmarwa.pages.dev/'
+                redirectTo: typeof redirect_to === 'string' && redirect_to.startsWith(SITE_URL)
+                    ? redirect_to
+                    : `${SITE_URL}/`
             }
         });
 
@@ -291,13 +345,12 @@ app.delete('/api/auth/logout', async (req, res) => {
 app.post('/api/auth/forgot-password', async (req, res) => {
     try {
         const { email } = req.body || {};
-        if (!email) return res.status(400).json({ error: 'Email is required' });
+        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+        if (!normalizedEmail) return res.status(400).json({ error: 'Email is required' });
 
-        const resetUrl = process.env.SITE_URL
-            ? `${process.env.SITE_URL}/reset-password.html`
-            : 'https://drmarwabadr.vercel.app/reset-password.html';
+        const resetUrl = `${SITE_URL}/reset-password.html`;
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
             redirectTo: resetUrl
         });
 
@@ -308,6 +361,27 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         res.json({ message: 'If this email is registered, a password reset link has been sent.' });
     } catch (err) {
         console.error('[API] forgot-password error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Used by the verification overlay in the client after sign-up.
+app.post('/api/auth/resend-verification', async (req, res) => {
+    try {
+        const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+        if (!email) return res.status(400).json({ error: 'Email is required' });
+
+        const { error } = await supabase.auth.resend({
+            type: 'signup',
+            email,
+            options: { emailRedirectTo: `${SITE_URL}/` }
+        });
+
+        // Do not reveal account state to callers.
+        if (error) console.error('[API] resend verification error:', error.message);
+        res.json({ message: 'If this email is eligible, a verification email has been sent.' });
+    } catch (err) {
+        console.error('[API] resend verification exception:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -387,10 +461,10 @@ app.post('/api/profile/update', async (req, res) => {
         const user = await getUserFromRequest(req);
         if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
-        const { name, bio } = req.body;
+        const { name, bio } = req.body || {};
         const updateData = {};
-        if (name !== undefined) updateData.name = name;
-        if (bio !== undefined) updateData.bio = bio;
+        if (name !== undefined) updateData.name = String(name).trim().slice(0, 120);
+        if (bio !== undefined) updateData.bio = String(bio).trim().slice(0, 2_000);
 
         const { data, error } = await supabase.auth.admin.updateUserById(user.id, {
             user_metadata: { ...user.user_metadata, ...updateData }
@@ -413,23 +487,11 @@ app.post('/api/profile/picture', async (req, res) => {
         const { base64_image } = req.body;
         if (!base64_image) return res.status(400).json({ error: 'No image provided' });
 
-        const matches = base64_image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-        if (!matches || matches.length !== 3) {
-            return res.status(400).json({ error: 'Invalid image format' });
-        }
-
-        const contentType = matches[1];
         const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        if (!allowedTypes.includes(contentType)) {
-            return res.status(400).json({ error: 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.' });
-        }
+        const image = decodeImageDataUrl(base64_image, allowedTypes, 5 * 1024 * 1024);
+        if (!image) return res.status(400).json({ error: 'Invalid image. Use a supported image smaller than 5MB.' });
 
-        const buffer = Buffer.from(matches[2], 'base64');
-        // Max 5MB
-        if (buffer.length > 5 * 1024 * 1024) {
-            return res.status(400).json({ error: 'Image too large. Maximum size is 5MB.' });
-        }
-
+        const { contentType, buffer } = image;
         const ext = contentType.split('/')[1] || 'jpg';
         const filename = `avatar_${user.id}.${ext}`;
 
@@ -602,75 +664,11 @@ app.get('/api/sections', async (req, res) => {
 
 // POST /api/record-purchase
 app.post('/api/record-purchase', async (req, res) => {
-    try {
-        const user = await getUserFromRequest(req);
-        if (!user) {
-            return res.status(401).json({ error: 'Unauthorized - please log in' });
-        }
-
-        const { course_id, transaction_id } = req.body;
-
-        if (!course_id || !transaction_id) {
-            return res.status(400).json({ error: 'Missing required fields: course_id, transaction_id' });
-        }
-
-        // SECURE PRICE LOOKUP — backend is authoritative, never trust client price
-        const courseInfo = await getCourseBySlug(course_id);
-        if (!courseInfo) {
-            return res.status(400).json({ error: 'Invalid course ID' });
-        }
-
-        const secureAmountPaid = courseInfo.price;
-        const secureCurrency = courseInfo.currency;
-
-        // Prevent duplicate purchases (idempotent)
-        const { data: existingByTxn } = await supabase
-            .from('purchases')
-            .select('id')
-            .eq('transaction_id', transaction_id)
-            .single();
-
-        if (existingByTxn) {
-            return res.status(200).json({ message: 'Purchase already recorded', already_exists: true });
-        }
-
-        // Check if user already has an active enrollment for this course
-        const { data: existingEnrollment } = await supabase
-            .from('purchases')
-            .select('id, is_active')
-            .eq('user_id', user.id)
-            .eq('course_id', course_id)
-            .eq('is_active', true)
-            .single();
-
-        if (existingEnrollment) {
-            return res.status(200).json({ message: 'Already enrolled in this course', already_enrolled: true });
-        }
-
-        const { data, error } = await supabase
-            .from('purchases')
-            .insert([{
-                user_id: user.id,
-                course_id: course_id,
-                transaction_id: transaction_id,
-                amount_paid: secureAmountPaid,
-                currency: secureCurrency,
-                purchased_at: new Date().toISOString(),
-                is_active: true
-            }]);
-
-        if (error) {
-            console.error('[API] record-purchase DB error:', error);
-            return res.status(500).json({ error: 'Failed to record purchase' });
-        }
-
-        console.log(`[API] ✅ Purchase recorded: user=${user.id} course=${course_id} txn=${transaction_id}`);
-        res.status(201).json({ message: 'Purchase recorded successfully', data });
-
-    } catch (err) {
-        console.error('[API] record-purchase exception:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+    // Transaction IDs and callback URLs are browser-controlled. Access activation
+    // must happen only after a verified provider webhook, which is not in this repo.
+    return res.status(503).json({
+        error: 'Automatic enrollment is unavailable until verified payment-webhook processing is configured.'
+    });
 });
 
 // POST /api/kashier-hash
@@ -679,7 +677,7 @@ app.post('/api/kashier-hash', async (req, res) => {
         const user = await getUserFromRequest(req);
         if (!user) return res.status(401).json({ error: 'Unauthorized - please log in' });
 
-        const { course_id } = req.body;
+        const { course_id } = req.body || {};
         if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
 
         const courseInfo = await getCourseBySlug(course_id);
@@ -687,12 +685,16 @@ app.post('/api/kashier-hash', async (req, res) => {
 
         const amount = courseInfo.price;
         const currency = courseInfo.currency || 'EGP';
-        const merchantId = process.env.KASHIER_MERCHANT_ID || 'MID-1234-TEST';
-        const secret = process.env.KASHIER_API_KEY || 'TEST_SECRET_KEY';
-        const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+        const mode = process.env.KASHIER_MODE || 'test';
+        const merchantId = process.env.KASHIER_MERCHANT_ID || (mode === 'test' ? 'MID-1234-TEST' : '');
+        const secret = process.env.KASHIER_API_KEY || (mode === 'test' ? 'TEST_SECRET_KEY' : '');
+        if (!merchantId || !secret) {
+            return res.status(503).json({ error: 'Payment gateway is not configured.' });
+        }
+        const crypto = require('crypto');
+        const orderId = `order_${Date.now()}_${crypto.randomUUID()}`;
 
         // Kashier Hash Generation (Node.js)
-        const crypto = require('crypto');
         const path = `/?payment=${merchantId}.${orderId}.${amount}.${currency}`;
         const hash = crypto.createHmac('sha256', secret).update(path).digest('hex');
 
@@ -702,7 +704,7 @@ app.post('/api/kashier-hash', async (req, res) => {
             merchantId: merchantId,
             amount: amount,
             currency: currency,
-            mode: process.env.KASHIER_MODE || 'test' // test or live
+            mode // test or live
         });
     } catch (err) {
         console.error('[API] kashier-hash exception:', err);
@@ -716,7 +718,7 @@ app.post('/api/instapay-request', async (req, res) => {
         const user = await getUserFromRequest(req);
         if (!user) return res.status(401).json({ error: 'Unauthorized - please log in' });
 
-        const { course_id, username, whatsapp, base64_receipt } = req.body;
+        const { course_id, username, whatsapp, base64_receipt } = req.body || {};
         if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
 
         const courseInfo = await getCourseBySlug(course_id);
@@ -738,28 +740,24 @@ app.post('/api/instapay-request', async (req, res) => {
             return res.status(200).json({ message: 'Already enrolled in this course', already_enrolled: true });
         }
 
-        // Upload receipt to Supabase Storage if provided
-        let receiptUrl = null;
-        if (base64_receipt) {
-            const matches = base64_receipt.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-            if (matches && matches.length === 3) {
-                const contentType = matches[1];
-                const buffer = Buffer.from(matches[2], 'base64');
-                const filename = `receipt_${Date.now()}_${Math.random().toString(36).substring(7)}.${contentType.split('/')[1] || 'jpg'}`;
-                
-                const { data: uploadData, error: uploadError } = await supabase
-                    .storage
-                    .from('receipts')
-                    .upload(filename, buffer, { contentType, upsert: true });
+        // Receipts are required for manual approval and must remain bounded.
+        const receipt = decodeImageDataUrl(base64_receipt, ['image/jpeg', 'image/png', 'image/webp'], 5 * 1024 * 1024);
+        if (!receipt) return res.status(400).json({ error: 'A JPEG, PNG, or WebP receipt smaller than 5MB is required.' });
 
-                if (!uploadError) {
-                    const { data } = supabase.storage.from('receipts').getPublicUrl(filename);
-                    receiptUrl = data.publicUrl;
-                } else {
-                    console.error('[API] Failed to upload receipt:', uploadError);
-                }
-            }
+        const { contentType, buffer } = receipt;
+        const crypto = require('crypto');
+        const filename = `receipt_${Date.now()}_${crypto.randomUUID()}.${contentType.split('/')[1] || 'jpg'}`;
+        const { error: uploadError } = await supabase
+            .storage
+            .from('receipts')
+            .upload(filename, buffer, { contentType, upsert: false });
+
+        if (uploadError) {
+            console.error('[API] Failed to upload receipt:', uploadError);
+            return res.status(500).json({ error: 'Failed to upload receipt' });
         }
+        const { data: urlData } = supabase.storage.from('receipts').getPublicUrl(filename);
+        const receiptUrl = urlData.publicUrl;
         
         const transaction_id = 'instapay-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
 
@@ -773,8 +771,8 @@ app.post('/api/instapay-request', async (req, res) => {
                 currency: secureCurrency,
                 purchased_at: new Date().toISOString(),
                 is_active: false, // Instapay requires manual activation
-                customer_name: username,
-                customer_whatsapp: whatsapp
+                customer_name: typeof username === 'string' ? username.trim().slice(0, 120) : '',
+                customer_whatsapp: typeof whatsapp === 'string' ? whatsapp.trim().slice(0, 40) : ''
             }]);
 
         if (error) {

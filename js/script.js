@@ -524,6 +524,50 @@ document.addEventListener('DOMContentLoaded', () => {
     // Backend API & Auth State Management
     // ==========================================
     const API_BASE_URL = 'https://drmarwa.onrender.com';
+
+    // API content is rendered into templates below. Escape plain fields and keep
+    // the small rich-text surface used by the CMS deliberately constrained.
+    const escapeHtml = (value = '') => String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    function sanitizeRichText(value = '') {
+        const template = document.createElement('template');
+        template.innerHTML = String(value);
+        const allowedTags = new Set(['P', 'BR', 'STRONG', 'EM', 'B', 'I', 'UL', 'OL', 'LI', 'H2', 'H3', 'H4', 'BLOCKQUOTE', 'A']);
+
+        Array.from(template.content.querySelectorAll('*')).forEach(node => {
+            if (!allowedTags.has(node.tagName)) {
+                node.replaceWith(document.createTextNode(node.textContent || ''));
+                return;
+            }
+
+            const href = node.tagName === 'A' ? node.getAttribute('href') : null;
+            Array.from(node.attributes).forEach(attribute => node.removeAttribute(attribute.name));
+            if (href) {
+                try {
+                    const url = new URL(href, window.location.origin);
+                    if (['http:', 'https:'].includes(url.protocol)) {
+                        node.setAttribute('href', url.href);
+                        node.setAttribute('rel', 'noopener noreferrer');
+                    }
+                } catch { /* Invalid links remain plain anchors. */ }
+            }
+        });
+        return template.innerHTML;
+    }
+
+    function safeImageUrl(value, fallback = 'images/placeholder.jpg') {
+        try {
+            const url = new URL(String(value || fallback), window.location.origin);
+            return ['http:', 'https:'].includes(url.protocol) ? url.href : fallback;
+        } catch {
+            return fallback;
+        }
+    }
     
     // ── Check if user has any purchases → show My Courses btn everywhere ──
     async function checkAndShowMyCourses(token) {
@@ -904,9 +948,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const subtitleEl = document.getElementById(`${section.section_key}-subtitle`);
                 const contentEl = document.getElementById(`${section.section_key}-content`);
                 
-                if (titleEl && section.title) titleEl.innerHTML = section.title;
-                if (subtitleEl && section.subtitle) subtitleEl.innerHTML = section.subtitle;
-                if (contentEl && section.content) contentEl.innerHTML = section.content;
+                if (titleEl && section.title) titleEl.textContent = section.title;
+                if (subtitleEl && section.subtitle) subtitleEl.textContent = section.subtitle;
+                if (contentEl && section.content) contentEl.innerHTML = sanitizeRichText(section.content);
             });
         } catch (error) {
             console.error('Error fetching sections:', error);
@@ -940,6 +984,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     posts.slice(0, limit).forEach(post => {
+                        post.title = escapeHtml(post.title || 'Untitled');
+                        post.excerpt = escapeHtml(post.excerpt || post.content || '');
+                        post.content = sanitizeRichText(post.content || '');
+                        try {
+                            const url = new URL(post.link || '', window.location.origin);
+                            post.link = ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+                        } catch {
+                            post.link = '';
+                        }
+
                         const article = document.createElement('article');
                         article.className = 'glass-card blog-card';
                         article.style.padding = '1.5rem';
@@ -1007,6 +1061,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 homeCoursesContainer.innerHTML = '';
                 courses.forEach(course => {
+                    course.title = escapeHtml(course.title || 'Untitled course');
+                    course.excerpt = escapeHtml(course.excerpt || '');
+                    course.duration = escapeHtml(course.duration || 'N/A');
+                    course.discount_badge = escapeHtml(course.discount_badge || '');
+                    course.image_url = safeImageUrl(course.image_url);
                     const slug = SLUG_MAP[course.id] || course.id;
                     const card = document.createElement('div');
                     card.className = `course-card ${course.is_bundle ? 'bundle-card' : ''}`;
@@ -1076,6 +1135,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function renderTestimonials(testimonials) {
             homeTestimonialsContainer.innerHTML = '';
             testimonials.forEach(t => {
+                    t.rating = Math.max(0, Math.min(5, Number.parseInt(t.rating, 10) || 0));
+                    t.quote = escapeHtml(t.quote || '');
+                    t.author = escapeHtml(t.author || '');
                     const card = document.createElement('div');
                     card.className = 'glass-card';
                     card.style.padding = '2rem';
