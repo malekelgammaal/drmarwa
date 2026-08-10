@@ -292,7 +292,7 @@ app.delete('/api/auth/logout', async (req, res) => {
 app.get('/api/admin/active-users', async (req, res) => {
     try {
         const user = await getUserFromRequest(req);
-        if (!user || user.email !== 'malekelgammal013@gmail.com') {
+        if (!user || user.email !== 'malekelgammaal@gmail.com') {
             return res.status(403).json({ error: 'Forbidden: Admin access only' });
         }
         const { data, error } = await supabase
