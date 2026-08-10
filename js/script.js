@@ -1061,8 +1061,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 homeCoursesContainer.innerHTML = '';
                 courses.forEach(course => {
-                    course.title = escapeHtml(course.title || 'Untitled course');
-                    course.excerpt = escapeHtml(course.excerpt || '');
+                    course.title = course.title || 'Untitled course';
+                    course.excerpt = course.excerpt || '';
                     course.duration = escapeHtml(course.duration || 'N/A');
                     course.discount_badge = escapeHtml(course.discount_badge || '');
                     course.image_url = safeImageUrl(course.image_url);
