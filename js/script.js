@@ -1096,9 +1096,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // My Courses Sticky Icon
     // ==========================================
-    if (session?.access_token) {
+    const currentSession = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+    if (currentSession?.access_token) {
         fetch(`${API_BASE_URL}/api/my-courses`, {
-            headers: { 'Authorization': `Bearer ${session.access_token}` }
+            headers: { 'Authorization': `Bearer ${currentSession.access_token}` }
         })
         .then(res => res.json())
         .then(data => {
