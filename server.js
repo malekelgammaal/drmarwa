@@ -3,12 +3,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
-let nodemailer;
-try {
-    nodemailer = require('nodemailer');
-} catch (e) {
-    console.warn('Nodemailer not installed. Course activation emails will not be sent.');
-}
+
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 
@@ -445,95 +440,6 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
     if (error) return res.status(400).json({ error: error.message });
     res.json({ session: data.session, user: data.user || data.session?.user });
-});
-
-// ==========================================
-// SUPABASE WEBHOOKS
-// ==========================================
-app.post('/api/webhooks/purchase-activated', async (req, res) => {
-    try {
-        const { type, record, old_record } = req.body;
-        
-        // Only trigger if is_active changed from false to true
-        if (type !== 'UPDATE' || !record || !old_record) return res.status(200).send('Ignored');
-        if (record.is_active !== true || old_record.is_active === true) return res.status(200).send('Ignored');
-
-        // Check if nodemailer is configured
-        if (!nodemailer || !process.env.SMTP_EMAIL || !process.env.SMTP_PASSWORD) {
-            console.log('Course activated but SMTP not configured. Skipping email.');
-            return res.status(200).send('SMTP not configured');
-        }
-
-        // Get user email from Supabase Auth
-        const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(record.user_id);
-        if (userError || !user) {
-            console.error('Failed to fetch user email for webhook:', userError);
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        // Get course name (or use hardcoded mapping if needed, using course_id as fallback)
-        const courseNamesAr = {
-            'healing-journey-program': 'رحلة التشافي',
-            'dbt-course': 'كورس العلاج الجدلي السلوكي (DBT)',
-            'cbt-course': 'كورس العلاج السلوكي المعرفي (CBT)',
-            'act-course': 'كورس العلاج بالتقبل والالتزام (ACT)',
-            'personality-disorders-course': 'كورس اضطرابات الشخصية',
-            'tri-therapy-bundle': 'الباقة الثلاثية للعلاجات'
-        };
-        const courseName = courseNamesAr[record.course_id] || record.course_id;
-
-        // Set up email transporter
-        const transporter = nodemailer.createTransport({
-            service: 'gmail', // You can change this if using another provider
-            auth: {
-                user: process.env.SMTP_EMAIL,
-                pass: process.env.SMTP_PASSWORD
-            }
-        });
-
-        // Send email
-        await transporter.sendMail({
-            from: `"منصة د. مروة بدر" <${process.env.SMTP_EMAIL}>`,
-            to: user.email,
-            subject: `🎉 تم تفعيل الكورس الخاص بك: ${courseName} - منصة د. مروة بدر`,
-            html: `
-                <div dir="rtl" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.8; max-width: 600px; margin: 0 auto; border: 1px solid #eaeaea; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <div style="background: linear-gradient(135deg, #6C1E70, #9d33a3); padding: 30px 20px; text-align: center;">
-                        <h1 style="color: #ffffff; margin: 0; font-size: 24px;">🎉 تهانينا! تم تفعيل اشتراكك</h1>
-                    </div>
-                    <div style="padding: 30px 20px; background-color: #ffffff;">
-                        <h2 style="color: #14b8a6; font-size: 20px; margin-top: 0;">أهلاً بك يا صديقي في عالم التعلم..</h2>
-                        <p style="font-size: 16px; color: #444;">
-                            يسعدنا جداً انضمامك إلينا، ونود إخبارك بأنه قد تم تفعيل اشتراكك في:
-                            <br>
-                            <strong style="color: #6C1E70; font-size: 18px; display: inline-block; margin: 10px 0;">"${courseName}"</strong>
-                        </p>
-                        <p style="font-size: 16px; color: #444;">
-                            نحن متحمسون لبدء هذه الرحلة معك. نتمنى لك رحلة تدريبية ممتعة، مليئة بالفائدة والتطور المستمر. استعد لاستكشاف محتوى صُنع خصيصاً ليأخذ بيدك نحو التميز!
-                        </p>
-                        <div style="text-align: center; margin: 35px 0;">
-                            <a href="https://drmarwabadr.vercel.app/my-courses.html" style="display: inline-block; background-color: #14b8a6; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(20, 184, 166, 0.3);">ابدأ رحلة التعلم الآن</a>
-                        </div>
-                        <hr style="border: none; border-top: 1px solid #eaeaea; margin: 20px 0;">
-                        <p style="font-size: 14px; color: #777; margin: 0;">
-                            مع خالص تحياتنا،<br>
-                            <strong style="color: #333;">فريق منصة د. مروة بدر</strong>
-                        </p>
-                    </div>
-                    <div style="background-color: #f9fafb; padding: 15px; text-align: center; font-size: 12px; color: #aaa;">
-                        © 2026 منصة د. مروة بدر. جميع الحقوق محفوظة.
-                    </div>
-                </div>
-            `
-        });
-
-        console.log(`[Webhook] Activation email sent to ${user.email} for course ${record.course_id}`);
-        res.status(200).send('Success');
-
-    } catch (err) {
-        console.error('[Webhook] Error sending activation email:', err);
-        res.status(500).send('Internal Server Error');
-    }
 });
 
 // Fallback route to serve index.html for SPA-like behavior or if page not found

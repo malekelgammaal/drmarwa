@@ -2127,6 +2127,34 @@ section[id], [id] {
 .whatsapp-btn { animation: whatsappPulse 2.5s infinite !important; }
 .whatsapp-btn:hover { animation: none !important; }
 
+/* Pulse animation for My Courses Sticky Icon */
+@keyframes myCoursesPulse {
+    0% { box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4), 0 0 0 0 rgba(20, 184, 166, 0.5); }
+    70% { box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4), 0 0 0 15px rgba(20, 184, 166, 0); }
+    100% { box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4), 0 0 0 0 rgba(20, 184, 166, 0); }
+}
+.my-courses-sticky-btn {
+    animation: myCoursesPulse 2s infinite;
+    position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    border-radius: 50px !important;
+    padding: 12px 24px !important;
+    font-size: 1.15rem !important;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #14b8a6, #0d9488) !important;
+    color: white !important;
+    border: none !important;
+}
+.my-courses-sticky-btn:hover {
+    animation: none;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(20, 184, 166, 0.4);
+}
+
 /* Cookie banner mobile */
 @media (max-width: 600px) {
     #cookie-consent-banner { width: 96% !important; padding: 1.1rem 1.25rem !important; border-radius: 12px !important; bottom: 80px !important; }
