@@ -732,7 +732,9 @@ app.post('/api/instapay-request', async (req, res) => {
                 amount_paid: secureAmountPaid,
                 currency: secureCurrency,
                 purchased_at: new Date().toISOString(),
-                is_active: false // Critical: Requires Admin Manual Verification
+                is_active: false, // Instapay requires manual activation
+                customer_name: username,
+                customer_whatsapp: whatsapp
             }]);
 
         if (error) {

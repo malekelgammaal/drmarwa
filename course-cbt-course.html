@@ -110,7 +110,7 @@
 <script src="js/payment-service.js"></script>
         <script>
     document.addEventListener('DOMContentLoaded', async () => {
-        const ps = new PaymentService();
+        const ps = window.PaymentService;
         const hasAccess = await ps.checkAccess('cbt-course');
         
         if (!hasAccess) {
