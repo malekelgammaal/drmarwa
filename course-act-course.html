@@ -64,7 +64,7 @@
     
     <!-- SEO & Social Media Meta Tags -->
     <meta name="description" content="Dr. Marwa Badr - Consultant & Trainer for Mental Health Professionals. Advanced training in CBT, DBT, and ACT therapies.">
-    <meta name="keywords" content="Dr. Marwa Badr, Ø¯ÙƒØªÙˆØ±Ø© Ù…Ø±ÙˆØ© Ø¨Ø¯Ø±, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù†ÙØ³ÙŠ, CBT, DBT, ACT, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù…Ø¹Ø±ÙÙŠ Ø§Ù„Ø³Ù„ÙˆÙƒÙŠ, ÙƒÙˆØ±Ø³Ø§Øª Ø¹Ù„Ù… Ù†ÙØ³, ØªØ¯Ø±ÙŠØ¨ Ø£Ø®ØµØ§Ø¦ÙŠÙŠÙ† Ù†ÙØ³ÙŠÙŠÙ†">
+    <meta name="keywords" content="Dr. Marwa Badr, دكتورة مروة بدر, العلاج النفسي, CBT, DBT, ACT, العلاج المعرفي السلوكي, كورسات علم نفس, تدريب أخصائيين نفسيين">
     <meta name="author" content="Dr. Marwa Badr">
     
     <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
@@ -84,7 +84,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="my-courses.html" class="logo" style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;"><i class="ph ph-arrow-right"></i> ÙƒÙˆØ±Ø³Ø§ØªÙŠ</a>
+            <a href="my-courses.html" class="logo" style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;"><i class="ph ph-arrow-right"></i> كورساتي</a>
             <div style="display:flex;align-items:center;gap:1rem;">
                 <span id="user-welcome" style="font-size:0.82rem;color:var(--muted);"></span>
                 <button id="theme-toggle" aria-label="Toggle Theme">
@@ -97,145 +97,37 @@
 
     <div id="access-loader" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;">
         <div style="width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-        <p style="color:var(--muted);font-size:0.9rem;">Ø¬Ø§Ø±ÙŠ Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ©...</p>
+        <p style="color:var(--muted);font-size:0.9rem;">جاري التحقق من الصلاحية...</p>
     </div>
 
-    <div class="content-layout" id="page-content" style="display:none;">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø¨Ø§Ù„Ù‚Ø¨ÙˆÙ„ ÙˆØ§Ù„Ø§Ù„ØªØ²Ø§Ù… (ACT)</h3>
-                <p>Ù…Ø­ØªÙˆÙ‰ Ø§Ù„ÙƒÙˆØ±Ø³ Â· Ø´Ù‡Ø§Ø¯Ø© Ù…Ø¹ØªÙ…Ø¯Ø©</p>
-                <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
-                <p class="prog-text" id="prog-text">0 Ù…ÙƒØªÙ…Ù„</p>
-            </div>
-            <ul class="module-list" id="module-list">`n                <li class="active" style="cursor:default;"><i class="ph ph-info"></i> المحتوى سيضاف قريباً</li>`n            </ul>
-        </aside>
-
-        <main class="main-content">
-            <span class="course-badge"><i class="ph ph-graduation-cap"></i> Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø¨Ø§Ù„Ù‚Ø¨ÙˆÙ„ ÙˆØ§Ù„Ø§Ù„ØªØ²Ø§Ù…</span>
-            <h1 id="mod-title" style="margin:0.4rem 0 1rem;font-size:1.55rem;"></h1>
-            <div class="meta-row">
-                <span class="meta-chip"><i class="ph ph-clock"></i> <span id="mod-duration"></span></span>
-                <span class="meta-chip"><i class="ph ph-translate"></i> Ø¨Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©</span>
-                <span class="meta-chip"><i class="ph ph-certificate"></i> Ø´Ù‡Ø§Ø¯Ø© Ù…Ø¹ØªÙ…Ø¯Ø©</span>
-            </div>
-
-                        <div class="video-box" id="video-container">
-                <!-- Video loaded dynamically by loadModule() -->
-                <p style="color:var(--muted);font-size:0.85rem;z-index:1;">Ø¬Ø§Ø±ÙŠ ØªØ­Ù…ÙŠÙ„ Ø§Ù„ÙÙŠØ¯ÙŠÙˆ...</p>
-            </div>
-
-            <h2 class="section-h2"><i class="ph ph-book-open"></i> Ø¹Ù† Ù‡Ø°Ù‡ Ø§Ù„ÙˆØ­Ø¯Ø©</h2>
-            <p class="body-text" id="mod-body"></p>
-
-            <div class="materials">
-                <h3><i class="ph ph-folder-open"></i> Ù…ÙˆØ§Ø¯ Ù„Ù„ØªØ­Ù…ÙŠÙ„</h3>
-                <a href="#" class="mat-link"><i class="ph ph-file-pdf"></i> Module Workbook.pdf</a>
-                <a href="#" class="mat-link"><i class="ph ph-file-text"></i> Reflection Exercise.pdf</a>
-                <a href="#" class="mat-link"><i class="ph ph-file-pdf"></i> Clinical Reference Sheet.pdf</a>
-            </div>
-
-            <div class="nav-btns">
-                <button class="nav-btn" id="btn-prev" onclick="prevMod()" disabled><i class="ph ph-arrow-right"></i> Ø§Ù„Ø³Ø§Ø¨Ù‚</button>
-                <button class="nav-btn primary" id="btn-next" onclick="nextMod()">Ø§Ù„ÙˆØ­Ø¯Ø© Ø§Ù„ØªØ§Ù„ÙŠØ© <i class="ph ph-arrow-left"></i></button>
-            </div>
-        </main>
+    <div class="content-layout" id="page-content" style="display:none; align-items: center; justify-content: center; height: 75vh; width: 100%;">
+    <div style="text-align: center; color: var(--muted); margin: auto;">
+        <i class="ph ph-hourglass-high" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);"></i>
+        <h2>سيتم إضافة المحتوى قريباً</h2>
+        <p style="margin-top:0.5rem;font-size:0.95rem;">نعمل حالياً على تجهيز المحتوى العلمي الخاص بهذا الكورس.</p>
     </div>
-
-    <script src="js/payment-service.js"></script>
-    <script>
-    const MODULES = {
-        'placeholder': {
-            title: 'المحاور سيتم إضافتها قريباً',
-            duration: '--',
-            videoUrl: '',
-            body: 'محتوى الدروس والمحاور التفصيلية سيتم إضافته قريبًا.<br><br>تابع تحديثات الكورس لمعرفة موعد إتاحة المحتوى.'
-        }
-    };
-    const KEYS = Object.keys(MODULES);
-    let current = 0;
-
-
-    function renderVideo(videoUrl, title) {
-        const container = document.getElementById('video-container');
-        if (!container) return;
-        if (videoUrl) {
-            container.innerHTML = '<iframe src="' + videoUrl + '" title="' + title + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;border-radius:var(--border-radius);"></iframe>';
-        } else {
-            container.innerHTML = `
-                <div style="text-align:center;z-index:1;">
-                    <i class="ph ph-video-camera-slash" style="font-size:2.5rem;color:var(--muted);"></i>
-                    <p style="color:var(--muted);margin:0.5rem 0 0;font-size:0.85rem;">Ø§Ù„ÙÙŠØ¯ÙŠÙˆ Ù‚Ø±ÙŠØ¨Ø§Ù‹</p>
-                </div>`;
-        }
-    }
-
-    function loadModule(keyOrIndex) {
-        const idx = typeof keyOrIndex === 'number' ? keyOrIndex : KEYS.indexOf(keyOrIndex);
-        if (idx < 0 || idx >= KEYS.length) return;
-        current = idx;
-        const m = MODULES[KEYS[idx]];
-
-        document.getElementById('mod-title').textContent = m.title;
-        document.getElementById('mod-duration').textContent = m.duration;
-        document.getElementById('mod-body').textContent = m.body;
-                renderVideo(m.videoUrl || '', m.title);
-
-        // Sidebar
-        document.querySelectorAll('.module-list li').forEach((li, i) => li.classList.toggle('active', i === idx));
-
-        // Prev/Next
-        document.getElementById('btn-prev').disabled = idx === 0;
-        const nextBtn = document.getElementById('btn-next');
-        if (idx === KEYS.length - 1) {
-            nextBtn.innerHTML = '<i class="ph ph-trophy"></i> Ø§ÙƒØªÙ…Ù„ Ø§Ù„ÙƒÙˆØ±Ø³!';
-            nextBtn.disabled = true;
-        } else {
-            nextBtn.innerHTML = 'Ø§Ù„ÙˆØ­Ø¯Ø© Ø§Ù„ØªØ§Ù„ÙŠØ© <i class="ph ph-arrow-left"></i>';
-            nextBtn.disabled = false;
-        }
-
-        // Progress
-        const pct = Math.round(((idx + 1) / KEYS.length) * 100);
-        document.getElementById('prog-fill').style.width = pct + '%';
-        document.getElementById('prog-text').textContent = (idx + 1) + ' Ù…Ù† ' + KEYS.length + ' Ù…ÙƒØªÙ…Ù„';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function nextMod() { if (current < KEYS.length - 1) loadModule(current + 1); }
-    function prevMod() { if (current > 0) loadModule(current - 1); }
-
-        // Early preview bypass
-    if (new URLSearchParams(window.location.search).get('preview') === 'drmarwabadr1984') {
-        document.addEventListener('DOMContentLoaded', () => {
-            const loader = document.getElementById('access-loader');
-            const page = document.getElementById('page-content');
-            if (loader) loader.style.display = 'none';
-            if (page) page.style.display = 'flex';
-            loadModule(0);
-        });
-    }
-
+</div>
+<script src="js/payment-service.js"></script>
+        <script>
     document.addEventListener('DOMContentLoaded', async () => {
-        const saved = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', saved);
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
-                // Skip if preview mode already showed content
-        const pg = document.getElementById('page-content');
-        if (pg && pg.style.display === 'flex') return;
+        const ps = new PaymentService();
+        const hasAccess = await ps.checkAccess('act-course');
         
-        const hasAccess = await window.PaymentService.guardCoursePage('act-course');
-        if (!hasAccess) return;
-        document.getElementById('access-loader').style.display = 'none';
-        document.getElementById('page-content').style.display = 'flex';
-        const user = JSON.parse(localStorage.getItem('site_current_user') || 'null');
-        const name = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Ø·Ø§Ù„Ø¨';
-        document.getElementById('user-welcome').textContent = 'Ù…Ø±Ø­Ø¨Ø§Ù‹ØŒ ' + name;
-        loadModule(0);
+        if (!hasAccess) {
+            window.location.href = 'my-courses.html';
+            return;
+        }
+
+        const user = ps.getUser();
+        if (user && document.getElementById('user-name')) {
+            document.getElementById('user-name').textContent = user.name || user.email;
+        }
+
+        const loader = document.getElementById('access-loader') || document.getElementById('loader');
+        const page = document.getElementById('page-content') || document.getElementById('page');
+        
+        if(loader) loader.style.display = 'none';
+        if(page) page.style.display = 'flex';
     });
     </script>
 </body>

@@ -679,11 +679,11 @@ app.post('/api/instapay-request', async (req, res) => {
         const { course_id, username, whatsapp, base64_receipt } = req.body;
         if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
 
-        const courseInfo = COURSE_CATALOG[course_id];
+        const courseInfo = await getCourseBySlug(course_id);
         if (!courseInfo) return res.status(400).json({ error: 'Invalid course ID' });
 
         const secureAmountPaid = courseInfo.price;
-        const secureCurrency = courseInfo.currency;
+        const secureCurrency = courseInfo.currency || 'EGP';
 
         // Check if already enrolled (active)
         const { data: existingActive } = await supabase

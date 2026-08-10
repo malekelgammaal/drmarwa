@@ -72,7 +72,7 @@
     
     <!-- SEO & Social Media Meta Tags -->
     <meta name="description" content="Dr. Marwa Badr - Consultant & Trainer for Mental Health Professionals. Advanced training in CBT, DBT, and ACT therapies.">
-    <meta name="keywords" content="Dr. Marwa Badr, Ø¯ÙƒØªÙˆØ±Ø© Ù…Ø±ÙˆØ© Ø¨Ø¯Ø±, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù†ÙØ³ÙŠ, CBT, DBT, ACT, Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ù…Ø¹Ø±ÙÙŠ Ø§Ù„Ø³Ù„ÙˆÙƒÙŠ, ÙƒÙˆØ±Ø³Ø§Øª Ø¹Ù„Ù… Ù†ÙØ³, ØªØ¯Ø±ÙŠØ¨ Ø£Ø®ØµØ§Ø¦ÙŠÙŠÙ† Ù†ÙØ³ÙŠÙŠÙ†">
+    <meta name="keywords" content="Dr. Marwa Badr, دكتورة مروة بدر, العلاج النفسي, CBT, DBT, ACT, العلاج المعرفي السلوكي, كورسات علم نفس, تدريب أخصائيين نفسيين">
     <meta name="author" content="Dr. Marwa Badr">
     
     <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
@@ -104,169 +104,40 @@
 <!-- Loader -->
 <div id="loader">
     <div class="spinner"></div>
-    <p style="color:var(--muted);font-size:0.9rem;">Ø¬Ø§Ø±ÙŠ Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ©...</p>
+    <p style="color:var(--muted);font-size:0.9rem;">جاري التحقق من الصلاحية...</p>
 </div>
 
 <!-- Page (hidden until access confirmed) -->
-<div class="page-wrap" id="page" style="display:none;">
-
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;"><i class="ph ph-stack" style="color:var(--primary);font-size:1.1rem;"></i><h2>Ø¨Ø§Ù‚Ø© Ø§Ù„Ø¹Ù„Ø§Ø¬ Ø§Ù„Ø«Ù„Ø§Ø«ÙŠ</h2></div>
-            <p>3 Ù…Ø¬Ø§Ù„Ø§Øª Ø¹Ù„Ø§Ø¬ÙŠØ© Â· 15 ÙˆØ­Ø¯Ø©</p>
-            <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
-            <p class="prog-text" id="prog-text">0 Ù…ÙƒØªÙ…Ù„</p>
-        </div>
-
-        <div class="section-group">
-            <div class="section-label"><i class="ph ph-brain"></i> Part 1: DBT</div>
-            <button class="mod-btn active" id="btn-dbt-1" onclick="go('dbt-1')"><i class="ph ph-play-circle"></i> Introduction to DBT</button>
-            <button class="mod-btn" id="btn-dbt-2" onclick="go('dbt-2')"><i class="ph ph-play-circle"></i> Core Mindfulness Skills</button>
-            <button class="mod-btn" id="btn-dbt-3" onclick="go('dbt-3')"><i class="ph ph-play-circle"></i> Distress Tolerance</button>
-            <button class="mod-btn" id="btn-dbt-4" onclick="go('dbt-4')"><i class="ph ph-play-circle"></i> Emotion Regulation</button>
-            <button class="mod-btn" id="btn-dbt-5" onclick="go('dbt-5')"><i class="ph ph-certificate"></i> DBT Assessment</button>
-        </div>
-
-        <div class="section-group">
-            <div class="section-label"><i class="ph ph-lightbulb"></i> Part 2: CBT</div>
-            <button class="mod-btn" id="btn-cbt-1" onclick="go('cbt-1')"><i class="ph ph-play-circle"></i> Introduction to CBT</button>
-            <button class="mod-btn" id="btn-cbt-2" onclick="go('cbt-2')"><i class="ph ph-play-circle"></i> Cognitive Distortions</button>
-            <button class="mod-btn" id="btn-cbt-3" onclick="go('cbt-3')"><i class="ph ph-play-circle"></i> Challenging Thoughts</button>
-            <button class="mod-btn" id="btn-cbt-4" onclick="go('cbt-4')"><i class="ph ph-play-circle"></i> Behavioral Activation</button>
-            <button class="mod-btn" id="btn-cbt-5" onclick="go('cbt-5')"><i class="ph ph-certificate"></i> CBT Assessment</button>
-        </div>
-
-        <div class="section-group">
-            <div class="section-label"><i class="ph ph-leaf"></i> Part 3: ACT</div>
-            <button class="mod-btn" id="btn-act-1" onclick="go('act-1')"><i class="ph ph-play-circle"></i> Introduction to ACT</button>
-            <button class="mod-btn" id="btn-act-2" onclick="go('act-2')"><i class="ph ph-play-circle"></i> Psychological Flexibility</button>
-            <button class="mod-btn" id="btn-act-3" onclick="go('act-3')"><i class="ph ph-play-circle"></i> Values Clarification</button>
-            <button class="mod-btn" id="btn-act-4" onclick="go('act-4')"><i class="ph ph-play-circle"></i> Committed Action</button>
-            <button class="mod-btn" id="btn-act-5" onclick="go('act-5')"><i class="ph ph-trophy"></i> Final Certification</button>
-        </div>
-    </aside>
-
-    <main class="main">
-        <div class="badges">
-            <span class="badge"><i class="ph ph-graduation-cap"></i> Ø¨Ø§Ù‚Ø© Ø´Ø§Ù…Ù„Ø©</span>
-            <span class="badge"><i class="ph ph-certificate"></i> Ø´Ù‡Ø§Ø¯Ø© Ù…Ø¹ØªÙ…Ø¯Ø©</span>
-            <span class="badge"><i class="ph ph-translate"></i> Ø¨Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©</span>
-        </div>
-        <h1 id="mod-title" style="margin:0.4rem 0 1rem;font-size:1.55rem;">Introduction to Dialectical Behavior Therapy</h1>
-        <div class="meta">
-            <span class="chip"><i class="ph ph-clock"></i> <span id="mod-dur">45 min</span></span>
-            <span class="chip"><i class="ph ph-translate"></i> Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©</span>
-            <span class="chip"><i class="ph ph-certificate"></i> Ø´Ù‡Ø§Ø¯Ø©</span>
-        </div>
-        <div class="video-box" id="video-container">
-            <p style="color:var(--muted);font-size:0.85rem;z-index:1;">Ø¬Ø§Ø±ÙŠ ØªØ­Ù…ÙŠÙ„ Ø§Ù„ÙÙŠØ¯ÙŠÙˆ...</p>
-        </div>
-        <h2 class="sec-h"><i class="ph ph-book-open"></i> Ø¹Ù† Ù‡Ø°Ù‡ Ø§Ù„ÙˆØ­Ø¯Ø©</h2>
-        <p class="body-p" id="mod-body">Welcome to the first part of the Tri-Therapy Bundle. We begin with Dialectical Behavior Therapy â€” a comprehensive evidence-based approach that balances acceptance and change. You will master the core DBT philosophy and its clinical applications.</p>
-        <div class="mats">
-            <h3><i class="ph ph-folder-open"></i> Ø§Ù„Ù…ÙˆØ§Ø¯ Ø§Ù„Ù…Ù„Ø­Ù‚Ø©</h3>
-            <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> DBT Module 1 Workbook.pdf</a>
-            <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> CBT Cognitive Distortions Checklist.pdf</a>
-            <a href="#" class="mat-a"><i class="ph ph-file-text"></i> ACT Values Clarification Exercise.pdf</a>
-            <a href="#" class="mat-a"><i class="ph ph-file-pdf"></i> Bundle Full Study Guide.pdf</a>
-        </div>
-        <div class="nav-btns">
-            <button class="nav-btn" id="btn-prev" onclick="prev()"><i class="ph ph-arrow-right"></i> Ø§Ù„Ø³Ø§Ø¨Ù‚</button>
-            <button class="nav-btn primary" id="btn-next" onclick="next()">Ø§Ù„ØªØ§Ù„ÙŠ <i class="ph ph-arrow-left"></i></button>
-        </div>
-    </main>
+<div class="content-layout" id="page-content" style="display:none; align-items: center; justify-content: center; height: 75vh; width: 100%;">
+    <div style="text-align: center; color: var(--muted); margin: auto;">
+        <i class="ph ph-hourglass-high" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);"></i>
+        <h2>سيتم إضافة المحتوى قريباً</h2>
+        <p style="margin-top:0.5rem;font-size:0.95rem;">نعمل حالياً على تجهيز المحتوى العلمي الخاص بهذا الكورس.</p>
+    </div>
 </div>
-
-<!-- ALL scripts at the very bottom â€” all DOM elements exist here -->
 <script src="js/payment-service.js"></script>
-<script>
-const MODS = {
-    'dbt-1':{t:'Introduction to Dialectical Behavior Therapy',d:'45 min',b:'Welcome to the Tri-Therapy Bundle. We begin with DBT â€” a comprehensive approach balancing acceptance and change, originally developed for BPD and now widely used across clinical presentations.'},
-    'dbt-2':{t:'Core Mindfulness Skills in DBT',d:'38 min',b:'Mindfulness is the backbone of DBT. Master the "What" and "How" skills â€” Observe, Describe, Participate â€” and the non-judgmental stance essential for clinical practice.'},
-    'dbt-3':{t:'Distress Tolerance Techniques',d:'42 min',b:'Distress tolerance helps clients survive crisis without making things worse. We cover TIPP, ACCEPTS, IMPROVE and pros/cons analysis with real clinical scenarios.'},
-    'dbt-4':{t:'Emotion Regulation in DBT',d:'50 min',b:'Identify, label, and reduce vulnerability to intense emotions. This module covers the ABC PLEASE model, checking the facts, and opposite action in clinical practice.'},
-    'dbt-5':{t:'DBT Assessment & Certification',d:'20 min',b:'Complete the DBT section assessment. A score of 70%+ earns your DBT Certificate of Completion.'},
-    'cbt-1':{t:'Introduction to Cognitive Behavioral Therapy',d:'40 min',b:'CBT is one of the most evidence-based therapies available. This module covers the cognitive model, session structure, and the history of CBT from Beck to today.'},
-    'cbt-2':{t:'Identifying Cognitive Distortions',d:'45 min',b:'Learn the 15 most common cognitive distortions. Practice identifying them in client transcripts using Socratic questioning and thought records.'},
-    'cbt-3':{t:'Challenging Negative Thoughts',d:'48 min',b:'Cognitive restructuring is the heart of CBT. Walk through thought records, evidence examination, and generating balanced alternative thoughts step by step.'},
-    'cbt-4':{t:'Behavioral Activation Strategies',d:'38 min',b:'Break the depression-inactivity cycle. Learn activity scheduling, mastery and pleasure ratings, and graded task assignment with practical examples.'},
-    'cbt-5':{t:'CBT Assessment & Certification',d:'20 min',b:'Complete the CBT section assessment. Includes a comparative analysis between CBT, DBT, and ACT approaches.'},
-    'act-1':{t:'Introduction to Acceptance & Commitment Therapy',d:'42 min',b:'ACT is a third-wave behavioral therapy grounded in RFT. Explore the hexaflex model and its six core processes: acceptance, defusion, present moment, self-as-context, values, and committed action.'},
-    'act-2':{t:'Psychological Flexibility in ACT',d:'40 min',b:'Psychological flexibility is the core goal of ACT. Learn how to cultivate it in clients through acceptance and defusion exercises, creative hopelessness, and the control paradox.'},
-    'act-3':{t:'Values Clarification',d:'35 min',b:'Values are the direction, not the destination. Master the bulls-eye technique, the tombstone exercise, and how to differentiate genuine values from social rules.'},
-    'act-4':{t:'Committed Action & Behavior Change',d:'40 min',b:'Build SMART goals aligned to client values. Learn to identify obstacles, practice willingness, and develop larger patterns of effective behavior.'},
-    'act-5':{t:'Final Bundle Certification',d:'25 min',b:'Comprehensive final assessment covering DBT, CBT, and ACT. Pass with 70%+ to earn your Tri-Therapy Bundle Certificate from Dr. Marwa Badr platform.'},
-};
-const KEYS = Object.keys(MODS);
-let cur = 0;
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const ps = new PaymentService();
+        const hasAccess = await ps.checkAccess('tri-therapy-bundle');
+        
+        if (!hasAccess) {
+            window.location.href = 'my-courses.html';
+            return;
+        }
 
-function go(key) {
-    const idx = KEYS.indexOf(key);
-    if (idx < 0) return;
-    cur = idx;
-    const m = MODS[key];
-    document.getElementById('mod-title').textContent = m.t;
-    document.getElementById('mod-dur').textContent   = m.d;
-    document.getElementById('mod-body').textContent  = m.b;
-    KEYS.forEach(k => {
-        const btn = document.getElementById('btn-' + k);
-        if (btn) btn.classList.toggle('active', k === key);
+        const user = ps.getUser();
+        if (user && document.getElementById('user-name')) {
+            document.getElementById('user-name').textContent = user.name || user.email;
+        }
+
+        const loader = document.getElementById('access-loader') || document.getElementById('loader');
+        const page = document.getElementById('page-content') || document.getElementById('page');
+        
+        if(loader) loader.style.display = 'none';
+        if(page) page.style.display = 'flex';
     });
-    
-    const nextBtn = document.getElementById('btn-next');
-    if (idx === KEYS.length - 1) {
-        nextBtn.innerHTML = '<i class="ph ph-trophy"></i> Ø§ÙƒØªÙ…Ù„ Ø§Ù„ÙƒÙˆØ±Ø³!';
-        nextBtn.disabled = true;
-    } else {
-        nextBtn.innerHTML = 'Ø§Ù„ØªØ§Ù„ÙŠ <i class="ph ph-arrow-left"></i>';
-        nextBtn.disabled = false;
-    }
-    
-    const pct = Math.round(((idx + 1) / KEYS.length) * 100);
-    document.getElementById('prog').style.width = pct + '%';
-    document.getElementById('prog-text').textContent = (idx + 1) + ' Ù…Ù† ' + KEYS.length + ' Ù…ÙƒØªÙ…Ù„';
-    
-    document.getElementById('btn-prev').disabled = idx === 0;
-    window.scrollTo({top:0, behavior:'smooth'});
-}
-function next() { if (cur < KEYS.length-1) go(KEYS[cur+1]); }
-function prev() { if (cur > 0) go(KEYS[cur-1]); }
-
-// â”€â”€ Theme â”€â”€
-const theme = localStorage.getItem('theme') || 'dark';
-document.documentElement.setAttribute('data-theme', theme);
-document.getElementById('theme-toggle').addEventListener('click', () => {
-    const n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', n);
-    localStorage.setItem('theme', n);
-});
-
-// â”€â”€ Access check â”€â”€
-function showPage() {
-    document.getElementById('loader').style.display = 'none';
-    document.getElementById('page').style.display = 'flex';
-    const user = JSON.parse(localStorage.getItem('site_current_user') || 'null');
-    const name = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Ø·Ø§Ù„Ø¨';
-    document.getElementById('user-welcome').textContent = 'Ù…Ø±Ø­Ø¨Ø§Ù‹ØŒ ' + name;
-    go('dbt-1');
-}
-
-// Check preview param â€” runs after DOM is fully loaded
-const isPreview = new URLSearchParams(window.location.search).get('preview') === 'drmarwabadr1984';
-if (isPreview) {
-    showPage();
-    // Add badge
-    const badge = document.createElement('div');
-    badge.textContent = 'ðŸ‘ Admin Preview';
-    badge.style.cssText = 'position:fixed;bottom:1rem;right:1rem;background:rgba(249,115,22,0.2);border:1px solid rgba(249,115,22,0.5);color:#fb923c;padding:0.35rem 0.85rem;border-radius:20px;font-size:0.75rem;font-weight:600;z-index:9999;';
-    document.body.appendChild(badge);
-} else {
-    // Normal: verify purchase
-    window.PaymentService.guardCoursePage('tri-therapy-bundle').then(ok => {
-        if (ok) showPage();
-    });
-}
-</script>
+    </script>
 </body>
 </html>
 
