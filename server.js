@@ -526,7 +526,8 @@ app.get('/api/testimonials', async (req, res) => {
                 { id: 1, rating: 5, quote: "The CBT training provided me with invaluable clinical tools. Dr. Marwa's approach is both scientific and deeply practical.", author: "Sarah M., Clinical Psychologist" },
                 { id: 2, rating: 5, quote: "I took the Tri-Therapy Bundle — the best investment I've made for my career. The integration of CBT, DBT, and ACT has transformed how I work with clients.", author: "Ahmed K., Psychotherapist" },
                 { id: 3, rating: 5, quote: "Dr. Marwa has a remarkable ability to explain complex psychological concepts in an accessible, applicable way. The DBT course changed my practice.", author: "Laila T., Counseling Psychologist" },
-                { id: 4, rating: 5, quote: "The Personality Disorders course gave me the confidence to work with the most challenging clinical presentations. Highly recommend to any serious clinician.", author: "Omar R., Mental Health Counselor" }
+                { id: 4, rating: 5, quote: "The Personality Disorders course gave me the confidence to work with the most challenging clinical presentations. Highly recommend to any serious clinician.", author: "Omar R., Mental Health Counselor" },
+                { id: 5, rating: 5, quote: "سيتم إضافة المزيد من آراء وتقييمات المتدربين لبرامجنا التدريبية هنا قريبًا.", author: "متدرب - قريباً" }
             ]);
         }
         res.json(data);

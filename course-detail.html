@@ -378,14 +378,13 @@
                 img.style.display = 'block';
             }
 
-            // Curriculum
-            if (course.curriculum && course.curriculum.length > 0) {
+            // Curriculum (Placeholder as content is being finalized)
+            if (course.curriculum || true) { // Always show placeholder
                 const list = document.getElementById('cd-curriculum');
-                course.curriculum.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<i class="ph ph-check-circle"></i> ${item}`;
-                    list.appendChild(li);
-                });
+                list.innerHTML = '';
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="ph ph-info"></i> المحاور والتفاصيل الكاملة للكورس سيتم الإعلان عنها وإضافتها قريبًا.`;
+                list.appendChild(li);
                 document.getElementById('curriculum-section').style.display = 'block';
             }
 

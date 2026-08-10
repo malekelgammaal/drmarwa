@@ -15,43 +15,43 @@ class PaymentServiceInterface {
             'healing-journey-program': {
                 name_ar: 'رحلة تعافي',
                 name_en: 'Healing Journey Program',
-                sale_price: 5000,
-                full_price: 7500,
+                sale_price: 1000,
+                full_price: 1500,
                 currency: 'EGP'
             },
             'dbt-course': {
                 name_ar: 'العلاج الجدلي السلوكي',
                 name_en: 'Dialectical Behavior Therapy (DBT)',
-                sale_price: 8500,
-                full_price: 11500,
+                sale_price: 2000,
+                full_price: 3000,
                 currency: 'EGP'
             },
             'cbt-course': {
                 name_ar: 'العلاج المعرفي السلوكي',
                 name_en: 'Cognitive Behavioral Therapy (CBT)',
-                sale_price: 7500,
-                full_price: 10000,
+                sale_price: 1500,
+                full_price: 2000,
                 currency: 'EGP'
             },
             'act-course': {
                 name_ar: 'القبول والالتزام',
                 name_en: 'Acceptance & Commitment Therapy (ACT)',
-                sale_price: 7500,
-                full_price: 10000,
+                sale_price: 1500,
+                full_price: 2000,
                 currency: 'EGP'
             },
             'personality-disorders-course': {
                 name_ar: 'اضطرابات الشخصية',
                 name_en: 'Personality Disorders Course',
-                sale_price: 8500,
-                full_price: 11500,
+                sale_price: 1700,
+                full_price: 2500,
                 currency: 'EGP'
             },
             'tri-therapy-bundle': {
                 name_ar: 'باقة الثلاث علاجات (DBT + CBT + ACT)',
                 name_en: 'Tri-Therapy Bundle (DBT + CBT + ACT)',
-                sale_price: 17500,
-                full_price: 21500,
+                sale_price: 4000,
+                full_price: 7000,
                 currency: 'EGP'
             }
         };
