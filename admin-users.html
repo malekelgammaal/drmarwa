@@ -148,10 +148,17 @@
             const icon = btn.querySelector('i');
             icon.classList.add('ph-spin');
             
-            const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+            let session = null;
+            try {
+                session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+            } catch (e) {
+                console.error('Session parse error:', e);
+            }
+            
             if (!session?.access_token) {
                 document.getElementById('admin-content').style.display = 'none';
                 document.getElementById('unauthorized').style.display = 'block';
+                icon.classList.remove('ph-spin');
                 return;
             }
 

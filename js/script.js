@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href^="checkout.html"]');
         if (link) {
-            const currentUser = JSON.parse(localStorage.getItem('site_current_user') || 'null');
+            const currentUser = typeof getSessionUser === 'function' ? getSessionUser() : (function(){try{return JSON.parse(localStorage.getItem('site_current_user'))}catch{return null}})();
             if (!currentUser) {
                 e.preventDefault();
                 const urlObj = new URL(link.href, window.location.origin);
@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (authModal) authModal.classList.remove('active');
             document.body.style.overflow = 'auto';
             // Show My Courses in nav + mobile menu if user has purchases
-            const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+            const session = typeof getSession === 'function' ? getSession() : (function(){try{return JSON.parse(localStorage.getItem('site_current_session'))}catch{return null}})();
             if (session?.access_token) checkAndShowMyCourses(session.access_token);
             // Show/hide mobile menu items
             const mobileLogin = document.getElementById('mobile-login-btn');
@@ -593,6 +593,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function getSessionUser() {
         try {
             return JSON.parse(localStorage.getItem('site_current_user'));
+        } catch { return null; }
+    }
+
+    function getSession() {
+        try {
+            return JSON.parse(localStorage.getItem('site_current_session'));
         } catch { return null; }
     }
 
@@ -1134,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // My Courses Sticky Icon
     // ==========================================
-    const currentSession = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+    const currentSession = typeof getSession === 'function' ? getSession() : (function(){try{return JSON.parse(localStorage.getItem('site_current_session'))}catch{return null}})();
     if (currentSession?.access_token) {
         fetch(`${API_BASE_URL}/api/my-courses`, {
             headers: { 'Authorization': `Bearer ${currentSession.access_token}` }

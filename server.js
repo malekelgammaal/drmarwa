@@ -196,82 +196,97 @@ async function getUserFromRequest(req) {
 
 // 1. Signup Endpoint
 app.post('/api/auth/signup', async (req, res) => {
-    const { email, password, name } = req.body;
-    
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
-    }
-    
-    const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-            data: {
-                name: name || ''
-            }
+    try {
+        const { email, password, name } = req.body || {};
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
         }
-    });
-
-    if (error) return res.status(400).json({ error: error.message });
-
-    // Supabase returns an empty identities array if the user already exists.
-    if (data.user && data.user.identities && data.user.identities.length === 0) {
-        return res.status(400).json({ error: 'This account already exists. Please log in instead.' });
-    }
-
-    if (data.session && data.user) {
-        await supabase.from('active_sessions').upsert({
-            user_id: data.user.id,
-            email: data.user.email,
-            name: data.user.user_metadata?.name || '',
-            last_seen: new Date().toISOString()
+        
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    name: name || ''
+                }
+            }
         });
-    }
 
-    res.status(201).json({ message: 'Account created successfully!', user: data.user, session: data.session });
+        if (error) return res.status(400).json({ error: error.message });
+
+        // Supabase returns an empty identities array if the user already exists.
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+            return res.status(400).json({ error: 'This account already exists. Please log in instead.' });
+        }
+
+        if (data.session && data.user) {
+            await supabase.from('active_sessions').upsert({
+                user_id: data.user.id,
+                email: data.user.email,
+                name: data.user.user_metadata?.name || '',
+                last_seen: new Date().toISOString()
+            });
+        }
+
+        res.status(201).json({ message: 'Account created successfully!', user: data.user, session: data.session });
+    } catch (err) {
+        console.error('[API] signup error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // 2. Login Endpoint
 app.post('/api/auth/login', async (req, res) => {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body || {};
 
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
-    }
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-    });
-
-    if (error) return res.status(400).json({ error: error.message });
-
-    if (data.session && data.user) {
-        await supabase.from('active_sessions').upsert({
-            user_id: data.user.id,
-            email: data.user.email,
-            name: data.user.user_metadata?.name || data.user.user_metadata?.full_name || '',
-            last_seen: new Date().toISOString()
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
         });
-    }
 
-    res.status(200).json({ message: 'Login successful', session: data.session });
+        if (error) return res.status(400).json({ error: error.message });
+
+        if (data.session && data.user) {
+            await supabase.from('active_sessions').upsert({
+                user_id: data.user.id,
+                email: data.user.email,
+                name: data.user.user_metadata?.name || data.user.user_metadata?.full_name || '',
+                last_seen: new Date().toISOString()
+            });
+        }
+
+        res.status(200).json({ message: 'Login successful', session: data.session });
+    } catch (err) {
+        console.error('[API] login error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // 3. OAuth Endpoint (Google / Facebook)
 app.get('/api/auth/oauth', async (req, res) => {
-    const { provider, redirect_to } = req.query;
-    if (!provider) return res.status(400).json({ error: 'Provider is required' });
-    
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-            redirectTo: redirect_to || 'https://drmarwa.pages.dev/'
-        }
-    });
+    try {
+        const { provider, redirect_to } = req.query || {};
+        if (!provider) return res.status(400).json({ error: 'Provider is required' });
+        
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: provider,
+            options: {
+                redirectTo: redirect_to || 'https://drmarwa.pages.dev/'
+            }
+        });
 
-    if (error) return res.status(400).json({ error: error.message });
-    res.json({ url: data.url });
+        if (error) return res.status(400).json({ error: error.message });
+        res.json({ url: data.url });
+    } catch (err) {
+        console.error('[API] oauth error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // 3.5 Logout Endpoint
@@ -310,39 +325,47 @@ app.get('/api/admin/active-users', async (req, res) => {
 
 // 4. Forgot Password
 app.post('/api/auth/forgot-password', async (req, res) => {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: 'Email is required' });
+    try {
+        const { email } = req.body || {};
+        if (!email) return res.status(400).json({ error: 'Email is required' });
 
-    // Use the correct deployed URL for the reset page
-    const resetUrl = process.env.SITE_URL
-        ? `${process.env.SITE_URL}/reset-password.html`
-        : 'https://drmarwabadr.vercel.app/reset-password.html';
+        const resetUrl = process.env.SITE_URL
+            ? `${process.env.SITE_URL}/reset-password.html`
+            : 'https://drmarwabadr.vercel.app/reset-password.html';
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: resetUrl
-    });
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: resetUrl
+        });
 
-    // Anti-enumeration: always return success
-    if (error && !error.message.includes('not found')) {
-        return res.status(400).json({ error: error.message });
+        if (error && !error.message.includes('not found')) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        res.json({ message: 'If this email is registered, a password reset link has been sent.' });
+    } catch (err) {
+        console.error('[API] forgot-password error:', err);
+        res.status(500).json({ error: 'Internal server error' });
     }
-
-    res.json({ message: 'If this email is registered, a password reset link has been sent.' });
 });
 
 // 5. Verify OTP (email confirmation)
 app.post('/api/auth/verify-otp', async (req, res) => {
-    const { email, token } = req.body;
-    if (!email || !token) return res.status(400).json({ error: 'Email and code are required' });
+    try {
+        const { email, token } = req.body || {};
+        if (!email || !token) return res.status(400).json({ error: 'Email and code are required' });
 
-    const { data, error } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'signup'
-    });
+        const { data, error } = await supabase.auth.verifyOtp({
+            email,
+            token,
+            type: 'signup'
+        });
 
-    if (error) return res.status(400).json({ error: error.message });
-    res.json({ session: data.session, user: data.user || data.session?.user });
+        if (error) return res.status(400).json({ error: error.message });
+        res.json({ session: data.session, user: data.user || data.session?.user });
+    } catch (err) {
+        console.error('[API] verify-otp error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // 6. Update Password (authenticated users)
@@ -919,33 +942,7 @@ app.get('/api/my-courses', async (req, res) => {
     }
 });
 
-// GET /api/enrollment-status?course_id=cbt-course — check if user is enrolled
-app.get('/api/enrollment-status', async (req, res) => {
-    try {
-        const user = await getUserFromRequest(req);
-        if (!user) return res.status(200).json({ enrolled: false, pending: false, reason: 'not_logged_in' });
 
-        const { course_id } = req.query;
-        if (!course_id) return res.status(400).json({ error: 'Missing course_id' });
-
-        const { data, error } = await supabase
-            .from('purchases')
-            .select('id, is_active')
-            .eq('user_id', user.id)
-            .eq('course_id', course_id);
-
-        if (error || !data || data.length === 0) {
-            return res.status(200).json({ enrolled: false, pending: false });
-        }
-
-        const isActive = data.some(p => p.is_active === true);
-        const isPending = data.some(p => p.is_active === false);
-
-        res.status(200).json({ enrolled: isActive, pending: isPending });
-    } catch (err) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
 
 // Fallback route to serve index.html
 app.get('*', (req, res) => {
