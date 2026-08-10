@@ -485,7 +485,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userProfileDiv = document.getElementById('user-profile');
     const userNameDisplay = document.getElementById('user-name-display');
     const logoutBtn = document.getElementById('logout-btn');
-    const myCoursesBtn = document.getElementById('my-courses-nav-btn');
 
     // ==========================================
     // Toast Notification System
@@ -556,7 +555,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function revealMyCoursesButtons() {
         // Desktop navbar button
-        if (myCoursesBtn) myCoursesBtn.style.display = 'inline-flex';
         // Mobile menu link
         const mobileBtn = document.getElementById('mobile-my-courses');
         if (mobileBtn) mobileBtn.style.display = 'flex';
@@ -580,7 +578,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (authButtonsDiv) authButtonsDiv.style.display = 'block';
             if (userProfileDiv) userProfileDiv.style.display = 'none';
-            if (myCoursesBtn) myCoursesBtn.style.display = 'none';
             const mobileMyCourses = document.getElementById('mobile-my-courses');
             if (mobileMyCourses) mobileMyCourses.style.display = 'none';
             document.body.style.overflow = 'auto';
