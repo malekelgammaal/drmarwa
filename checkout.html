@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -173,6 +173,15 @@
         .btn-instapay:hover { background: #580c5d; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(108,30,112,0.35); }
         .btn-instapay:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-07XVN01PR3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-07XVN01PR3');
+    </script>
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -205,7 +214,7 @@
                 <div class="course-name" id="course-name-display">Loading...</div>
                 <div class="price-row">
                     <div>
-                        <span class="sale-price" id="sale-price-display">—</span>
+                        <span class="sale-price" id="sale-price-display">â€”</span>
                         <span class="original-price" id="original-price-display" style="margin-left: 0.5rem;"></span>
                     </div>
                     <span class="badge" id="discount-badge-display" style="display:none;"></span>
@@ -214,7 +223,7 @@
 
             <!-- What's included -->
             <div class="features-list">
-                <div class="feature"><i class="ph ph-infinity"></i> Lifetime access — always available on your account</div>
+                <div class="feature"><i class="ph ph-infinity"></i> Lifetime access â€” always available on your account</div>
                 <div class="feature"><i class="ph ph-video"></i> Video lectures + downloadable materials</div>
                 <div class="feature"><i class="ph ph-certificate"></i> Certificate of completion</div>
                 <div class="feature"><i class="ph ph-arrow-counter-clockwise"></i> 7-day money-back guarantee</div>
@@ -225,18 +234,18 @@
                 <!-- Kashier (Disabled temporarily) -->
                 <button class="btn-primary" id="kashier-btn" disabled style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; border-radius: 8px; border: none; cursor: not-allowed; font-family: inherit; font-size: 0.95rem; font-weight: 600; opacity: 0.5; background: var(--muted);">
                     <i class="ph ph-credit-card" style="font-size:1.2rem;"></i>
-                    الدفع بالبطاقة البنكية (قريبًا)
+                    Ø§Ù„Ø¯ÙØ¹ Ø¨Ø§Ù„Ø¨Ø·Ø§Ù‚Ø© Ø§Ù„Ø¨Ù†ÙƒÙŠØ© (Ù‚Ø±ÙŠØ¨Ù‹Ø§)
                 </button>
 
                 <!-- InstaPay -->
                 <button class="btn-instapay" id="instapay-btn" onclick="openInstapayModal()">
-                    <i class="ph ph-paper-plane-tilt"></i> الدفع السريع عبر InstaPay
+                    <i class="ph ph-paper-plane-tilt"></i> Ø§Ù„Ø¯ÙØ¹ Ø§Ù„Ø³Ø±ÙŠØ¹ Ø¹Ø¨Ø± InstaPay
                 </button>
             </div>
 
             <div class="secure-footer">
                 <i class="ph ph-shield-check"></i>
-                <span>256-bit SSL Encryption — Secure & Safe</span>
+                <span>256-bit SSL Encryption â€” Secure & Safe</span>
             </div>
         </div>
     </div>
@@ -245,24 +254,24 @@
     <div class="modal" id="instapay-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="margin: 0; direction: rtl;">الدفع عبر InstaPay</h3>
+                <h3 style="margin: 0; direction: rtl;">Ø§Ù„Ø¯ÙØ¹ Ø¹Ø¨Ø± InstaPay</h3>
                 <button class="close-modal" onclick="closeInstapayModal()"><i class="ph ph-x"></i></button>
             </div>
             <div style="direction: rtl; text-align: right;">
                 <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.25rem; line-height: 1.7;">
-                    يرجى تحويل قيمة الكورس إلى حساب إنستا باي التالي، ثم إرفاق صورة التحويل بالأسفل لتأكيد الدفع وفتح الكورس.
+                    ÙŠØ±Ø¬Ù‰ ØªØ­ÙˆÙŠÙ„ Ù‚ÙŠÙ…Ø© Ø§Ù„ÙƒÙˆØ±Ø³ Ø¥Ù„Ù‰ Ø­Ø³Ø§Ø¨ Ø¥Ù†Ø³ØªØ§ Ø¨Ø§ÙŠ Ø§Ù„ØªØ§Ù„ÙŠØŒ Ø«Ù… Ø¥Ø±ÙØ§Ù‚ ØµÙˆØ±Ø© Ø§Ù„ØªØ­ÙˆÙŠÙ„ Ø¨Ø§Ù„Ø£Ø³ÙÙ„ Ù„ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¯ÙØ¹ ÙˆÙØªØ­ Ø§Ù„ÙƒÙˆØ±Ø³.
                 </p>
 
                 <!-- Amount & Link Box -->
                 <div class="instapay-link-box">
-                    <span class="instapay-link-label">المبلغ المطلوب</span>
+                    <span class="instapay-link-label">Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø·Ù„ÙˆØ¨</span>
                     <div class="instapay-amount" id="instapay-amount-display">
-                        — <small>ج.م</small>
+                        â€” <small>Ø¬.Ù…</small>
                     </div>
                     <div style="margin-top: 0.85rem; padding-top: 0.85rem; border-top: 1px solid rgba(108,30,112,0.2);">
-                        <span style="display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem;">رقم التحويل (InstaPay)</span>
+                        <span style="display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.4rem;">Ø±Ù‚Ù… Ø§Ù„ØªØ­ÙˆÙŠÙ„ (InstaPay)</span>
                         <strong style="font-size: 1.1rem; color: #6C1E70; user-select: all;">01096311675</strong>
-                        <p style="font-size: 0.72rem; color: var(--muted); margin: 0.4rem 0 0;">اسم المستلم: <strong>مروة بدر</strong></p>
+                        <p style="font-size: 0.72rem; color: var(--muted); margin: 0.4rem 0 0;">Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªÙ„Ù…: <strong>Ù…Ø±ÙˆØ© Ø¨Ø¯Ø±</strong></p>
                     </div>
                 </div>
 
@@ -270,19 +279,19 @@
 
                 <form id="instapay-form" onsubmit="event.preventDefault(); submitInstapay();">
                     <div class="form-field">
-                        <label>اسم المستخدم الثلاثي</label>
-                        <input type="text" id="instapay-name" required placeholder="مثال: أحمد محمد محمود">
+                        <label>Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø§Ù„Ø«Ù„Ø§Ø«ÙŠ</label>
+                        <input type="text" id="instapay-name" required placeholder="Ù…Ø«Ø§Ù„: Ø£Ø­Ù…Ø¯ Ù…Ø­Ù…Ø¯ Ù…Ø­Ù…ÙˆØ¯">
                     </div>
                     <div class="form-field">
-                        <label>رقم الواتساب (للتواصل)</label>
-                        <input type="tel" id="instapay-whatsapp" required placeholder="مثال: +201000000000" dir="ltr">
+                        <label>Ø±Ù‚Ù… Ø§Ù„ÙˆØ§ØªØ³Ø§Ø¨ (Ù„Ù„ØªÙˆØ§ØµÙ„)</label>
+                        <input type="tel" id="instapay-whatsapp" required placeholder="Ù…Ø«Ø§Ù„: +201000000000" dir="ltr">
                     </div>
                     <div class="form-field">
-                        <label>صورة إيصال التحويل</label>
+                        <label>ØµÙˆØ±Ø© Ø¥ÙŠØµØ§Ù„ Ø§Ù„ØªØ­ÙˆÙŠÙ„</label>
                         <div class="upload-area" id="receipt-upload-area" role="button" tabindex="0" aria-label="Choose an InstaPay receipt image" onclick="document.getElementById('instapay-receipt').click()" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); document.getElementById('instapay-receipt').click(); }">
                             <div id="upload-placeholder">
                                 <i class="ph ph-upload-simple" style="font-size: 2.5rem; color: #6C1E70; margin-bottom: 0.5rem; opacity: 0.8; display: block;"></i>
-                                <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">اضغط هنا لاختيار الصورة</p>
+                                <p style="margin: 0; font-size: 0.9rem; color: var(--muted);">Ø§Ø¶ØºØ· Ù‡Ù†Ø§ Ù„Ø§Ø®ØªÙŠØ§Ø± Ø§Ù„ØµÙˆØ±Ø©</p>
                             </div>
                             <img id="receipt-preview" src="" alt="Receipt Preview">
                             <input type="file" id="instapay-receipt" accept="image/jpeg,image/png,image/webp" style="display: none;">
@@ -290,7 +299,7 @@
                     </div>
 
                     <button type="submit" class="btn-instapay" id="instapay-submit-btn" style="margin-top: 0.5rem;">
-                        تأكيد وإرسال الإيصال
+                        ØªØ£ÙƒÙŠØ¯ ÙˆØ¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¥ÙŠØµØ§Ù„
                     </button>
                 </form>
             </div>
@@ -303,13 +312,13 @@
             <div class="status-icon" style="background: rgba(20,184,166,0.12);">
                 <i class="ph ph-check-circle" style="color: var(--primary);"></i>
             </div>
-            <h3 style="margin: 0 0 0.75rem;">تم إرسال الإيصال بنجاح! 🎉</h3>
+            <h3 style="margin: 0 0 0.75rem;">ØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¥ÙŠØµØ§Ù„ Ø¨Ù†Ø¬Ø§Ø­! ðŸŽ‰</h3>
             <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.75rem;">
-                تم استلام إيصال التحويل الخاص بك. سيتم مراجعته وتفعيل الكورس لحسابك في أقرب وقت ممكن.
-                سيتم التواصل معك عبر الواتساب عند التفعيل.
+                ØªÙ… Ø§Ø³ØªÙ„Ø§Ù… Ø¥ÙŠØµØ§Ù„ Ø§Ù„ØªØ­ÙˆÙŠÙ„ Ø§Ù„Ø®Ø§Øµ Ø¨Ùƒ. Ø³ÙŠØªÙ… Ù…Ø±Ø§Ø¬Ø¹ØªÙ‡ ÙˆØªÙØ¹ÙŠÙ„ Ø§Ù„ÙƒÙˆØ±Ø³ Ù„Ø­Ø³Ø§Ø¨Ùƒ ÙÙŠ Ø£Ù‚Ø±Ø¨ ÙˆÙ‚Øª Ù…Ù…ÙƒÙ†.
+                Ø³ÙŠØªÙ… Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹Ùƒ Ø¹Ø¨Ø± Ø§Ù„ÙˆØ§ØªØ³Ø§Ø¨ Ø¹Ù†Ø¯ Ø§Ù„ØªÙØ¹ÙŠÙ„.
             </p>
             <a href="index.html" class="btn-primary" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
-                <i class="ph ph-house"></i> العودة للرئيسية
+                <i class="ph ph-house"></i> Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ù„Ø±Ø¦ÙŠØ³ÙŠØ©
             </a>
         </div>
     </div>
@@ -320,15 +329,15 @@
             <div class="status-icon" style="background: rgba(20,184,166,0.12);">
                 <i class="ph ph-check-circle" style="color: var(--primary);"></i>
             </div>
-            <h3 style="margin: 0 0 0.75rem;">أنت مسجل بالفعل في هذا الكورس!</h3>
+            <h3 style="margin: 0 0 0.75rem;">Ø£Ù†Øª Ù…Ø³Ø¬Ù„ Ø¨Ø§Ù„ÙØ¹Ù„ ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„ÙƒÙˆØ±Ø³!</h3>
             <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem;">
-                لديك وصول كامل لهذا الكورس من حسابك. يمكنك الوصول إليه من صفحة كورساتي.
+                Ù„Ø¯ÙŠÙƒ ÙˆØµÙˆÙ„ ÙƒØ§Ù…Ù„ Ù„Ù‡Ø°Ø§ Ø§Ù„ÙƒÙˆØ±Ø³ Ù…Ù† Ø­Ø³Ø§Ø¨Ùƒ. ÙŠÙ…ÙƒÙ†Ùƒ Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„ÙŠÙ‡ Ù…Ù† ØµÙØ­Ø© ÙƒÙˆØ±Ø³Ø§ØªÙŠ.
             </p>
             <a href="my-courses.html" class="btn-primary" style="width: 100%; display: block; text-align: center; box-sizing: border-box; margin-bottom: 0.75rem;">
-                <i class="ph ph-books"></i> كورساتي
+                <i class="ph ph-books"></i> ÙƒÙˆØ±Ø³Ø§ØªÙŠ
             </a>
             <a href="index.html" class="btn-outline" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
-                العودة للرئيسية
+                Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ù„Ø±Ø¦ÙŠØ³ÙŠØ©
             </a>
         </div>
     </div>
@@ -339,12 +348,12 @@
             <div class="status-icon" style="background: rgba(245,158,11,0.1);">
                 <i class="ph ph-clock" style="color: #f59e0b; font-size: 2rem;"></i>
             </div>
-            <h3 style="margin: 0 0 0.75rem;">طلبك قيد المراجعة</h3>
+            <h3 style="margin: 0 0 0.75rem;">Ø·Ù„Ø¨Ùƒ Ù‚ÙŠØ¯ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©</h3>
             <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.75rem;">
-                لديك طلب اشتراك قيد المراجعة لهذا الكورس. سيتم التواصل معك وتفعيل الكورس في أقرب وقت.
+                Ù„Ø¯ÙŠÙƒ Ø·Ù„Ø¨ Ø§Ø´ØªØ±Ø§Ùƒ Ù‚ÙŠØ¯ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ù„Ù‡Ø°Ø§ Ø§Ù„ÙƒÙˆØ±Ø³. Ø³ÙŠØªÙ… Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹Ùƒ ÙˆØªÙØ¹ÙŠÙ„ Ø§Ù„ÙƒÙˆØ±Ø³ ÙÙŠ Ø£Ù‚Ø±Ø¨ ÙˆÙ‚Øª.
             </p>
             <a href="index.html" class="btn-primary" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
-                <i class="ph ph-house"></i> العودة للرئيسية
+                <i class="ph ph-house"></i> Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ù„Ø±Ø¦ÙŠØ³ÙŠØ©
             </a>
         </div>
     </div>
@@ -355,12 +364,12 @@
             <div class="status-icon" style="background: rgba(20,184,166,0.1);">
                 <i class="ph ph-sign-in" style="color: var(--primary); font-size: 2rem;"></i>
             </div>
-            <h3 style="margin: 0 0 0.5rem;">يجب تسجيل الدخول أولاً</h3>
+            <h3 style="margin: 0 0 0.5rem;">ÙŠØ¬Ø¨ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ø£ÙˆÙ„Ø§Ù‹</h3>
             <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem;">
-                يجب تسجيل الدخول أو إنشاء حساب للمتابعة إلى صفحة الدفع.
+                ÙŠØ¬Ø¨ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ø£Ùˆ Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ù„Ù„Ù…ØªØ§Ø¨Ø¹Ø© Ø¥Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ø¯ÙØ¹.
             </p>
             <a href="index.html" class="btn-primary" id="auth-redirect-btn" style="width: 100%; display: block; text-align: center; box-sizing: border-box;">
-                <i class="ph ph-arrow-left"></i> تسجيل الدخول
+                <i class="ph ph-arrow-left"></i> ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„
             </a>
         </div>
     </div>
@@ -371,8 +380,8 @@
     <script src="js/payment-service.js"></script>
     <script>
     // ============================================================
-    //  Checkout Page — Dr. Marwa Badr Platform
-    //  Zero alert() calls — all feedback via modals & toasts
+    //  Checkout Page â€” Dr. Marwa Badr Platform
+    //  Zero alert() calls â€” all feedback via modals & toasts
     // ============================================================
 
     const API_BASE = 'https://drmarwa.onrender.com';
@@ -417,19 +426,19 @@
             document.getElementById('course-name-display').textContent = 'Unknown Course';
             return;
         }
-        document.getElementById('course-name-display').textContent = course.name_en + ' — ' + course.name_ar;
-        document.getElementById('sale-price-display').textContent = `${course.sale_price.toLocaleString()} ج.م`;
+        document.getElementById('course-name-display').textContent = course.name_en + ' â€” ' + course.name_ar;
+        document.getElementById('sale-price-display').textContent = `${course.sale_price.toLocaleString()} Ø¬.Ù…`;
 
         if (course.full_price && course.full_price > course.sale_price) {
-            document.getElementById('original-price-display').textContent = `${course.full_price.toLocaleString()} ج.م`;
+            document.getElementById('original-price-display').textContent = `${course.full_price.toLocaleString()} Ø¬.Ù…`;
             const savings = Math.round((1 - (course.sale_price / course.full_price)) * 100);
             const badge = document.getElementById('discount-badge-display');
             badge.style.display = 'inline-block';
-            badge.textContent = `وفر ${savings}%`;
+            badge.textContent = `ÙˆÙØ± ${savings}%`;
         }
 
         // Update instapay amount display
-        document.getElementById('instapay-amount-display').innerHTML = `${course.sale_price.toLocaleString()} <small>ج.م</small>`;
+        document.getElementById('instapay-amount-display').innerHTML = `${course.sale_price.toLocaleString()} <small>Ø¬.Ù…</small>`;
     }
 
     // Modal controls
@@ -440,12 +449,12 @@
     async function openKashier() {
         const btn = document.getElementById('kashier-btn');
         const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> جاري التحميل...';
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Ø¬Ø§Ø±ÙŠ Ø§Ù„ØªØ­Ù…ÙŠÙ„...';
         btn.disabled = true;
 
         try {
             const session = getSession();
-            if (!session?.access_token) throw new Error("يرجى تسجيل الدخول أولاً");
+            if (!session?.access_token) throw new Error("ÙŠØ±Ø¬Ù‰ ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ø£ÙˆÙ„Ø§Ù‹");
 
             // 1. Fetch Kashier Hash from backend
             const res = await fetch(`${API_BASE}/api/kashier-hash`, {
@@ -456,7 +465,7 @@
                 },
                 body: JSON.stringify({ course_id: courseId })
             });
-            if (!res.ok) throw new Error("فشل في تهيئة الدفع، يرجى المحاولة لاحقاً");
+            if (!res.ok) throw new Error("ÙØ´Ù„ ÙÙŠ ØªÙ‡ÙŠØ¦Ø© Ø§Ù„Ø¯ÙØ¹ØŒ ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù„Ø§Ø­Ù‚Ø§Ù‹");
             const data = await res.json();
 
             // 2. Load Kashier SDK dynamically if not loaded
@@ -513,7 +522,7 @@
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            showToast('الصورة كبيرة جداً. الحد الأقصى 10MB', 'error');
+            showToast('Ø§Ù„ØµÙˆØ±Ø© ÙƒØ¨ÙŠØ±Ø© Ø¬Ø¯Ø§Ù‹. Ø§Ù„Ø­Ø¯ Ø§Ù„Ø£Ù‚ØµÙ‰ 10MB', 'error');
             this.value = '';
             return;
         }
@@ -543,16 +552,16 @@
         const fileInput = document.getElementById('instapay-receipt');
 
         if (!name || !whatsapp) {
-            showFormMsg('يرجى ملء جميع الحقول المطلوبة.');
+            showFormMsg('ÙŠØ±Ø¬Ù‰ Ù…Ù„Ø¡ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø©.');
             return;
         }
         if (!fileInput.files || fileInput.files.length === 0) {
-            showFormMsg('يرجى إرفاق صورة إيصال التحويل.');
+            showFormMsg('ÙŠØ±Ø¬Ù‰ Ø¥Ø±ÙØ§Ù‚ ØµÙˆØ±Ø© Ø¥ÙŠØµØ§Ù„ Ø§Ù„ØªØ­ÙˆÙŠÙ„.');
             return;
         }
 
         const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> جاري الإرسال...';
+        btn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø¥Ø±Ø³Ø§Ù„...';
         btn.disabled = true;
         document.getElementById('instapay-form-msg').innerHTML = '';
 
@@ -562,7 +571,7 @@
             closeInstapayModal();
             showModal('success-modal');
         } catch (err) {
-            const errMsg = err.message || 'حدث خطأ أثناء إرسال الإيصال. يرجى المحاولة مجدداً.';
+            const errMsg = err.message || 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø¥ÙŠØµØ§Ù„. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù…Ø¬Ø¯Ø¯Ø§Ù‹.';
             showFormMsg(errMsg, 'error');
             showToast(errMsg, 'error');
             btn.innerHTML = originalHTML;
@@ -570,14 +579,14 @@
         }
     }
 
-    // ── Auth Guard & Enrollment Check ──
+    // â”€â”€ Auth Guard & Enrollment Check â”€â”€
     window.addEventListener('DOMContentLoaded', async () => {
         const session = getSession();
 
         // Guard: not logged in
         if (!session?.access_token) {
             sessionStorage.setItem('intended_course', courseId);
-            // Show auth required modal — then redirect
+            // Show auth required modal â€” then redirect
             showModal('auth-required-modal');
             document.getElementById('auth-redirect-btn').href = 'index.html?open_auth=1';
             // Hide payment methods
@@ -591,7 +600,7 @@
             document.getElementById('status-banner').innerHTML = `
                 <div class="info-banner error">
                     <i class="ph ph-warning-circle"></i>
-                    <span>الكورس المطلوب غير موجود. يرجى العودة لاختيار كورس صحيح.</span>
+                    <span>Ø§Ù„ÙƒÙˆØ±Ø³ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯. ÙŠØ±Ø¬Ù‰ Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ø§Ø®ØªÙŠØ§Ø± ÙƒÙˆØ±Ø³ ØµØ­ÙŠØ­.</span>
                 </div>`;
             document.getElementById('payment-methods').style.display = 'none';
             return;
@@ -618,10 +627,11 @@
             }
             // else: allow normal checkout
         } catch (err) {
-            // Silent fail — let the user proceed to payment
+            // Silent fail â€” let the user proceed to payment
             console.warn('[Checkout] Enrollment check failed (possibly server sleeping):', err.message);
         }
     });
     </script>
 </body>
 </html>
+

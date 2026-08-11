@@ -913,6 +913,37 @@ app.get('/api/my-courses', async (req, res) => {
 
 
 
+// POST /api/feedbacks
+app.post('/api/feedbacks', async (req, res) => {
+    try {
+        const { name, email, feedback, rating } = req.body || {};
+
+        if (!name || !email || !feedback || !rating) {
+            return res.status(400).json({ error: 'All fields are required.' });
+        }
+
+        const { data, error } = await supabase
+            .from('feedbacks')
+            .insert([{
+                name: name.trim().slice(0, 100),
+                email: email.trim().slice(0, 150),
+                feedback: feedback.trim().slice(0, 2000),
+                rating: parseInt(rating, 10) || 5,
+                created_at: new Date().toISOString()
+            }]);
+
+        if (error) {
+            console.error('[API] feedbacks DB error:', error);
+            return res.status(500).json({ error: 'Failed to save feedback.' });
+        }
+
+        res.status(201).json({ message: 'Feedback saved successfully.' });
+    } catch (err) {
+        console.error('[API] feedbacks exception:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Fallback route to serve index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

@@ -1269,5 +1269,88 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(console.error);
     }
+    // ==========================================
+    // Feedback Form Logic
+    // ==========================================
+    const starContainer = document.getElementById('star-rating');
+    const ratingInput = document.getElementById('feedback-rating');
+    if (starContainer && ratingInput) {
+        const stars = starContainer.querySelectorAll('i');
+        
+        function updateStars(val) {
+            stars.forEach(s => {
+                if (parseInt(s.dataset.value) <= val) {
+                    s.style.color = '#fbbf24'; // Yellow
+                } else {
+                    s.style.color = 'var(--muted)';
+                }
+            });
+        }
+        updateStars(5);
+
+        stars.forEach(star => {
+            star.addEventListener('click', (e) => {
+                const val = parseInt(e.target.dataset.value);
+                ratingInput.value = val;
+                updateStars(val);
+            });
+        });
+    }
+
+    const feedbackForm = document.getElementById('feedback-form');
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('feedback-submit-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Submitting...';
+            btn.disabled = true;
+
+            const name = document.getElementById('feedback-name').value;
+            const email = document.getElementById('feedback-email').value;
+            const feedbackText = document.getElementById('feedback-msg').value;
+            const rating = document.getElementById('feedback-rating').value;
+
+            try {
+                // 1. Submit to Web3Forms
+                await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        access_key: '787d4bce-9428-497a-93bd-5689e1b3a8ec',
+                        subject: `New Feedback from ${name} (${rating} Stars)`,
+                        name: name,
+                        email: email,
+                        message: feedbackText,
+                        rating: `${rating} Stars`
+                    })
+                });
+
+                // 2. Submit to Backend (Supabase)
+                await fetch(`${API_BASE_URL}/api/feedbacks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, feedback: feedbackText, rating })
+                });
+
+                if (typeof window.showModalMsg === 'function') {
+                    // Just show an alert if toast isn't exposed globally here easily
+                    alert('Thank you for your feedback! / شكراً على رأيك!');
+                } else {
+                    alert('Thank you for your feedback! / شكراً على رأيك!');
+                }
+                
+                feedbackForm.reset();
+                if (typeof updateStars === 'function') updateStars(5);
+                if (ratingInput) ratingInput.value = 5;
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred. Please try again.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    }
 
 });
