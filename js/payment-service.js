@@ -8,6 +8,15 @@ const PAYMENT_API_BASE = 'https://drmarwa.onrender.com';
 class PaymentServiceInterface {
 
     constructor() {
+    constructor() {
+        this.getSafeSession = () => {
+            try { return JSON.parse(localStorage.getItem('site_current_session')); } 
+            catch { return null; }
+        };
+        this.getSafeUser = () => {
+            try { return JSON.parse(localStorage.getItem('site_current_user')); } 
+            catch { return {}; }
+        };
         // -------------------------------------------------------
         //  Course Catalog — Prices in EGP
         // -------------------------------------------------------
@@ -71,7 +80,7 @@ class PaymentServiceInterface {
     async recordPurchase(courseId, transactionId, amountPaid, currency) {
         try {
             // Get JWT token from session stored by login flow
-            const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+            const session = this.getSafeSession();
             const token = session?.access_token;
 
             if (!token) throw new Error('User session expired — please log in again');
@@ -109,7 +118,7 @@ class PaymentServiceInterface {
     // -------------------------------------------------------
     async checkAccess(courseId) {
         try {
-            const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+            const session = this.getSafeSession();
             const token = session?.access_token;
             if (!token) return false;
 
@@ -177,7 +186,7 @@ class PaymentServiceInterface {
         const courseInfo = this.getCourse(courseId);
         if (!courseInfo) throw new Error("الكورس غير موجود");
 
-        const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+        const session = this.getSafeSession();
         const token = session?.access_token;
         if (!token) throw new Error("انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً");
 
@@ -220,7 +229,7 @@ class PaymentServiceInterface {
         const receiptUrl = dbResult.receipt_url || 'تعذر رفع الصورة، الرجاء مراجعة قاعدة البيانات.';
 
         // 2. Send Email via Web3Forms with the Receipt URL
-        const currentUser = JSON.parse(localStorage.getItem('site_current_user') || '{}');
+        const currentUser = this.getSafeUser();
         const userEmail = currentUser.email || 'no-reply@drmarwa.com';
 
         const formData = new FormData();
