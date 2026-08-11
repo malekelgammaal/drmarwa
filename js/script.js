@@ -1333,9 +1333,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ name, email, feedback: feedbackText, rating })
                 });
 
-                if (typeof window.showModalMsg === 'function') {
-                    // Just show an alert if toast isn't exposed globally here easily
-                    alert('Thank you for your feedback! / شكراً على رأيك!');
+                if (typeof showToast === 'function') {
+                    showToast('Thank you for your feedback! / شكراً على رأيك!', 'success');
                 } else {
                     alert('Thank you for your feedback! / شكراً على رأيك!');
                 }
@@ -1345,12 +1344,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (ratingInput) ratingInput.value = 5;
             } catch (err) {
                 console.error(err);
-                alert('An error occurred. Please try again.');
+                if (typeof showToast === 'function') {
+                    showToast('An error occurred. Please try again.', 'error');
+                } else {
+                    alert('An error occurred. Please try again.');
+                }
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         });
     }
+
+    // ==========================================
+    // Contact Form (Web3Forms) AJAX Handler
+    // ==========================================
+    const contactForms = document.querySelectorAll('.contact-form');
+    contactForms.forEach(form => {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Sending...';
+            btn.disabled = true;
+
+            const formData = new FormData(form);
+            const object = Object.fromEntries(formData);
+            const json = JSON.stringify(object);
+
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                });
+                const result = await response.json();
+                if (response.status == 200) {
+                    if (typeof showToast === 'function') {
+                        showToast('Message sent successfully! We will get back to you soon. 🎉', 'success');
+                    }
+                    form.reset();
+                } else {
+                    console.log(response);
+                    if (typeof showToast === 'function') {
+                        showToast(result.message || 'Something went wrong. Please try again.', 'error');
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+                if (typeof showToast === 'function') {
+                    showToast('An error occurred. Please try again.', 'error');
+                }
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+    });
 
 });
