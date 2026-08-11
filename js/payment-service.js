@@ -8,7 +8,6 @@ const PAYMENT_API_BASE = 'https://drmarwa.onrender.com';
 class PaymentServiceInterface {
 
     constructor() {
-    constructor() {
         this.getSafeSession = () => {
             try { return JSON.parse(localStorage.getItem('site_current_session')); } 
             catch { return null; }

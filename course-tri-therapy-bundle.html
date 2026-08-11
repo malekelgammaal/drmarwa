@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -119,6 +119,12 @@
     <script>
     document.addEventListener('DOMContentLoaded', async () => {
         const ps = window.PaymentService;
+        if (!ps) {
+            console.error('[CourseGuard] PaymentService not loaded - redirecting to home.');
+            window.location.href = 'index.html';
+            return;
+        }
+
         const hasAccess = await ps.checkAccess('tri-therapy-bundle');
         
         if (!hasAccess) {
@@ -128,14 +134,14 @@
 
         const user = ps.getUser();
         if (user && document.getElementById('user-name')) {
-            document.getElementById('user-name').textContent = user.name || user.email;
+            document.getElementById('user-name').textContent = user.user_metadata?.name || user.email || '';
         }
 
         const loader = document.getElementById('access-loader') || document.getElementById('loader');
         const page = document.getElementById('page-content') || document.getElementById('page');
         
-        if(loader) loader.style.display = 'none';
-        if(page) page.style.display = 'flex';
+        if (loader) loader.style.display = 'none';
+        if (page) page.style.display = 'flex';
     });
     </script>
 </body>
