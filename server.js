@@ -12,7 +12,13 @@ if (!supabaseUrl || !supabaseKey) {
     process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+    }
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -305,6 +311,32 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
+// 2.2 Passwordless Login Endpoint (OTP)
+app.post('/api/auth/login-otp', async (req, res) => {
+    try {
+        const { email } = req.body || {};
+        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+
+        if (!normalizedEmail) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const { error } = await supabase.auth.signInWithOtp({
+            email: normalizedEmail,
+            options: {
+                shouldCreateUser: false // Ensure we only send OTP to existing users
+            }
+        });
+
+        if (error) return res.status(400).json({ error: error.message });
+
+        res.status(200).json({ message: 'If this email is registered, a 6-digit code has been sent.' });
+    } catch (err) {
+        console.error('[API] login-otp error:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // 2.5 Record Login Endpoint (Internal)
 app.post('/api/auth/record-login', async (req, res) => {
     try {
@@ -422,16 +454,16 @@ app.post('/api/auth/resend-verification', async (req, res) => {
     }
 });
 
-// 5. Verify OTP (email confirmation)
+// 5. Verify OTP (email confirmation & passwordless login)
 app.post('/api/auth/verify-otp', async (req, res) => {
     try {
-        const { email, token } = req.body || {};
+        const { email, token, type } = req.body || {};
         if (!email || !token) return res.status(400).json({ error: 'Email and code are required' });
 
         const { data, error } = await supabase.auth.verifyOtp({
             email,
             token,
-            type: 'signup'
+            type: type || 'signup'
         });
 
         if (error) return res.status(400).json({ error: error.message });

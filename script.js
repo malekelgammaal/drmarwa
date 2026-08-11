@@ -1,5 +1,108 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
+    // Supabase Email Verification Hash Handling
+    // ==========================================
+    if (window.location.hash && window.location.hash.includes('access_token')) {
+        try {
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = hashParams.get('access_token');
+            const refreshToken = hashParams.get('refresh_token');
+            const type = hashParams.get('type');
+            
+            if (accessToken) {
+                // Remove hash from URL
+                window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+                
+                // Decode JWT to get user info
+                const payload = JSON.parse(atob(accessToken.split('.')[1]));
+                const user = { 
+                    id: payload.sub, 
+                    email: payload.email, 
+                    user_metadata: payload.user_metadata || {} 
+                };
+                
+                // Save session permanently and trigger login record
+                const session = { access_token: accessToken, refresh_token: refreshToken };
+                setSession(session, user);
+                
+                // Notify Admin if new user
+                if (window.notifyAdminNewUser) window.notifyAdminNewUser(user);
+                
+                // Check if came from checkout
+                const intendedCourse = sessionStorage.getItem('intended_course');
+                if (intendedCourse) {
+                    sessionStorage.removeItem('intended_course');
+                    window.location.href = `checkout.html?course=${intendedCourse}`;
+                    return;
+                }
+                
+                // Remove any active verification overlay
+                const verifyOverlay = document.getElementById('check-email-modal');
+                if (verifyOverlay) verifyOverlay.style.display = 'none';
+                
+                // Show the premium success modal
+                const successModal = document.getElementById('account-success-modal');
+                if (successModal) {
+                    successModal.classList.add('active');
+                    const displayName = user.user_metadata?.name || user.email?.split('@')[0] || 'there';
+                    const nameEl = document.getElementById('account-success-name');
+                    if (nameEl) nameEl.textContent = `Welcome, ${displayName}! Your account has been verified and you're now logged in.`;
+                }
+            }
+        } catch (e) {
+            console.error("Error parsing auth hash:", e);
+        }
+    }
+
+    // ==========================================
+    // Checkout Guard & Admin Notification
+    // ==========================================
+    
+    // 1. Guard Checkout Links
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href^="checkout.html"]');
+        if (link) {
+            const currentUser = typeof getSessionUser === 'function' ? getSessionUser() : (function(){try{return JSON.parse(localStorage.getItem('site_current_user'))}catch{return null}})();
+            if (!currentUser) {
+                e.preventDefault();
+                const urlObj = new URL(link.href, window.location.origin);
+                const courseId = urlObj.searchParams.get('course') || '';
+                sessionStorage.setItem('intended_course', courseId);
+                const authModalObj = document.getElementById('auth-modal');
+                if (authModalObj) authModalObj.classList.add('active');
+                switchAuthTab('signup');
+                showToast('Please create an account or log in to continue.', 'info');
+            }
+        }
+    });
+
+    // 2. Centralized Admin Notification (Web3Forms)
+    window.notifyAdminNewUser = function(user) {
+        if (!user || !user.email) return;
+        const flagKey = 'has_notified_signup_' + user.email;
+        if (localStorage.getItem(flagKey)) return; // Already notified
+
+        try {
+            const now = new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kuwait' });
+            const name = user.user_metadata?.name || user.email.split('@')[0];
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    access_key: '9d8affa7-79dd-41e4-a9d6-0587948e964f',
+                    subject: '🆕 New User Registered — Dr. Marwa Platform',
+                    from_name: 'Platform Notifications',
+                    to: 'marwabadr638@gmail.com', // Optional: Web3Forms relies on the access_key to route to the correct email
+                    message: `New user registered on the platform:\n\nName: ${name}\nEmail: ${user.email}\nTime: ${now} (Kuwait)`
+                })
+            });
+            localStorage.setItem(flagKey, 'true');
+        } catch (e) {
+            console.warn('Notification failed', e);
+        }
+    };
+
+    // ==========================================
     // Navbar Scroll Shadow
     // ==========================================
     const navbar = document.querySelector('.navbar');
@@ -229,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const price = courseCard.getAttribute('data-price') || '49';
             proceedCheckoutBtn.href = `checkout.html?course=${courseId}&price=${price}`;
-            proceedCheckoutBtn.textContent = `Proceed to Checkout — $${price}`;
+            proceedCheckoutBtn.textContent = `Proceed to Checkout — ${price} ج.م`;
             
             if (window.AnalyticsSystem) {
                 window.AnalyticsSystem.trackEvent(courseId === 'tri-therapy-bundle' ? 'bundle_view' : 'course_view', {
@@ -257,6 +360,106 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // ── Premium Tab Switcher (new auth modal) ──
+    window.switchAuthTab = function(tab) {
+        const loginTab = document.getElementById('tab-login');
+        const signupTab = document.getElementById('tab-signup');
+        const loginPanel = document.getElementById('login-panel');
+        const signupPanel = document.getElementById('signup-panel');
+        const title = document.getElementById('auth-modal-title');
+        const subtitle = document.getElementById('auth-modal-subtitle');
+
+        if (tab === 'login') {
+            loginTab?.classList.add('active');
+            signupTab?.classList.remove('active');
+            if (loginPanel) loginPanel.style.display = 'block';
+            if (signupPanel) signupPanel.style.display = 'none';
+            if (title) title.textContent = 'Welcome Back';
+            if (subtitle) subtitle.textContent = 'Sign in to access your courses and profile';
+        } else {
+            signupTab?.classList.add('active');
+            loginTab?.classList.remove('active');
+            if (signupPanel) signupPanel.style.display = 'block';
+            if (loginPanel) loginPanel.style.display = 'none';
+            if (title) title.textContent = 'Create Account';
+            if (subtitle) subtitle.textContent = 'Join thousands of mental health professionals';
+        }
+    };
+
+    // ── Premium Verification Countdown Timer ──
+    let _countdownInterval = null;
+
+    function startVerificationCountdown(seconds = 3600) {
+        if (_countdownInterval) clearInterval(_countdownInterval);
+        let remaining = seconds;
+
+        const update = () => {
+            const el = document.getElementById('verify-countdown');
+            if (!el) { clearInterval(_countdownInterval); return; }
+            const m = Math.floor(remaining / 60).toString().padStart(2, '0');
+            const s = (remaining % 60).toString().padStart(2, '0');
+            el.textContent = `${m}:${s}`;
+            if (remaining <= 0) {
+                clearInterval(_countdownInterval);
+                el.textContent = 'Expired';
+                el.style.color = '#ef4444';
+                const resendBtn = document.getElementById('verify-resend-btn');
+                if (resendBtn) { resendBtn.disabled = false; resendBtn.textContent = 'Resend (link expired)'; }
+            }
+            remaining--;
+        };
+        update();
+        _countdownInterval = setInterval(update, 1000);
+    }
+
+    window.startVerificationCountdown = startVerificationCountdown;
+
+    // ── Resend Verification Email ──
+    window.resendVerification = async function() {
+        const email = window._pendingVerifyEmail;
+        const btn = document.getElementById('verify-resend-btn');
+        if (!email || !btn) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            if (res.ok) {
+                startVerificationCountdown(3600);
+                btn.textContent = 'Email sent! Check your inbox.';
+                setTimeout(() => { btn.disabled = false; btn.textContent = 'Resend verification email'; }, 30000);
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'Failed. Try again.';
+            }
+        } catch {
+            btn.disabled = false;
+            btn.textContent = 'Failed. Try again.';
+        }
+    };
+
+    // ── Show verification overlay with countdown ──
+    function showVerificationOverlay(email) {
+        window._pendingVerifyEmail = email;
+        const overlay = document.getElementById('check-email-modal');
+        const emailText = document.getElementById('verify-email-text');
+        if (overlay) overlay.style.display = 'flex';
+        if (emailText) emailText.textContent = email;
+        // Close auth modal
+        const authModal = document.getElementById('auth-modal');
+        if (authModal) authModal.classList.remove('active');
+        // Prevent scrolling
+        document.body.style.overflow = 'hidden';
+        startVerificationCountdown(3600);
+    }
+
+    window.showVerificationOverlay = showVerificationOverlay;
+
     window.toggleModalPw = function(inputId, btn) {
         const input = document.getElementById(inputId);
         const icon = btn.querySelector('i');
@@ -282,7 +485,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const userProfileDiv = document.getElementById('user-profile');
     const userNameDisplay = document.getElementById('user-name-display');
     const logoutBtn = document.getElementById('logout-btn');
-    const myCoursesBtn = document.getElementById('my-courses-nav-btn');
 
     // ==========================================
     // Toast Notification System
@@ -321,7 +523,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // Backend API & Auth State Management
     // ==========================================
-    const API_BASE_URL = 'https://marwabackend.onrender.com';
+    const API_BASE_URL = 'https://drmarwa.onrender.com';
+
+    // API content is rendered into templates below. Escape plain fields and keep
+    // the small rich-text surface used by the CMS deliberately constrained.
+    const escapeHtml = (value = '') => String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    function sanitizeRichText(value = '') {
+        const template = document.createElement('template');
+        template.innerHTML = String(value);
+        const allowedTags = new Set(['P', 'BR', 'STRONG', 'EM', 'B', 'I', 'UL', 'OL', 'LI', 'H2', 'H3', 'H4', 'BLOCKQUOTE', 'A']);
+
+        Array.from(template.content.querySelectorAll('*')).forEach(node => {
+            if (!allowedTags.has(node.tagName)) {
+                node.replaceWith(document.createTextNode(node.textContent || ''));
+                return;
+            }
+
+            const href = node.tagName === 'A' ? node.getAttribute('href') : null;
+            Array.from(node.attributes).forEach(attribute => node.removeAttribute(attribute.name));
+            if (href) {
+                try {
+                    const url = new URL(href, window.location.origin);
+                    if (['http:', 'https:'].includes(url.protocol)) {
+                        node.setAttribute('href', url.href);
+                        node.setAttribute('rel', 'noopener noreferrer');
+                    }
+                } catch { /* Invalid links remain plain anchors. */ }
+            }
+        });
+        return template.innerHTML;
+    }
+
+    function safeImageUrl(value, fallback = 'images/placeholder.jpg') {
+        try {
+            const url = new URL(String(value || fallback), window.location.origin);
+            return ['http:', 'https:'].includes(url.protocol) ? url.href : fallback;
+        } catch {
+            return fallback;
+        }
+    }
     
     // ── Check if user has any purchases → show My Courses btn everywhere ──
     async function checkAndShowMyCourses(token) {
@@ -352,11 +598,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function revealMyCoursesButtons() {
-        // Desktop navbar button
-        if (myCoursesBtn) myCoursesBtn.style.display = 'inline-flex';
-        // Mobile menu link
+        // Mobile menu links
         const mobileBtn = document.getElementById('mobile-my-courses');
         if (mobileBtn) mobileBtn.style.display = 'flex';
+        const mobileProfile = document.getElementById('mobile-profile-link');
+        if (mobileProfile) mobileProfile.style.display = 'flex';
     }
 
     
@@ -369,17 +615,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if (authModal) authModal.classList.remove('active');
             document.body.style.overflow = 'auto';
             // Show My Courses in nav + mobile menu if user has purchases
-            const session = JSON.parse(localStorage.getItem('site_current_session') || 'null');
+            const session = typeof getSession === 'function' ? getSession() : (function(){try{return JSON.parse(localStorage.getItem('site_current_session'))}catch{return null}})();
             if (session?.access_token) checkAndShowMyCourses(session.access_token);
             // Show/hide mobile menu items
             const mobileLogin = document.getElementById('mobile-login-btn');
             if (mobileLogin) mobileLogin.style.display = 'none';
+            // Always show profile link to logged-in users
+            const mobileProfile = document.getElementById('mobile-profile-link');
+            if (mobileProfile) mobileProfile.style.display = 'flex';
         } else {
             if (authButtonsDiv) authButtonsDiv.style.display = 'block';
             if (userProfileDiv) userProfileDiv.style.display = 'none';
-            if (myCoursesBtn) myCoursesBtn.style.display = 'none';
             const mobileMyCourses = document.getElementById('mobile-my-courses');
             if (mobileMyCourses) mobileMyCourses.style.display = 'none';
+            const mobileProfile = document.getElementById('mobile-profile-link');
+            if (mobileProfile) mobileProfile.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     }
@@ -390,10 +640,38 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch { return null; }
     }
 
+    function getSession() {
+        try {
+            return JSON.parse(localStorage.getItem('site_current_session'));
+        } catch { return null; }
+    }
+
     function setSession(session, user) {
         if (user) {
+            // Check if this is a new session token (indicating a new login event)
+            let isNewSession = false;
+            if (session && session.access_token) {
+                try {
+                    const oldSessionStr = localStorage.getItem('site_current_session');
+                    const oldSession = oldSessionStr ? JSON.parse(oldSessionStr) : null;
+                    if (!oldSession || oldSession.access_token !== session.access_token) {
+                        isNewSession = true;
+                    }
+                } catch {
+                    isNewSession = true;
+                }
+            }
+
             if (session) localStorage.setItem('site_current_session', JSON.stringify(session));
             localStorage.setItem('site_current_user', JSON.stringify(user));
+
+            // Record login event on the backend safely
+            if (isNewSession) {
+                fetch(`${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : ''}/api/auth/record-login`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${session.access_token}` }
+                }).catch(e => console.error('Failed to log login event:', e));
+            }
         } else {
             localStorage.removeItem('site_current_session');
             localStorage.removeItem('site_current_user');
@@ -402,7 +680,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Check initial auth state on load
-    updateUIForAuth(getSessionUser());
+    const currentUser = getSessionUser();
+    updateUIForAuth(currentUser);
+
+    // Auto-open Auth Modal if redirected from checkout
+    if (!currentUser && sessionStorage.getItem('intended_course')) {
+        setTimeout(() => {
+            const authModalObj = document.getElementById('auth-modal');
+            if (authModalObj) authModalObj.classList.add('active');
+            switchAuthTab('signup');
+            showToast('Please create an account or log in to continue to checkout.', 'info');
+        }, 500);
+    }
+
+    // Check if user was redirected from a locked course
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('locked')) {
+        setTimeout(() => {
+            showToast('You must purchase this course to access its contents.', 'error');
+            // Clean up URL without reloading
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+        }, 500);
+    }
+
+    // Auto-open Auth Modal if redirected from course-detail or checkout with open_auth=1
+    if (!currentUser && urlParams.get('open_auth') === '1') {
+        setTimeout(() => {
+            const authModalObj = document.getElementById('auth-modal');
+            if (authModalObj) authModalObj.classList.add('active');
+            switchAuthTab('signup');
+            showToast('Please create an account or log in to continue.', 'info');
+            // Clean URL
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+        }, 400);
+    }
 
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
@@ -411,32 +722,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (tabLogin && tabSignup) {
-        tabLogin.addEventListener('click', () => {
-            tabLogin.style.borderBottomColor = 'var(--primary)';
-            tabLogin.style.color = 'var(--primary)';
-            tabSignup.style.borderBottomColor = 'transparent';
-            tabSignup.style.color = 'var(--muted)';
-            if (loginPanel) loginPanel.style.display = 'block';
-            if (signupPanel) signupPanel.style.display = 'none';
-        });
-        tabSignup.addEventListener('click', () => {
-            tabSignup.style.borderBottomColor = 'var(--primary)';
-            tabSignup.style.color = 'var(--primary)';
-            tabLogin.style.borderBottomColor = 'transparent';
-            tabLogin.style.color = 'var(--muted)';
-            if (signupPanel) signupPanel.style.display = 'block';
-            if (loginPanel) loginPanel.style.display = 'none';
-        });
-    }
+    // Premium tab switching is now handled via switchAuthTab function.
 
     window.registerUser = async function() {
         const name     = document.getElementById('signup-name').value.trim();
         const email    = document.getElementById('signup-email').value.trim().toLowerCase();
         const password = document.getElementById('signup-password').value;
-        const submitBtn = document.querySelector('#signup-form button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Creating Account...';
+        const submitBtn = document.getElementById('signup-submit-btn') || document.querySelector('#signup-form button[type="submit"]');
+        const originalHTML = submitBtn.innerHTML;
+
+        submitBtn.innerHTML = '<i class="ph ph-circle-notch" style="animation:spin 0.8s linear infinite;"></i> Creating Account...';
         submitBtn.disabled = true;
         document.getElementById('signup-message-area').innerHTML = '';
 
@@ -447,24 +742,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, password, name })
             });
             const data = await response.json();
+
+            // ── Duplicate Account Detection ──
+            const errMsg = (data.error || '').toLowerCase();
+            const isExisting = !response.ok && (
+                errMsg.includes('already registered') ||
+                errMsg.includes('already exists') ||
+                errMsg.includes('user already') ||
+                errMsg.includes('email already') ||
+                errMsg.includes('duplicate')
+            );
+
+            if (isExisting) {
+                // Show premium 'Account Already Exists' modal then auto-login
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+                const existsModal = document.getElementById('account-exists-modal');
+                if (existsModal) existsModal.classList.add('active');
+
+                // Auto-fill login and trigger after 2 seconds
+                setTimeout(async () => {
+                    if (existsModal) existsModal.classList.remove('active');
+                    document.getElementById('login-email').value = email;
+                    document.getElementById('login-password').value = password;
+                    switchAuthTab('login');
+                    await window.loginUser();
+                }, 2200);
+                return;
+            }
+
             if (!response.ok) throw new Error(data.error || 'Failed to create account');
 
-            // ── Notify Admin via Web3Forms (Frontend) ──
-            try {
-                const now = new Date().toLocaleString('en-GB', { timeZone: 'Asia/Kuwait' });
-                fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        access_key: '9d8affa7-79dd-41e4-a9d6-0587948e964f',
-                        subject: '🆕 New User Registered — Dr. Marwa Platform',
-                        from_name: 'Platform Notifications',
-                        message: `New user registered:\n\nName: ${name || 'N/A'}\nEmail: ${email}\nTime: ${now} (Kuwait)`
-                    })
-                });
-            } catch (e) { console.warn('Notification failed', e); }
+            // Notify Admin
+            const userForNotification = data.session?.user || data.user;
+            if (userForNotification && window.notifyAdminNewUser) {
+                window.notifyAdminNewUser(userForNotification);
+            }
 
-            // Log in immediately — no email verification required
+            // Log in immediately if session exists
             const user   = data.session?.user || data.user;
             const session = data.session;
             if (session && user) {
@@ -473,17 +788,77 @@ document.addEventListener('DOMContentLoaded', () => {
                 const displayName = user.user_metadata?.name || name || email.split('@')[0];
                 showToast(`Welcome, ${displayName}! Your account has been created. 🎉`, 'success');
             } else {
-                // Supabase returned no session — account exists but email confirmation still ON
-                showModalMsg('signup-message-area',
-                    'Account created! Please check your email to confirm, then log in.',
-                    'success');
+                // Email confirmation required — show premium verification overlay
+                document.getElementById('signup-form').reset();
+                showVerificationOverlay(email);
             }
             document.getElementById('signup-form').reset();
         } catch (error) {
             showModalMsg('signup-message-area', error.message, 'error');
         } finally {
-            submitBtn.textContent = originalText;
+            submitBtn.innerHTML = originalHTML;
             submitBtn.disabled = false;
+        }
+    };
+
+    // ── OAuth Login (Google / Facebook) ──
+    window.socialLogin = async function(provider) {
+        try {
+            // Show loading toast since redirect might take a second
+            showToast('Connecting to ' + provider + '...', 'info');
+            
+            const redirectUrl = encodeURIComponent(window.location.origin + window.location.pathname);
+            const res = await fetch(`${API_BASE_URL}/api/auth/oauth?provider=${provider}&redirect_to=${redirectUrl}`);
+            const data = await res.json();
+            
+            if (!res.ok) throw new Error(data.error || 'Failed to initialize OAuth');
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                throw new Error('No redirect URL provided');
+            }
+        } catch (error) {
+            console.error('Social login error:', error);
+            showToast(error.message || 'Failed to connect with ' + provider, 'error');
+        }
+    };
+
+    // ── Request Login OTP ──
+    window.requestLoginOtp = async function() {
+        const emailInput = document.getElementById('login-email');
+        if (!emailInput) return;
+        const email = emailInput.value.trim().toLowerCase();
+        
+        if (!email) {
+            return showModalMsg('login-message-area', 'Please enter your email address first.', 'error');
+        }
+
+        const submitBtn = document.getElementById('login-submit-btn') || document.querySelector('#login-form button[type="submit"]');
+        const originalHTML = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Sending Code...';
+        submitBtn.disabled = true;
+        document.getElementById('login-message-area').innerHTML = '';
+
+        try {
+            const res = await fetch(`${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : ''}/api/auth/login-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            
+            if (!res.ok) throw new Error(data.error || 'Failed to send login code');
+            
+            // Show verification overlay
+            closeAllModals(); // Close login modal
+            window._pendingOtpType = 'magiclink';
+            showVerificationOverlay(email);
+            showToast('A 6-digit login code has been sent to your email.', 'success');
+        } catch(err) {
+            showModalMsg('login-message-area', err.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalHTML;
         }
     };
 
@@ -506,7 +881,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, token })
+                body: JSON.stringify({ email, token, type: window._pendingOtpType || 'signup' })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Verification failed');
@@ -515,6 +890,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeAllModals();
             showToast('Email verified! Welcome to the platform 🎉', 'success');
             window._pendingOtpEmail = null;
+            window._pendingOtpType = null;
             if (document.getElementById('otp-input')) document.getElementById('otp-input').value = '';
         } catch(err) {
             showModalMsg('otp-message-area', err.message || 'Invalid code. Please try again.', 'error');
@@ -527,9 +903,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loginUser = async function() {
         const email    = document.getElementById('login-email').value.trim().toLowerCase();
         const password = document.getElementById('login-password').value;
-        const submitBtn = document.querySelector('#login-form button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Logging In...';
+        const submitBtn = document.getElementById('login-submit-btn') || document.querySelector('#login-form button[type="submit"]');
+        const originalHTML = submitBtn.innerHTML;
+
+        submitBtn.innerHTML = '<i class="ph ph-circle-notch" style="animation:spin 0.8s linear infinite;"></i> Logging In...';
         submitBtn.disabled = true;
         document.getElementById('login-message-area').innerHTML = '';
 
@@ -563,7 +940,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             showModalMsg('login-message-area', error.message, 'error');
         } finally {
-            submitBtn.textContent = originalText;
+            submitBtn.innerHTML = originalHTML;
             submitBtn.disabled = false;
         }
     };
@@ -597,7 +974,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', async () => {
+            const session = getSession();
+            if (session?.access_token) {
+                try {
+                    await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${session.access_token}` }
+                    });
+                } catch(e) { console.error('Logout API error:', e); }
+            }
             localStorage.removeItem('user_has_purchases'); // clear purchase cache
             setSession(null, null);
             showToast('Logged out successfully.', 'info');
@@ -624,9 +1010,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const subtitleEl = document.getElementById(`${section.section_key}-subtitle`);
                 const contentEl = document.getElementById(`${section.section_key}-content`);
                 
-                if (titleEl && section.title) titleEl.innerHTML = section.title;
-                if (subtitleEl && section.subtitle) subtitleEl.innerHTML = section.subtitle;
-                if (contentEl && section.content) contentEl.innerHTML = section.content;
+                if (titleEl && section.title) titleEl.textContent = section.title;
+                if (subtitleEl && section.subtitle) subtitleEl.textContent = section.subtitle;
+                if (contentEl && section.content) contentEl.innerHTML = sanitizeRichText(section.content);
             });
         } catch (error) {
             console.error('Error fetching sections:', error);
@@ -660,6 +1046,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     
                     posts.slice(0, limit).forEach(post => {
+                        post.title = escapeHtml(post.title || 'Untitled');
+                        post.excerpt = escapeHtml(post.excerpt || post.content || '');
+                        post.content = sanitizeRichText(post.content || '');
+                        const rawLink = (post.link || '').trim();
+                        if (rawLink) {
+                            try {
+                                const url = new URL(rawLink, window.location.origin);
+                                // Only treat as external/valid link if it has an explicit path beyond root
+                                // and uses http/https — prevents empty-string resolving to site root
+                                post.link = ['http:', 'https:'].includes(url.protocol) && rawLink.startsWith('http') ? url.href : '';
+                            } catch {
+                                post.link = '';
+                            }
+                        } else {
+                            post.link = '';
+                        }
+
                         const article = document.createElement('article');
                         article.className = 'glass-card blog-card';
                         article.style.padding = '1.5rem';
@@ -727,6 +1130,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 homeCoursesContainer.innerHTML = '';
                 courses.forEach(course => {
+                    course.title = course.title || 'Untitled course';
+                    course.excerpt = course.excerpt || '';
+                    course.duration = escapeHtml(course.duration || 'N/A');
+                    course.discount_badge = escapeHtml(course.discount_badge || '');
+                    course.image_url = safeImageUrl(course.image_url);
                     const slug = SLUG_MAP[course.id] || course.id;
                     const card = document.createElement('div');
                     card.className = `course-card ${course.is_bundle ? 'bundle-card' : ''}`;
@@ -748,15 +1156,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
                                 <h3>${course.title}</h3>
                                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                                    ${course.original_price ? `<span class="strikethrough-price" style="text-decoration: line-through; color: var(--muted); font-size: 0.9rem;">$${course.original_price}</span>` : ''}
-                                    <h3 style="color: var(--primary); white-space: nowrap; margin-top: 0;">$${course.price}</h3>
+                                    ${course.original_price ? `<span class="strikethrough-price" style="text-decoration: line-through; color: var(--muted); font-size: 0.9rem;">${Number(course.original_price).toLocaleString()} ج.م</span>` : ''}
+                                    <h3 style="color: var(--primary); white-space: nowrap; margin-top: 0;">${Number(course.price).toLocaleString()} ج.م</h3>
                                     ${course.discount_badge ? `<span class="discount-badge" style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-top: 4px; white-space: nowrap;">${course.discount_badge}</span>` : ''}
                                 </div>
                             </div>
                             <p>${course.excerpt}<br><strong>Duration:</strong> ${course.duration || 'N/A'}</p>
-                            <button class="${course.is_bundle ? 'btn-primary' : 'btn-outline'} subscribe-btn" ${course.is_bundle ? 'style="width: 100%; margin-top: 1rem;"' : ''}>
-                                ${course.is_bundle ? 'Start Your Transformation' : 'Subscribe to Access'}
-                            </button>
+                            <a href="course-detail.html?course=${slug}" class="${course.is_bundle ? 'btn-primary' : 'btn-outline'}" ${course.is_bundle ? 'style="width: 100%; margin-top: 1rem; display: block; text-align: center;"' : 'style="display: block; text-align: center;"'}>
+                                <i class="ph ph-eye"></i> View Course Details
+                            </a>
                         </div>
                     `;
                     homeCoursesContainer.appendChild(card);
@@ -770,18 +1178,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (homeTestimonialsContainer) {
+        const STATIC_TESTIMONIALS = [
+            { rating: 5, quote: 'هذه الدورة غيّرت حياتي بشكل جذري. تعلمت أدوات CBT فعّالة ساعدتني على التحكم في قلقي وأفكاري السلبية بطريقة علمية ومنظمة.', author: 'أسماء.م — معالجة نفسية' },
+            { rating: 5, quote: 'دورة DBT كانت بالضبط ما احتجته. الأساليب العملية وطريقة الشرح الواضحة جعلت المفاهيم المعقدة سهلة الفهم والتطبيق مع مرضاي.', author: 'خالد.ع — مرشد تربوي' },
+            { rating: 5, quote: 'برنامج باقة الثلاث علاجات هو استثمار حقيقي في مسيرتي المهنية. المحتوى شامل ومنظم، وأسلوب د. مروى في الشرح يجعل كل مفهوم واضحاً تماماً.', author: 'هند.ص — طالبة علم نفس' },
+            { rating: 5, quote: 'برنامج رحلة تعافي أعادني لنفسي من جديد. لم أتوقع أن أجد محتوى بهذا العمق والرقي باللغة العربية. شكراً جزيلاً دكتورة مروى.', author: 'نورا.ر — متخصصة في الصحة النفسية' }
+        ];
+
         async function fetchTestimonials() {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/testimonials`);
                 const testimonials = await res.json();
-                homeTestimonialsContainer.innerHTML = '';
-                
-                if(!testimonials || testimonials.length === 0) {
-                    homeTestimonialsContainer.innerHTML = '<p class="text-center" style="grid-column: 1 / -1; color: var(--muted);">No testimonials yet.</p>';
+
+                if (!testimonials || testimonials.length === 0) {
+                    renderTestimonials(STATIC_TESTIMONIALS);
                     return;
                 }
-                
-                testimonials.forEach(t => {
+                renderTestimonials(testimonials);
+            } catch (err) {
+                console.warn('[Testimonials] API unavailable, using static fallback.');
+                renderTestimonials(STATIC_TESTIMONIALS);
+            }
+        }
+
+        function renderTestimonials(testimonials) {
+            homeTestimonialsContainer.innerHTML = '';
+            testimonials.forEach(t => {
+                    t.rating = Math.max(0, Math.min(5, Number.parseInt(t.rating, 10) || 0));
+                    t.quote = escapeHtml(t.quote || '');
+                    t.author = escapeHtml(t.author || '');
                     const card = document.createElement('div');
                     card.className = 'glass-card';
                     card.style.padding = '2rem';
@@ -792,9 +1217,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     homeTestimonialsContainer.appendChild(card);
                 });
-            } catch (err) {
-                console.error('Error fetching testimonials:', err);
-            }
         }
         fetchTestimonials();
     }
@@ -844,6 +1266,29 @@ document.addEventListener('DOMContentLoaded', () => {
             consentBanner.style.display = 'none';
             showToast('Cookies declined.', 'info');
         });
+    }
+
+    // ==========================================
+    // My Courses Sticky Icon
+    // ==========================================
+    const currentSession = typeof getSession === 'function' ? getSession() : (function(){try{return JSON.parse(localStorage.getItem('site_current_session'))}catch{return null}})();
+    if (currentSession?.access_token) {
+        fetch(`${API_BASE_URL}/api/my-courses`, {
+            headers: { 'Authorization': `Bearer ${currentSession.access_token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                // The API only returns active courses, so we don't need to check is_active again, but we can be safe
+                const stickyBtn = document.createElement('a');
+                stickyBtn.href = 'my-courses.html'; // Or '#courses', but my-courses.html is a better fit
+                stickyBtn.className = 'btn-primary my-courses-sticky-btn';
+                stickyBtn.innerHTML = '📚 كورساتي';
+                
+                document.body.appendChild(stickyBtn);
+            }
+        })
+        .catch(console.error);
     }
 
 });
