@@ -1048,6 +1048,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         article.style.display = 'flex';
                         article.style.flexDirection = 'column';
                         article.style.gap = '1rem';
+                        article.style.textAlign = 'center';
                         
                         // Format date elegantly
                         const dateStr = post.date || post.created_at;
@@ -1189,10 +1190,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = document.createElement('div');
                     card.className = 'glass-card';
                     card.style.padding = '2rem';
+                    card.style.display = 'flex';
+                    card.style.flexDirection = 'column';
+                    card.style.height = '100%'; // Ensure all cards in row stretch equally
                     card.innerHTML = `
-                        <div style="color: #f59e0b; margin-bottom: 1rem; font-size: 1.2rem;">${'★'.repeat(t.rating)}</div>
-                        <p style="font-style: italic; margin-bottom: 1rem;">"${t.quote}"</p>
-                        <h4 style="color: var(--primary);">- ${t.author}</h4>
+                        <div style="color: #f59e0b; margin-bottom: 1rem; font-size: 1.2rem; flex-shrink: 0; text-align: center;">${'★'.repeat(t.rating)}</div>
+                        <div style="flex-grow: 1; max-height: 250px; overflow-y: auto; margin-bottom: 1rem; padding-right: 0.5rem; text-align: center;">
+                            <p style="font-style: italic; line-height: 1.8;">"${t.quote}"</p>
+                        </div>
+                        <h4 style="color: var(--primary); flex-shrink: 0; margin-top: auto; text-align: center;">- ${t.author}</h4>
                     `;
                     homeTestimonialsContainer.appendChild(card);
                 });
