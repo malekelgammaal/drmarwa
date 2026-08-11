@@ -1688,11 +1688,10 @@ section[id], [id] {
         font-size: 1rem;
     }
 
-    /* Hero */
     .hero {
         padding-top: calc(var(--nav-height) + 2rem);
         min-height: 100vh;
-        padding-bottom: 4rem;
+        padding-bottom: 8rem;
         display: flex;
         align-items: center;
     }
@@ -1967,6 +1966,11 @@ section[id], [id] {
 
     .hero-text h1 {
         font-size: 3.5rem;
+    }
+
+    .profile-image-container {
+        width: 400px;
+        height: 400px;
     }
 
     .grid-3 {
