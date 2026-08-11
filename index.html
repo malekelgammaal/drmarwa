@@ -139,7 +139,7 @@
                 <a href="#courses" class="mobile-link"><i class="ph ph-graduation-cap"></i> Courses</a>
                 <a href="blog.html" class="mobile-link"><i class="ph ph-article"></i> Blog</a>
                 <a href="#booking" class="mobile-link"><i class="ph ph-calendar"></i> Book Session</a>
-                <a href="#contact" class="mobile-link"><i class="ph ph-envelope"></i> Contact</a>
+                <a href="contact.html" class="mobile-link"><i class="ph ph-envelope"></i> Contact</a>
             </div>
             <div style="padding: 0.5rem 0 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;">
                 <p
@@ -431,7 +431,7 @@
                             }
                             card.innerHTML = `
                             <div class="course-thumbnail" ${course.is_bundle ? 'style="overflow:hidden;border-radius:12px 12px 0 0;"' : ''}>
-                                <img src="${course.image_url}" alt="${course.title.replace(/<[^>]*>/g, '')}" style="width:100%;height:100%;object-fit:cover;">
+                                <img src="${course.image_url}" alt="${course.title.replace(/<[^>]*>/g, '')}" style="width:100%;height:100%;object-fit:contain;background:var(--alt-bg);">
                             </div>
                             <div class="course-info">
                                 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
@@ -566,39 +566,17 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="contact section-padding alt-bg">
-            <div class="container animate-on-scroll fade-up">
-                <div class="section-header center">
-                    <h2 id="contact-title">Get In Touch</h2>
-                    <div class="divider mx-auto"></div>
-                    <p class="section-subtitle" id="contact-subtitle">Have an inquiry or want to send a message? Reach
-                        out below.</p>
+        <!-- Contact Section CTA -->
+        <section id="contact" class="contact section-padding" style="background: var(--card-bg); border-top: 1px solid var(--border);">
+            <div class="container animate-on-scroll fade-up text-center" style="max-width: 600px;">
+                <div style="width: 70px; height: 70px; background: rgba(20, 184, 166, 0.1); border: 2px solid rgba(20, 184, 166, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i class="ph ph-chat-circle-text" style="font-size: 2.2rem; color: var(--primary);"></i>
                 </div>
-                <div class="contact-wrapper glass-card" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
-                    <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
-                        <!-- Web3Forms Access Key: Replace this with your actual key from web3forms.com -->
-                        <input type="hidden" name="access_key" value="b5caa9c4-98eb-41b9-a5db-11bc0a6f9675">
-                        <input type="hidden" name="subject"
-                            value="📩 رسالة جديدة من صفحة اتصل بنا - منصة د. مروة بدر">
-
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <input type="text" name="name" placeholder="Your Name" required
-                                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--bg); color: var(--text);">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <input type="email" name="email" placeholder="Your Email" required
-                                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--bg); color: var(--text);">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 1rem;">
-                            <textarea name="message" rows="5" placeholder="Your Message or Inquiry" required
-                                style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--border-radius-sm); background-color: var(--bg); color: var(--text); resize: vertical;"></textarea>
-                        </div>
-                        <!-- Honeypot Spam Protection -->
-                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
-                        <button type="submit" class="btn-primary" style="width: 100%">Send Message</button>
-                    </form>
-                </div>
+                <h2 style="margin-bottom: 1rem;">Need Help or Have an Inquiry?</h2>
+                <p style="color: var(--muted); margin-bottom: 2rem; font-size: 1.05rem;">We're here to assist you with any questions about our courses, clinical supervision, or technical support.</p>
+                <a href="contact.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 1rem 2.5rem; font-size: 1.1rem;">
+                    Get In Touch <i class="ph ph-arrow-right"></i>
+                </a>
             </div>
         </section>
 
@@ -653,7 +631,7 @@
                                 style="color:var(--primary);"></i><a href="https://wa.me/96560695570" target="_blank"
                                 class="footer-link">WhatsApp</a></li>
                         <li style="display:flex;align-items:center;gap:0.5rem;"><i class="ph ph-envelope"
-                                style="color:var(--primary);"></i><a href="#contact" class="footer-link">Send
+                                style="color:var(--primary);"></i><a href="contact.html" class="footer-link">Send
                                 Message</a></li>
                         <li style="display:flex;align-items:center;gap:0.5rem;"><i class="ph ph-calendar-check"
                                 style="color:var(--primary);"></i><a href="#booking" class="footer-link">Book a
