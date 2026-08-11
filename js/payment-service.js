@@ -17,6 +17,9 @@ class PaymentServiceInterface {
             try { return JSON.parse(localStorage.getItem('site_current_user')); } 
             catch { return {}; }
         };
+        this.getUser = () => {
+            return this.getSafeUser();
+        };
         // -------------------------------------------------------
         //  Course Catalog — Prices in EGP
         // -------------------------------------------------------
