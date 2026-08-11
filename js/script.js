@@ -987,10 +987,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         post.title = escapeHtml(post.title || 'Untitled');
                         post.excerpt = escapeHtml(post.excerpt || post.content || '');
                         post.content = sanitizeRichText(post.content || '');
-                        try {
-                            const url = new URL(post.link || '', window.location.origin);
-                            post.link = ['http:', 'https:'].includes(url.protocol) ? url.href : '';
-                        } catch {
+                        const rawLink = (post.link || '').trim();
+                        if (rawLink) {
+                            try {
+                                const url = new URL(rawLink, window.location.origin);
+                                // Only treat as external/valid link if it has an explicit path beyond root
+                                // and uses http/https — prevents empty-string resolving to site root
+                                post.link = ['http:', 'https:'].includes(url.protocol) && rawLink.startsWith('http') ? url.href : '';
+                            } catch {
+                                post.link = '';
+                            }
+                        } else {
                             post.link = '';
                         }
 
