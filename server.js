@@ -311,67 +311,6 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// 2.2 Passwordless Login Endpoint (OTP)
-app.post('/api/auth/login-otp', async (req, res) => {
-    try {
-        const { email } = req.body || {};
-        const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
-
-        if (!normalizedEmail) {
-            return res.status(400).json({ error: 'Email is required' });
-        }
-
-        const { error } = await supabase.auth.signInWithOtp({
-            email: normalizedEmail,
-            options: {
-                shouldCreateUser: false // Ensure we only send OTP to existing users
-            }
-        });
-
-        if (error) return res.status(400).json({ error: error.message });
-
-        res.status(200).json({ message: 'If this email is registered, a 6-digit code has been sent.' });
-    } catch (err) {
-        console.error('[API] login-otp error:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// 2.5 Record Login Endpoint (Internal)
-app.post('/api/auth/record-login', async (req, res) => {
-    try {
-        const user = await getUserFromRequest(req);
-        if (!user) return res.status(401).json({ error: 'Unauthorized' });
-
-        const email = user.email || '';
-        const full_name = user.user_metadata?.name || user.user_metadata?.full_name || '';
-        const phone = user.phone || null;
-        
-        // Try to identify provider from app_metadata
-        let provider = 'unknown';
-        if (user.app_metadata && user.app_metadata.provider) {
-            provider = user.app_metadata.provider;
-        }
-
-        const { error } = await supabase.from('registration').insert({
-            user_id: user.id,
-            email: email,
-            full_name: full_name,
-            phone: phone,
-            auth_provider: provider
-        });
-
-        if (error) {
-            console.error('[API] ⚠️ Failed to log registration event:', error.message);
-        }
-
-        // Always return success to client so it doesn't break the login flow
-        res.status(200).json({ success: true });
-    } catch (err) {
-        console.error('[API] record-login exception:', err);
-        res.status(200).json({ success: true, error: 'Failed safely' });
-    }
-});
 
 // 3. OAuth Endpoint (Google / Facebook)
 app.get('/api/auth/oauth', async (req, res) => {

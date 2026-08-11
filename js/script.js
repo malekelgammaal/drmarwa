@@ -648,30 +648,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setSession(session, user) {
         if (user) {
-            // Check if this is a new session token (indicating a new login event)
-            let isNewSession = false;
-            if (session && session.access_token) {
-                try {
-                    const oldSessionStr = localStorage.getItem('site_current_session');
-                    const oldSession = oldSessionStr ? JSON.parse(oldSessionStr) : null;
-                    if (!oldSession || oldSession.access_token !== session.access_token) {
-                        isNewSession = true;
-                    }
-                } catch {
-                    isNewSession = true;
-                }
-            }
-
             if (session) localStorage.setItem('site_current_session', JSON.stringify(session));
             localStorage.setItem('site_current_user', JSON.stringify(user));
-
-            // Record login event on the backend safely
-            if (isNewSession) {
-                fetch(`${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : ''}/api/auth/record-login`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${session.access_token}` }
-                }).catch(e => console.error('Failed to log login event:', e));
-            }
         } else {
             localStorage.removeItem('site_current_session');
             localStorage.removeItem('site_current_user');
@@ -826,7 +804,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Verify OTP code ──
 
     window.verifyOtp = async function() {
-        const email = window._pendingOtpEmail;
+        const email = window._pendingVerifyEmail;
         const token = document.getElementById('otp-input').value.trim();
         const btn = document.getElementById('otp-submit-btn');
         const originalHTML = btn.innerHTML;
@@ -842,7 +820,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, token })
+                body: JSON.stringify({ email, token, type: window._pendingOtpType || 'signup' })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Verification failed');
@@ -850,7 +828,8 @@ document.addEventListener('DOMContentLoaded', () => {
             setSession(data.session, data.user || data.session?.user);
             closeAllModals();
             showToast('Email verified! Welcome to the platform 🎉', 'success');
-            window._pendingOtpEmail = null;
+            window._pendingVerifyEmail = null;
+            window._pendingOtpType = null;
             if (document.getElementById('otp-input')) document.getElementById('otp-input').value = '';
         } catch(err) {
             showModalMsg('otp-message-area', err.message || 'Invalid code. Please try again.', 'error');
