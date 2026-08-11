@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     user_metadata: payload.user_metadata || {} 
                 };
                 
-                // Save session permanently
-                localStorage.setItem('site_current_user', JSON.stringify(user));
-                localStorage.setItem('site_current_session', JSON.stringify({access_token: accessToken, refresh_token: refreshToken}));
+                // Save session permanently and trigger login record
+                const session = { access_token: accessToken, refresh_token: refreshToken };
+                setSession(session, user);
                 
                 // Notify Admin if new user
                 if (window.notifyAdminNewUser) window.notifyAdminNewUser(user);
@@ -648,8 +648,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setSession(session, user) {
         if (user) {
+            // Check if this is a new session token (indicating a new login event)
+            let isNewSession = false;
+            if (session && session.access_token) {
+                try {
+                    const oldSessionStr = localStorage.getItem('site_current_session');
+                    const oldSession = oldSessionStr ? JSON.parse(oldSessionStr) : null;
+                    if (!oldSession || oldSession.access_token !== session.access_token) {
+                        isNewSession = true;
+                    }
+                } catch {
+                    isNewSession = true;
+                }
+            }
+
             if (session) localStorage.setItem('site_current_session', JSON.stringify(session));
             localStorage.setItem('site_current_user', JSON.stringify(user));
+
+            // Record login event on the backend safely
+            if (isNewSession) {
+                fetch(`${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : ''}/api/auth/record-login`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${session.access_token}` }
+                }).catch(e => console.error('Failed to log login event:', e));
+            }
         } else {
             localStorage.removeItem('site_current_session');
             localStorage.removeItem('site_current_user');
