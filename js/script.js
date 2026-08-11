@@ -443,19 +443,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // ── Show verification overlay with countdown ──
+    // ── OTP Countdown Timer ──
+    let _otpCountdownInterval;
+    function startOtpCountdown(seconds) {
+        clearInterval(_otpCountdownInterval);
+        const display = document.getElementById('otp-countdown');
+        if (!display) return;
+        
+        let remaining = seconds;
+        display.style.color = 'var(--primary)';
+        
+        function update() {
+            if (remaining <= 0) {
+                clearInterval(_otpCountdownInterval);
+                display.textContent = '00:00';
+                display.style.color = 'var(--error, #ef4444)';
+                return;
+            }
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            display.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            remaining--;
+        }
+        
+        update();
+        _otpCountdownInterval = setInterval(update, 1000);
+    }
+
+    // ── Show verification overlay with OTP input ──
     function showVerificationOverlay(email) {
         window._pendingVerifyEmail = email;
-        const overlay = document.getElementById('check-email-modal');
-        const emailText = document.getElementById('verify-email-text');
-        if (overlay) overlay.style.display = 'flex';
+        const emailText = document.getElementById('otp-email-display');
         if (emailText) emailText.textContent = email;
-        // Close auth modal
+        
+        // Ensure the auth modal is open
         const authModal = document.getElementById('auth-modal');
-        if (authModal) authModal.classList.remove('active');
+        if (authModal) authModal.classList.add('active');
+        
+        // Switch to OTP view
+        if (typeof window.switchAuthView === 'function') {
+            window.switchAuthView('otp');
+        }
+        
         // Prevent scrolling
         document.body.style.overflow = 'hidden';
-        startVerificationCountdown(3600);
+        
+        // Start 3600 seconds (60 mins) countdown
+        startOtpCountdown(3600);
+        
+        // Focus the input
+        setTimeout(() => {
+            const otpInput = document.getElementById('otp-input');
+            if (otpInput) otpInput.focus();
+        }, 100);
     }
 
     window.showVerificationOverlay = showVerificationOverlay;
