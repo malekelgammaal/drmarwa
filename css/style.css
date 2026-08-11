@@ -1903,7 +1903,7 @@ section[id], [id] {
 
     .about-grid {
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
     }
 
     .about-text {
@@ -2431,4 +2431,24 @@ section[id], [id] {
     border-top-color: #fff;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
+}
+
+/* Custom Scrollbar for inner elements */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(45, 212, 191, 0.05);
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) rgba(45, 212, 191, 0.05);
 }

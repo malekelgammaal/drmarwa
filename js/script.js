@@ -1066,8 +1066,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <p class="arabic-text medium post-excerpt" style="line-height: 1.8; color: var(--muted); margin: 0;">${post.excerpt || post.content || ''}</p>
                                 ${fullContentHtml}
                             </div>
-                            ${post.link ? `<a href="${post.link}" class="btn-outline arabic-text medium" style="align-self: flex-start; padding: 0.5rem 1rem; margin-top: auto;">اقرأ المزيد</a>` : 
-                            (post.content ? `<button class="btn-outline arabic-text medium" style="align-self: flex-start; padding: 0.5rem 1rem; margin-top: auto; cursor: pointer;" onclick="const excerpt = this.previousElementSibling.querySelector('.post-excerpt'); const full = this.previousElementSibling.querySelector('.post-full-content'); if(full.style.display === 'none') { full.style.display = 'block'; excerpt.style.display = 'none'; this.textContent = 'إخفاء التفاصيل'; } else { full.style.display = 'none'; excerpt.style.display = 'block'; this.textContent = 'اقرأ المزيد'; }">اقرأ المزيد</button>` 
+                            ${post.link ? `<a href="${post.link}" class="btn-outline arabic-text medium" style="align-self: center; padding: 0.5rem 1rem; margin-top: auto;">اقرأ المزيد</a>` : 
+                            (post.content ? `<button class="btn-outline arabic-text medium" style="align-self: center; padding: 0.5rem 1rem; margin-top: auto; cursor: pointer;" onclick="const excerpt = this.previousElementSibling.querySelector('.post-excerpt'); const full = this.previousElementSibling.querySelector('.post-full-content'); if(full.style.display === 'none') { full.style.display = 'block'; excerpt.style.display = 'none'; this.textContent = 'إخفاء التفاصيل'; } else { full.style.display = 'none'; excerpt.style.display = 'block'; this.textContent = 'اقرأ المزيد'; }">اقرأ المزيد</button>` 
                             : '')}
                         `;
                         element.appendChild(article);
@@ -1195,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.style.height = '100%'; // Ensure all cards in row stretch equally
                     card.innerHTML = `
                         <div style="color: #f59e0b; margin-bottom: 1rem; font-size: 1.2rem; flex-shrink: 0; text-align: center;">${'★'.repeat(t.rating)}</div>
-                        <div style="flex-grow: 1; max-height: 250px; overflow-y: auto; margin-bottom: 1rem; padding-right: 0.5rem; text-align: center;">
+                        <div class="custom-scrollbar" style="flex-grow: 1; max-height: 250px; overflow-y: auto; margin-bottom: 1rem; padding-right: 0.5rem; text-align: center;">
                             <p style="font-style: italic; line-height: 1.8;">"${t.quote}"</p>
                         </div>
                         <h4 style="color: var(--primary); flex-shrink: 0; margin-top: auto; text-align: center;">- ${t.author}</h4>
